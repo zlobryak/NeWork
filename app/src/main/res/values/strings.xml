@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">NeWork</string>
+    <string name="post_author_name">Leo Lipshutz</string>
+    <string name="post_date">21.02.22 14:23</string>
+    <string name="post_description">Шляпа — это головной убор, который носили в Древней Греции. В наше время шляпы носят для защиты от солнца или просто для красоты.</string>
+    <string name="post_likes_count">10</string>
+    <string name="post_share">Поделиться</string>
+
+    <!-- Accessibility descriptions -->
+    <string name="desc_avatar">Аватар автора</string>
+    <string name="desc_more_options">Дополнительные опции</string>
+    <string name="desc_post_media">Изображение поста</string>
 </resources>
