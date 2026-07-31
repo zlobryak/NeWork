@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -20,6 +21,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,15 +31,18 @@ android {
             optimization {
                 enable = false
             }
+            buildConfigField("String", "BASE_URL", "\"http://94.228.125.136:8080\"")
+
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
-        compose = true
         viewBinding = true
+        buildConfig = true
     }
 }
 

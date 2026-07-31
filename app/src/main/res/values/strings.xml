@@ -10,4 +10,12 @@
     <string name="desc_avatar">Аватар автора</string>
     <string name="desc_more_options">Дополнительные опции</string>
     <string name="desc_post_media">Изображение поста</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="menu_button">Menu button</string>
+    <string name="video_preview">Video preview</string>
+    <string name="image_preview">Image preview</string>
+    <string name="play_button">Play button</string>
+    <string name="share_icon">Share icon</string>
+    <string name="synchronization_icon">Synchronization icon</string>
+    <string name="like_icon">Like icon</string>
 </resources>
