@@ -26,11 +26,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            manifestPlaceholders["usesCleartextTraffic"] = false
+            buildConfigField("String", "BASE_URL", "\"http://94.228.125.136:8080\"")
+
+        }
+        debug {
+            manifestPlaceholders["usesCleartextTraffic"] = true
             buildConfigField("String", "BASE_URL", "\"http://94.228.125.136:8080\"")
 
         }
@@ -40,10 +52,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures {
-        viewBinding = true
-        buildConfig = true
-    }
+
 }
 
 dependencies {
@@ -72,5 +81,13 @@ dependencies {
     implementation(libs.androidx.fragment) // Для viewModel в рагментах
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity)
+    implementation(libs.maps.mobile) //Yandex MapKit. Основной SDK для отображения карт, маркеров, работы с геолокацией
+    implementation(libs.maps.mobile.v4391lite)
+    implementation(libs.retrofit) //Для работы с сетью
+    implementation(libs.gson) //Для работы с Json
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.glide) //Для загрузи изображений
 
 }
