@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/common_spacing"
@@ -11,7 +12,6 @@
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/common_spacing">
@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/common_spacing"
             android:ellipsize="end"
+            android:fontFamily="@font/roboto"
             android:singleLine="true"
             android:textColor="@color/Text_color_post_headers"
             app:layout_constraintBottom_toTopOf="@id/published"
@@ -45,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/Text_color_post_headers"
             app:layout_constraintBottom_toBottomOf="@id/avatar"
             app:layout_constraintStart_toEndOf="@id/avatar"
@@ -57,6 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/menu_button"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             app:icon="@drawable/ic_more_vert_24dp"
@@ -70,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/common_spacing"
             android:autoLink="web"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/Post_card_content_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/published"
@@ -159,6 +164,7 @@
             android:layout_marginTop="@dimen/common_spacing"
             android:checkable="true"
             android:contentDescription="@string/like_icon"
+
             app:icon="@drawable/ic_liked_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/barrier3"

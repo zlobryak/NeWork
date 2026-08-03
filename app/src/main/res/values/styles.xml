@@ -9,21 +9,28 @@
     </style>
 
     <style name="Widget.AppCompat.LikeButton" parent="Widget.Material3.Button.TextButton.Icon">
+        <item name="android:textAppearance">@style/TextAppearance.App.Button.Small</item>
         <item name="iconTint">@color/like_selector</item>
         <item name="android:textColor">@color/like_selector</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="iconSize">16dp</item>
+        <item name="iconPadding">8dp</item>
     </style>
 
     <style name="Widget.AppCompat.StandardButtonWithText" parent="Widget.Material3.Button.TextButton.Icon">
+        <item name="android:textAppearance">@style/TextAppearance.App.Button.Small</item>
         <item name="iconTint">@color/like_selector</item>
         <item name="android:textColor">@color/like_selector</item>
-        <item name="android:minWidth">24dp</item>
-        <item name="android:minHeight">24dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="iconSize">16dp</item>
+        <item name="iconPadding">8dp</item>
+
     </style>
 
     <style name="Widget.AppCompat.PlayButton" parent="Widget.Material3.Button.IconButton">
@@ -34,6 +41,11 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="backgroundTint">#99000000</item>
+    </style>
+
+    <style name="TextAppearance.App.Button.Small" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/roboto</item>
     </style>
 
 </resources>
