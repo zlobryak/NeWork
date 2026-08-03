@@ -18,4 +18,11 @@
     <string name="share_icon">Share icon</string>
     <string name="synchronization_icon">Synchronization icon</string>
     <string name="like_icon">Like icon</string>
+    <string name="google_play_unavailable">Google Api Unavailable</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_save">Save</string>
 </resources>
