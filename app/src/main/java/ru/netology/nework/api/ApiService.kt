@@ -17,3 +17,5 @@ interface ApiService {
     @DELETE("posts/{id}")
     suspend fun deletePost(@Path("id") id: Long)
 }
+
+//TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

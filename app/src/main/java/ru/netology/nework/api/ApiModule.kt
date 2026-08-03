@@ -33,25 +33,25 @@ class ApiModule {
         }
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideOkHttp(
-//        logging: HttpLoggingInterceptor,
-//        appAuth: AppAuth
-//    ): OkHttpClient = OkHttpClient.Builder()
-//        .addInterceptor { chain ->
-//            appAuth.authStateFlow.value.token?.let { token ->
-//                val newRequest = chain.request().newBuilder()
-//                    .addHeader("Authorization", token)
-//                    .build()
-//                return@addInterceptor chain.proceed(newRequest)
-//            }
-//            chain.proceed(chain.request())
-//        }
-//        .addInterceptor(logging)
-//        .connectTimeout(30, TimeUnit.SECONDS)
-//        .readTimeout(30, TimeUnit.SECONDS)
-//        .build()
+    @Singleton
+    @Provides
+    fun provideOkHttp(
+        logging: HttpLoggingInterceptor,
+        appAuth: AppAuth
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            appAuth.authStateFlow.value.token?.let { token ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", token)
+                    .build()
+                return@addInterceptor chain.proceed(newRequest)
+            }
+            chain.proceed(chain.request())
+        }
+        .addInterceptor(logging)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     @Singleton
     @Provides
