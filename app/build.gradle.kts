@@ -89,5 +89,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.glide) //Для загрузи изображений
+    implementation(libs.androidx.paging.runtime.ktx) //Пагинация
+    implementation(libs.androidx.room.paging)
 
 }

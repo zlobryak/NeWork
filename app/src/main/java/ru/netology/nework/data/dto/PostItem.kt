@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PostItem(
     val id: Int,
-    val attachment: Attachment? ,
+    val attachment: Attachment?,
     val author: String,
     val authorAvatar: String,
     val authorId: Int,
