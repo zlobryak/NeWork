@@ -18,6 +18,7 @@ data class PostEntity(
     val authorId: Int,
     val authorJob: String?,
     val content: String?,
+    @Embedded
     val coords: Coords?,
     val likeOwnerIds: List<Int>?,
     val likedByMe: Boolean,

@@ -1,2 +1,3 @@
 /build
 /src/release/res/values/google_maps_api.xml
+/src/main/java/ru/netology/nework/google-services.json

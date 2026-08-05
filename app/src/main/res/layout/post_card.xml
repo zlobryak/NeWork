@@ -180,7 +180,7 @@
             app:layout_constraintBottom_toBottomOf="@id/ic_likes"
             app:layout_constraintStart_toEndOf="@id/ic_likes"
             app:layout_constraintTop_toTopOf="@id/ic_likes"
-            tools:text="10" />
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/ic_sync"

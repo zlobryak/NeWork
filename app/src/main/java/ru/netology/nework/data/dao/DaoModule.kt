@@ -1,10 +1,10 @@
-package ru.netology.nmedia.dao
+package ru.netology.nework.data.dao
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.netology.nmedia.db.AppDb
+import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)
 @Module
