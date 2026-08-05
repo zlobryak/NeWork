@@ -10,14 +10,14 @@ plugins {
 android {
     namespace = "ru.netology.nework"
     compileSdk {
-        version = release(36) {
+        version = release(37) {
             minorApiLevel = 1
         }
     }
 
     defaultConfig {
         applicationId = "ru.netology.nework"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -91,5 +91,7 @@ dependencies {
     implementation(libs.glide) //Для загрузи изображений
     implementation(libs.androidx.paging.runtime.ktx) //Пагинация
     implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.swiperefreshlayout)
+
 
 }

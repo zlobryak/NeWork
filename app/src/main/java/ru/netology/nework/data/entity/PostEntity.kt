@@ -3,7 +3,6 @@ package ru.netology.nework.data.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.data.dto.Users
 import kotlin.String
@@ -13,13 +12,14 @@ data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @Embedded
-    var attachment: AttachmentEmbeddable?, val author: String,
+    var attachment: AttachmentEmbeddable?,
+    val author: String,
     val authorAvatar: String,
     val authorId: Int,
     val authorJob: String?,
     val content: String?,
     @Embedded
-    val coords: Coords?,
+    val coords: CoordsEmbeddable?,
     val likeOwnerIds: List<Int>?,
     val likedByMe: Boolean,
     val link: String?,
@@ -37,7 +37,7 @@ data class PostEntity(
         authorId,
         authorJob,
         content,
-        coords,
+        coords?.toDto(),
         likeOwnerIds,
         likedByMe,
         link,
@@ -57,7 +57,7 @@ data class PostEntity(
                 authorId = dto.authorId,
                 authorJob = dto.authorJob,
                 content = dto.content,
-                coords = dto.coords,
+                coords = CoordsEmbeddable.fromDto(dto.coords),
                 likeOwnerIds = dto.likeOwnerIds,
                 likedByMe = dto.likedByMe,
                 link = dto.link,
