@@ -24,4 +24,9 @@
     <string name="sign_out">Sign Out</string>
     <string name="menu_save">Save</string>
     <string name="menu_edit">Edit</string>
+    <string name="empty_posts">There are no posts.\nIf you create a new post, it will appear here</string>
+    <string name="add_post">Add post</string>
+    <string name="retry">Retry</string>
+    <string name="network_error">Network error</string>
+    <string name="remove">Remove</string>
 </resources>

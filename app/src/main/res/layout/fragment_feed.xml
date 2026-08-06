@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/common_spacing"
-            android:text="@string/no_posts"
+            android:text="@string/empty_posts"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/add_post"
-        app:srcCompat="@drawable/ic_add_24" />
+        app:srcCompat="@drawable/ic_add_24dp" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
@@ -91,21 +91,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/card_post" />
+            tools:listitem="@layout/post_card" />
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/newPostsChip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:clickable="true"
-        android:focusable="true"
-        android:text= "@string/new_posts"
-        android:visibility="invisible"
-        app:chipBackgroundColor="@android:color/darker_gray"
-        app:chipIcon="@drawable/ic_arrow_upward_24dp"
-        app:ensureMinTouchTargetSize="true" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
