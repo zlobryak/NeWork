@@ -17,8 +17,8 @@ jobs:
 
       - name: Write google-services.json
         run: |
-          mkdir -p android/app
-          printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+          mkdir -p app
+          echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
 
       - name: Set up JDK 17
         uses: actions/setup-java@v1
