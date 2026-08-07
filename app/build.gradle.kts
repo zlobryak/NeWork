@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services)
 }
 
 android {
@@ -92,6 +92,4 @@ dependencies {
     implementation(libs.androidx.paging.runtime.ktx) //Пагинация
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.swiperefreshlayout)
-
-
 }
