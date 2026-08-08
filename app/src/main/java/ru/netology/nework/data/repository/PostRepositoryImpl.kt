@@ -7,6 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.Media
@@ -65,7 +67,7 @@ class PostRepositoryImpl @Inject constructor(
                 upload(it)
             }?.let {
                 // TODO: add support for other types
-                post.copy(attachment = Attachment( AttachmentType.IMAGE, it.url))
+                post.copy(attachment = Attachment(AttachmentType.IMAGE, it.url))
             }
             val response = apiService.save(postWithAttachment ?: post)
             if (!response.isSuccessful) {
@@ -90,6 +92,21 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun upload(upload: MediaUpload): Media {
-        TODO("Not yet implemented")
+        try {
+            val media = MultipartBody.Part.createFormData(
+                "file", upload.file.name, upload.file.asRequestBody()
+            )
+
+            val response = apiService.upload(media)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            return response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
     }
 }
