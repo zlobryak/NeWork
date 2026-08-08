@@ -18,6 +18,8 @@ import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
+import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
 import java.io.IOException
 import javax.inject.Inject
@@ -58,7 +60,25 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun save(post: PostItem, upload: MediaUpload?) {
-        TODO("Not yet implemented")
+        try {
+            val postWithAttachment = upload?.let {
+                upload(it)
+            }?.let {
+                // TODO: add support for other types
+                post.copy(attachment = Attachment( AttachmentType.IMAGE, it.url))
+            }
+            val response = apiService.save(postWithAttachment ?: post)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            postDao.insert(PostEntity.fromDto(body))
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
     }
 
     override suspend fun removeById(id: Long) {

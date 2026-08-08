@@ -31,6 +31,9 @@ interface ApiService {
         @Path("id") id: Long,
         @Query("count") count: Int
     ): Response<List<PostItem>>
+
+    @POST("posts")
+    suspend fun save(@Body post: PostItem): Response<PostItem>
 }
 
 //TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

@@ -92,7 +92,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/content"
-            tools:srcCompat="@drawable/podcast" />
+            tools:srcCompat="@drawable/tool_podcast" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier2"
@@ -118,7 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrier2"
-            tools:srcCompat="@drawable/preview_image" />
+            tools:srcCompat="@drawable/tool_preview_image" />
 
         <TextView
             android:id="@+id/video_preview_text"

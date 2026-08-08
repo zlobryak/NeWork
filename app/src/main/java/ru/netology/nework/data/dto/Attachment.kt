@@ -7,5 +7,5 @@ import ru.netology.nework.data.entity.AttachmentType
 @Parcelize
 data class Attachment(
     val type: AttachmentType,
-    val url: AttachmentType
+    val url: String
 ): Parcelable
