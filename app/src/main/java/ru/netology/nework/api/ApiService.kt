@@ -21,7 +21,7 @@ interface ApiService {
     suspend fun savePost(@Body post: PostItem): PostItem
 
     @DELETE("posts/{id}")
-    suspend fun deletePost(@Path("id") id: Long)
+    suspend fun deletePost(@Path("id") id: Long) : Response<Unit>
     @GET("posts/latest")
     suspend fun getLatest(@Query("count") count: Int): Response<List<PostItem>>
     @GET("posts/{id}/before")
@@ -42,6 +42,15 @@ interface ApiService {
     @Multipart
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
+
+    @DELETE("posts/{id}")
+    suspend fun removeById(@Path("id") id: Long): Response<Unit>
+
+    @POST("posts/{id}/likes")
+    suspend fun likeById(@Path("id") id: Long): Response<PostItem>
+
+    @DELETE("posts/{id}/likes")
+    suspend fun dislikeById(@Path("id") id: Long): Response<PostItem>
 }
 
 //TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

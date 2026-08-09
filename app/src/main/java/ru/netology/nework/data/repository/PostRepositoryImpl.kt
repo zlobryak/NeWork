@@ -84,10 +84,43 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun removeById(id: Long) {
-        TODO("Not yet implemented")
+        var success = false
+        try {
+            postDao.markAsDeleting(id, true)
+            val response = apiService.deletePost(id)
+            if (response.isSuccessful) {
+                success = true
+                postDao.removeById(id)
+            } else {
+                throw ApiError(response.code(), response.message())
+            }
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        } finally {
+            if (!success) {
+                postDao.markAsDeleting(id, false)
+            }
+        }
     }
 
+
     override suspend fun likeById(id: Long) {
+        try {
+            //TODO Тут не будет обращения к базе данных,
+            //В базе хранится список ID лайкнувших, если лайкаем свой пост - меняем статус likedByMe
+            //Количество айков вычисляется из списка Id, его менять вручную не нужно.
+            apiService.likeById(id)
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
+
+    override suspend fun dislikeById(id: Long) {
         TODO("Not yet implemented")
     }
 

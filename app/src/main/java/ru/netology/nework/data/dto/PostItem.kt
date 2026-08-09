@@ -19,5 +19,7 @@ data class PostItem(
     val mentionIds: List<Int>?,
     val mentionedMe: Boolean,
     val published: String,
-    val users: Users?
+    val users: Users?,
+    @Transient
+    val isDeleting: Boolean = false
 ): Parcelable

@@ -33,4 +33,7 @@ interface PostDao {
 
     @Query("DELETE FROM PostEntity")
     suspend fun removeAll()
+
+    @Query("UPDATE PostEntity SET isDeleting = :deleting WHERE id = :id")
+    fun markAsDeleting(id: Long, deleting: Boolean)
 }

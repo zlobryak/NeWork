@@ -26,7 +26,8 @@ data class PostEntity(
     val mentionIds: List<Int>?,
     val mentionedMe: Boolean,
     val published: String,
-    val users: Users?
+    val users: Users?,
+    val isDeleting: Boolean = false
 
 ) {
     fun toDto() = PostItem(
@@ -44,7 +45,8 @@ data class PostEntity(
         mentionIds,
         mentionedMe,
         published,
-        users
+        users,
+        isDeleting
     )
 
     companion object {
@@ -65,6 +67,7 @@ data class PostEntity(
                 mentionedMe = dto.mentionedMe,
                 published = dto.published,
                 users = dto.users,
+                isDeleting = false //Локальное поле, по умолчанию всегда false
             )
 
     }
@@ -72,6 +75,3 @@ data class PostEntity(
 
 fun List<PostEntity>.toDto(): List<PostItem> = map(PostEntity::toDto)
 fun List<PostItem>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
-
-
-//TODO Файл скопирован, нужно переработать
