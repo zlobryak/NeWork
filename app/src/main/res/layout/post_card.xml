@@ -157,7 +157,7 @@
             app:constraint_referenced_ids="video_preview_count" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/ic_likes"
+            android:id="@+id/like"
             style="@style/Widget.AppCompat.LikeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

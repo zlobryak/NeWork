@@ -29,4 +29,7 @@
     <string name="retry">Retry</string>
     <string name="network_error">Network error</string>
     <string name="remove">Remove</string>
+    <string name="choose_photo">Choose photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="photo">Photo</string>
 </resources>

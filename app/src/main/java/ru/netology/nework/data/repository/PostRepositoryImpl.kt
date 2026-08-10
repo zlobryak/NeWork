@@ -128,11 +128,6 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-
-    override suspend fun dislikeById(id: Long) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun upload(upload: MediaUpload): Media {
         try {
             val media = MultipartBody.Part.createFormData(
