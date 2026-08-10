@@ -105,13 +105,22 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-
+    //TODO Тут не будет обращения к базе данных для изменения количества лайков,
+    //В базе хранится список ID лайкнувших, если лайкаем свой пост - меняем статус likedByMe
+    //Количество лайков вычисляется из списка Id, его менять вручную не нужно.
+    //Бует ли меняться на сервере likedByMe?
     override suspend fun likeById(id: Long) {
+        val isLikedByMe = postDao.getPostById(id).likedByMe
+
         try {
-            //TODO Тут не будет обращения к базе данных,
-            //В базе хранится список ID лайкнувших, если лайкаем свой пост - меняем статус likedByMe
-            //Количество айков вычисляется из списка Id, его менять вручную не нужно.
-            apiService.likeById(id)
+
+            val response = if (isLikedByMe) apiService.dislikeById(id)else apiService.likeById(id)
+
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            } //При ошибке прерываем функцию
+
+            postDao.likedByMe(id) //Если нет ошибок, обращаемся к базе данных, которая меняет boolean на противоположный
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
@@ -143,3 +152,4 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 }
+
