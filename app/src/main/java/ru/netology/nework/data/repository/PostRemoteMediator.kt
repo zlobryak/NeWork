@@ -7,6 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import kotlinx.coroutines.CancellationException
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.entity.PostEntity
@@ -22,6 +23,10 @@ class PostRemoteMediator(
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
 ) : RemoteMediator<Int, PostEntity>() {
+    lateinit var auth: AppAuth
+
+    val currentUserId = auth.authStateFlow.value.id.toInt()
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, PostEntity>
@@ -90,7 +95,7 @@ class PostRemoteMediator(
                         )
                     }
                 }
-                postDao.insert(body.toEntity())
+                postDao.insert(body.toEntity(currentUserId))
             }
             return MediatorResult.Success(endOfPaginationReached = false)
         } catch (e: Exception) {

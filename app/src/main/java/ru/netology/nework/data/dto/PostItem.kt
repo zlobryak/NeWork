@@ -21,5 +21,8 @@ data class PostItem(
     val published: String,
     val users: Users?,
     @Transient
+    val ownedByMe: Boolean,
+    @Transient
     val isDeleting: Boolean = false
+
 ): Parcelable

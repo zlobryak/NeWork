@@ -50,11 +50,12 @@ class FeedAdapter(
                 content.text = post.content
                 avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
                 like.isChecked = post.likedByMe
-                like.text = "${post.likeOwnerIds?.size}"//
+                like.text = "${post.likeOwnerIds?.size}"
 
-                menu.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
+                menuButton.visibility =
+                    if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
-                menu.setOnClickListener { view ->
+                menuButton.setOnClickListener { view ->
                     PopupMenu(view.context, view).apply {
                         inflate(R.menu.options_post)
                         // TODO: if we don't have other options, just remove dots
@@ -66,10 +67,12 @@ class FeedAdapter(
                                     onInteractionListener.onRemove(post)
                                     true
                                 }
+
                                 R.id.edit -> {
                                     onInteractionListener.onEdit(post)
                                     true
                                 }
+
                                 else -> false
                             }
                         }

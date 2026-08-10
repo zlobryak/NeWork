@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.Media
 import ru.netology.nework.data.dto.MediaUpload
@@ -41,6 +42,11 @@ class PostRepositoryImpl @Inject constructor(
         pagingData.map(PostEntity::toDto)
     }
 
+    @Inject
+    lateinit var auth: AppAuth
+
+    val currentUserId = auth.authStateFlow.value.id.toInt()
+
     override suspend fun getAll() {
         try {
             val response = apiService.getAll()
@@ -49,7 +55,7 @@ class PostRepositoryImpl @Inject constructor(
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(body.toEntity())
+            postDao.insert(body.toEntity(auth.authStateFlow.value.id.toInt()))
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
@@ -75,7 +81,7 @@ class PostRepositoryImpl @Inject constructor(
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            postDao.insert(PostEntity.fromDto(body, currentUserId))
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
