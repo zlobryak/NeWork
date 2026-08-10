@@ -19,8 +19,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.R
-import ru.netology.nework.adapter.FeedAdapter
-import ru.netology.nework.adapter.PagingLoadStateAdapter
+import ru.netology.nework.ui.adapter.FeedAdapter
+import ru.netology.nework.ui.adapter.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.PostItem
