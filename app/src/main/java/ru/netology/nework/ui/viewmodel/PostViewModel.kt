@@ -132,11 +132,11 @@ class PostViewModel @Inject constructor(
         _photo.value = PhotoModel(uri)
     }
 
-    fun likeById(id: Long) {
+    fun likeById(id: Int) {
         TODO()
     }
 
-    fun removeById(id: Long) {
+    fun removeById(id: Int) {
         TODO()
     }
 }

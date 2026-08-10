@@ -16,7 +16,7 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
-import ru.netology.nework.viewmodel.PostViewModel
+import ru.netology.nework.ui.viewmodel.PostViewModel
 import kotlin.getValue
 
 @AndroidEntryPoint
@@ -129,3 +129,5 @@ class NewPostFragment : Fragment() {
         super.onDestroyView()
     }
 }
+
+//TODO Tefactor

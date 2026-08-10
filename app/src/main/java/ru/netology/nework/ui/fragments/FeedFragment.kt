@@ -24,6 +24,7 @@ import ru.netology.nework.ui.adapter.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.ui.viewmodel.PostViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,19 +46,19 @@ class FeedFragment : Fragment() {
         binding.list.layoutManager = LinearLayoutManager(requireContext())
 
         val adapter = FeedAdapter(object : FeedAdapter.OnInteractionListener {
-            override fun onEdit(post: Post) {
+            override fun onEdit(post: PostItem) {
                 viewModel.edit(post)
             }
 
-            override fun onLike(post: Post) {
+            override fun onLike(post: PostItem) {
                 viewModel.likeById(post.id)
             }
 
-            override fun onRemove(post: Post) {
+            override fun onRemove(post: PostItem) {
                 viewModel.removeById(post.id)
             }
 
-            override fun onShare(post: Post) {
+            override fun onShare(post: PostItem) {
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, post.content)
@@ -146,7 +147,7 @@ class FeedFragment : Fragment() {
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
 
-        binding.fab.setOnClickListener {
+        binding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
