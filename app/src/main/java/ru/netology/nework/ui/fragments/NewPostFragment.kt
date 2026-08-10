@@ -40,7 +40,7 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
-        fragmentBinding = binding
+        this.fragmentBinding = binding
 
         arguments?.textArg
             ?.let(binding.edit::setText)
@@ -130,4 +130,4 @@ class NewPostFragment : Fragment() {
     }
 }
 
-//TODO Tefactor
+//TODO Refactor
