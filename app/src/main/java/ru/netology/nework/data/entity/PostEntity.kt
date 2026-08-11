@@ -27,6 +27,7 @@ data class PostEntity(
     val mentionedMe: Boolean,
     val published: String,
     val users: Users?,
+    val ownedByMe: Boolean,
     val isDeleting: Boolean = false
 
 ) {
@@ -46,11 +47,13 @@ data class PostEntity(
         mentionedMe,
         published,
         users,
-        isDeleting
+        ownedByMe,
+        isDeleting,
+
     )
 
     companion object {
-        fun fromDto(dto: PostItem) =
+        fun fromDto(dto: PostItem, currentUserId: Int?) =
             PostEntity(
                 id = dto.id,
                 attachment = AttachmentEmbeddable.fromDto(dto.attachment),
@@ -67,6 +70,7 @@ data class PostEntity(
                 mentionedMe = dto.mentionedMe,
                 published = dto.published,
                 users = dto.users,
+                ownedByMe = if (currentUserId != null) (dto.authorId == currentUserId) else false,
                 isDeleting = false //Локальное поле, по умолчанию всегда false
             )
 
@@ -74,4 +78,5 @@ data class PostEntity(
 }
 
 fun List<PostEntity>.toDto(): List<PostItem> = map(PostEntity::toDto)
-fun List<PostItem>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
+fun List<PostItem>.toEntity(currentUserId: Int?): List<PostEntity> =
+    map { PostEntity.fromDto(it, currentUserId) }

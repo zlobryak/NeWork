@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.Media
 import ru.netology.nework.data.dto.MediaUpload
@@ -29,17 +30,21 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     appDb: AppDb,
     private val postDao: PostDao,
-    postRemoteKeyDao: PostRemoteKeyDao,
+    private val postRemoteKeyDao: PostRemoteKeyDao,
     private val apiService: ApiService,
+    private val auth: AppAuth
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<PostItem>> = Pager(
         config = PagingConfig(pageSize = 5),
-        remoteMediator = PostRemoteMediator(apiService, appDb, postDao, postRemoteKeyDao),
+        remoteMediator = PostRemoteMediator(
+            apiService, appDb, postDao, postRemoteKeyDao, auth
+        ),
         pagingSourceFactory = postDao::pagingSource,
     ).flow.map { pagingData ->
         pagingData.map(PostEntity::toDto)
     }
+    val currentUserId = auth.authStateFlow.value.id.toInt()
 
     override suspend fun getAll() {
         try {
@@ -49,7 +54,7 @@ class PostRepositoryImpl @Inject constructor(
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(body.toEntity())
+            postDao.insert(body.toEntity(auth.authStateFlow.value.id.toInt()))
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
@@ -75,7 +80,7 @@ class PostRepositoryImpl @Inject constructor(
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            postDao.insert(PostEntity.fromDto(body, currentUserId))
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
@@ -114,7 +119,7 @@ class PostRepositoryImpl @Inject constructor(
 
         try {
 
-            val response = if (isLikedByMe) apiService.dislikeById(id)else apiService.likeById(id)
+            val response = if (isLikedByMe) apiService.dislikeById(id) else apiService.likeById(id)
 
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -126,11 +131,6 @@ class PostRepositoryImpl @Inject constructor(
         } catch (_: Exception) {
             throw UnknownError
         }
-    }
-
-
-    override suspend fun dislikeById(id: Long) {
-        TODO("Not yet implemented")
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

@@ -7,6 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import kotlinx.coroutines.CancellationException
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.entity.PostEntity
@@ -14,13 +15,15 @@ import ru.netology.nework.data.entity.PostRemoteKeyEntity
 import ru.netology.nework.data.entity.toEntity
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.data.dao.PostRemoteKeyDao
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class PostRemoteMediator(
+class PostRemoteMediator @Inject constructor(
     private val service: ApiService,
     private val db: AppDb,
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
+    private val auth: AppAuth
 ) : RemoteMediator<Int, PostEntity>() {
     override suspend fun load(
         loadType: LoadType,
@@ -35,6 +38,7 @@ class PostRemoteMediator(
                     )
                     service.getBefore(id, state.config.pageSize)
                 }
+
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = false
@@ -56,6 +60,7 @@ class PostRemoteMediator(
             }
 
             db.withTransaction {
+                val currentUserId = auth.authStateFlow.value.id.toInt()
                 when (loadType) {
                     LoadType.REFRESH -> {
                         postRemoteKeyDao.removeAll()
@@ -73,6 +78,7 @@ class PostRemoteMediator(
                         )
                         postDao.removeAll()
                     }
+
                     LoadType.PREPEND -> {
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
@@ -81,6 +87,7 @@ class PostRemoteMediator(
                             )
                         )
                     }
+
                     LoadType.APPEND -> {
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
@@ -90,7 +97,7 @@ class PostRemoteMediator(
                         )
                     }
                 }
-                postDao.insert(body.toEntity())
+                postDao.insert(body.toEntity(currentUserId))
             }
             return MediatorResult.Success(endOfPaginationReached = false)
         } catch (e: Exception) {

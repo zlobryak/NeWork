@@ -1,9 +1,11 @@
-package ru.netology.nework.data.dao
+package ru.netology.nework.di
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.netology.nework.data.dao.PostDao
+import ru.netology.nework.data.dao.PostRemoteKeyDao
 import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)
