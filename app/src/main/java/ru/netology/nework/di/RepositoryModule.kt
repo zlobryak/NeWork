@@ -1,9 +1,11 @@
-package ru.netology.nework.data.repository
+package ru.netology.nework.di
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.PostRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

@@ -25,4 +25,6 @@ fun authInterceptor(auth: AppAuth) = fun(chain: Interceptor.Chain): Response {
 }
 
 
+
+
 //TODO Рефактор интерцептора на работу с документацией по swagger
