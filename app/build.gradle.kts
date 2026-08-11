@@ -9,11 +9,7 @@ plugins {
 
 android {
     namespace = "ru.netology.nework"
-    compileSdk {
-        version = release(37) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "ru.netology.nework"

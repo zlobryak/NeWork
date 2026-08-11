@@ -30,21 +30,20 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     appDb: AppDb,
     private val postDao: PostDao,
-    postRemoteKeyDao: PostRemoteKeyDao,
+    private val postRemoteKeyDao: PostRemoteKeyDao,
     private val apiService: ApiService,
+    private val auth: AppAuth
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<PostItem>> = Pager(
         config = PagingConfig(pageSize = 5),
-        remoteMediator = PostRemoteMediator(apiService, appDb, postDao, postRemoteKeyDao),
+        remoteMediator = PostRemoteMediator(
+            apiService, appDb, postDao, postRemoteKeyDao, auth
+        ),
         pagingSourceFactory = postDao::pagingSource,
     ).flow.map { pagingData ->
         pagingData.map(PostEntity::toDto)
     }
-
-    @Inject
-    lateinit var auth: AppAuth
-
     val currentUserId = auth.authStateFlow.value.id.toInt()
 
     override suspend fun getAll() {
@@ -120,7 +119,7 @@ class PostRepositoryImpl @Inject constructor(
 
         try {
 
-            val response = if (isLikedByMe) apiService.dislikeById(id)else apiService.likeById(id)
+            val response = if (isLikedByMe) apiService.dislikeById(id) else apiService.likeById(id)
 
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
