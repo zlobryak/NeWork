@@ -25,4 +25,7 @@ interface PostRemoteKeyDao {
 
     @Query("DELETE FROM PostRemoteKeyEntity")
     suspend fun removeAll()
+
+    @Query("SELECT id FROM PostRemoteKeyEntity WHERE type = :type LIMIT 1")
+    suspend fun getKey(type: PostRemoteKeyEntity.KeyType): Int? // Или Long?, в зависимости от типа id
 }

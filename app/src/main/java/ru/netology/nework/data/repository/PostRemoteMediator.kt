@@ -1,5 +1,6 @@
 package ru.netology.nework.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -25,6 +26,7 @@ class PostRemoteMediator @Inject constructor(
     private val postRemoteKeyDao: PostRemoteKeyDao,
     private val auth: AppAuth
 ) : RemoteMediator<Int, PostEntity>() {
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, PostEntity>
@@ -32,29 +34,28 @@ class PostRemoteMediator @Inject constructor(
         try {
             val response = when (loadType) {
                 LoadType.REFRESH -> service.getLatest(state.config.initialLoadSize)
+
                 LoadType.PREPEND -> {
-                    val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
-                        endOfPaginationReached = false
-                    )
-                    service.getBefore(id, state.config.pageSize)
+                    // Ищем ключ для подгрузки НОВЫХ постов
+                    val id = postRemoteKeyDao.getKey(PostRemoteKeyEntity.KeyType.AFTER)
+                        ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    service.getAfter(id.toLong(), state.config.pageSize)
                 }
 
                 LoadType.APPEND -> {
-                    val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
-                        endOfPaginationReached = false
-                    )
-                    service.getAfter(id, state.config.pageSize)
+                    // Ищем ключ для подгрузки СТАРЫХ постов
+                    val id = postRemoteKeyDao.getKey(PostRemoteKeyEntity.KeyType.BEFORE)
+                        ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    service.getBefore(id.toLong(), state.config.pageSize)
                 }
             }
 
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            val body = response.body() ?: throw ApiError(
-                response.code(),
-                response.message(),
-            )
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
 
+            // Если сервер вернул пустой список, значит лента закончилась
             if (body.isEmpty()) {
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
@@ -68,11 +69,11 @@ class PostRemoteMediator @Inject constructor(
                             listOf(
                                 PostRemoteKeyEntity(
                                     type = PostRemoteKeyEntity.KeyType.AFTER,
-                                    id = body.first().id,
+                                    id = body.first().id, // Самый новый ID
                                 ),
                                 PostRemoteKeyEntity(
                                     type = PostRemoteKeyEntity.KeyType.BEFORE,
-                                    id = body.last().id,
+                                    id = body.last().id,  // Самый старый ID
                                 ),
                             )
                         )
@@ -80,6 +81,7 @@ class PostRemoteMediator @Inject constructor(
                     }
 
                     LoadType.PREPEND -> {
+                        // Обновляем ключ для новых постов
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
                                 type = PostRemoteKeyEntity.KeyType.AFTER,
@@ -89,6 +91,7 @@ class PostRemoteMediator @Inject constructor(
                     }
 
                     LoadType.APPEND -> {
+                        // Обновляем ключ для старых постов
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
                                 type = PostRemoteKeyEntity.KeyType.BEFORE,
@@ -99,12 +102,12 @@ class PostRemoteMediator @Inject constructor(
                 }
                 postDao.insert(body.toEntity(currentUserId))
             }
-            return MediatorResult.Success(endOfPaginationReached = false)
-        } catch (e: Exception) {
-            if (e is CancellationException) {
-                throw e
-            }
 
+            return MediatorResult.Success(endOfPaginationReached = false)
+
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Log.e("POST_MEDIATOR_ERROR", "Ошибка загрузки в RemoteMediator", e)
             return MediatorResult.Error(e)
         }
     }

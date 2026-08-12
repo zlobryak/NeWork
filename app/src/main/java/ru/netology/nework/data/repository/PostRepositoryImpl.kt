@@ -62,10 +62,6 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getNewerCount(id: Long): Flow<Int> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun save(post: PostItem, upload: MediaUpload?) {
         try {
             val postWithAttachment = upload?.let {
