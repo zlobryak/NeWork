@@ -8,7 +8,7 @@ data class PostItem(
     val id: Int,
     val attachment: Attachment?,
     val author: String,
-    val authorAvatar: String,
+    val authorAvatar: String?,
     val authorId: Int,
     val authorJob: String?,
     val content: String?,

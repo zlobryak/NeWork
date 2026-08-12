@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AdditionalProp1(
-    val avatar: String,
-    val name: String
+    val avatar: String?,
+    val name: String?
 ): Parcelable

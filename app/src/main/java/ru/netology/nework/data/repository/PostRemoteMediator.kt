@@ -95,6 +95,7 @@ class PostRemoteMediator(
             return MediatorResult.Success(endOfPaginationReached = false)
         } catch (e: Exception) {
             if (e is CancellationException) {
+                android.util.Log.e("MEDIATOR_ERROR", "Ошибка при сохранении в БД", e)
                 throw e
             }
 
