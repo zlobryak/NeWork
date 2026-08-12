@@ -1,4 +1,4 @@
-package ru.netology.nework.api
+package ru.netology.nework.di
 
 import dagger.Module
 import dagger.Provides
@@ -10,7 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.netology.nework.BuildConfig
-import ru.netology.nework.BuildConfig.*
+import ru.netology.nework.api.ApiKeyInterceptor
+import ru.netology.nework.api.ApiService
 import ru.netology.nework.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -26,7 +27,7 @@ class ApiModule {
     @Singleton
     @Provides
     fun providesLogging(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (DEBUG) {
+        level = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor.Level.BODY
         } else {
             HttpLoggingInterceptor.Level.NONE
@@ -37,8 +38,10 @@ class ApiModule {
     @Provides
     fun provideOkHttp(
         logging: HttpLoggingInterceptor,
-        appAuth: AppAuth
+        appAuth: AppAuth,
+        apiKeyInterceptor: ApiKeyInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(apiKeyInterceptor)
         .addInterceptor { chain ->
             appAuth.authStateFlow.value.token?.let { token ->
                 val newRequest = chain.request().newBuilder()

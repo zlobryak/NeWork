@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Разрешаем cleartext только для этого IP -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">94.228.125.136</domain>
+    </domain-config>
+</network-security-config>

@@ -9,11 +9,7 @@ plugins {
 
 android {
     namespace = "ru.netology.nework"
-    compileSdk {
-        version = release(37) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "ru.netology.nework"
@@ -90,6 +86,10 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.glide) //Для загрузи изображений
     implementation(libs.androidx.paging.runtime.ktx) //Пагинация
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.room.paging) //Бд
+    implementation(libs.androidx.swiperefreshlayout) //Обновление страницы
+    implementation(libs.imagepicker) //Выбор фото для загрузки
+    implementation(libs.ucrop)
+
+
 }
