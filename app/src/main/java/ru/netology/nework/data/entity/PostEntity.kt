@@ -9,7 +9,7 @@ import kotlin.String
 
 @Entity
 data class PostEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val id: Int,
     @Embedded
     var attachment: AttachmentEmbeddable?,
