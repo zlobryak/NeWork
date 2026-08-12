@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -20,10 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
 import ru.netology.nework.data.repository.PostRepository
-import ru.netology.nework.databinding.ActivityAppBinding
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
-import kotlin.getValue
 
 @AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
@@ -35,13 +34,14 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
 
-        val binding = ActivityAppBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+
+        val rootView = findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -51,9 +51,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             invalidateOptionsMenu()
         }
 
-
         checkGoogleApiAvailability()
-
         requestNotificationsPermission()
 
         addMenuProvider(object : MenuProvider {
@@ -69,19 +67,16 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.signin -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.setAuth(5, "x-token")
                         true
                     }
 
                     R.id.signup -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.setAuth(5, "x-token")
                         true
                     }
 
                     R.id.signout -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.removeAuth()
                         true
                     }
