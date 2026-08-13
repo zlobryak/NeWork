@@ -8,7 +8,6 @@ import android.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nework.BuildConfig
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
 import ru.netology.nework.view.loadCircleCrop
@@ -35,7 +34,10 @@ class FeedAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("ADAPTER_DEBUG", "🔗 onBindViewHolder для позиции $position. der для позиции $position.)")
+        Log.d(
+            "ADAPTER_DEBUG",
+            "🔗 onBindViewHolder для позиции $position. der для позиции $position.)"
+        )
         getItem(position)?.let { post ->
             (holder as PostViewHolder).bind(post)
         }
@@ -51,7 +53,7 @@ class FeedAdapter(
                 author.text = post.author
                 published.text = post.published.toString()
                 content.text = post.content
-                avatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
+                avatar.loadCircleCrop(post.authorAvatar)
                 like.isChecked = post.likedByMe
                 like.text = "${post.likeOwnerIds?.size}"
 
