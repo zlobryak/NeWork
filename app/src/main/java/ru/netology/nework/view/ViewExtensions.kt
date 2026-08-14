@@ -5,15 +5,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import ru.netology.nework.R
+import ru.netology.nework.utils.AvatarGenerator
 
-fun ImageView.load(url: String?, vararg transforms: BitmapTransformation = emptyArray()) =
+fun ImageView.loadAvatar(url: String?, authorName: String?, vararg transforms: BitmapTransformation = emptyArray()) {
+    if (url.isNullOrEmpty()) {
+        Glide.with(this).clear(this)
+        // Размер берём из самого ImageView (он уже должен иметь заданные размеры из XML)
+        val size = if (width > 0) width else resources.getDimensionPixelSize(R.dimen.avatar_size)
+        val fallback = AvatarGenerator.generate(authorName, size, resources)
+        setImageDrawable(fallback)
+        return
+    }
+
     Glide.with(this)
         .load(url)
-        .placeholder(R.drawable.avatar)
-        .error(R.drawable.avatar)
-        .timeout(10_000)
-        .transform(*transforms)
+        .placeholder(AvatarGenerator.generate(authorName, width.coerceAtLeast(1), resources))
+        .error(AvatarGenerator.generate(authorName, width.coerceAtLeast(1), resources))
+        .transform(CircleCrop(), *transforms)
         .into(this)
-
-fun ImageView.loadCircleCrop(url: String?, vararg transforms: BitmapTransformation = emptyArray()) =
-    load(url, CircleCrop(), *transforms)
+}

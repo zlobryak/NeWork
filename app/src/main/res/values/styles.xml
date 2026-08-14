@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Widget.AppCompat.LikeButton" parent="Widget.Material3.Button.TextButton.Icon">
+    <style name="Widget.AppCompat.LikeButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/TextAppearance.App.Button.Small</item>
         <item name="iconTint">@color/like_selector</item>
         <item name="android:textColor">@color/like_selector</item>
@@ -20,7 +20,7 @@
         <item name="iconPadding">8dp</item>
     </style>
 
-    <style name="Widget.AppCompat.StandardButtonWithText" parent="Widget.Material3.Button.TextButton.Icon">
+    <style name="Widget.AppCompat.StandardButtonWithText" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/TextAppearance.App.Button.Small</item>
         <item name="iconTint">@color/like_selector</item>
         <item name="android:textColor">@color/like_selector</item>
@@ -33,7 +33,7 @@
 
     </style>
 
-    <style name="Widget.AppCompat.PlayButton" parent="Widget.Material3.Button.IconButton">
+    <style name="Widget.AppCompat.PlayButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="iconTint">#FFF</item>
         <item name="android:textColor">?attr/colorControlNormal</item>
         <item name="android:minWidth">0dp</item>
@@ -43,7 +43,7 @@
         <item name="backgroundTint">#99000000</item>
     </style>
 
-    <style name="TextAppearance.App.Button.Small" parent="TextAppearance.Material3.LabelLarge">
+    <style name="TextAppearance.App.Button.Small" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>

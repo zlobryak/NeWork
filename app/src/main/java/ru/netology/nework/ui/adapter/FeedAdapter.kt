@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
-import ru.netology.nework.view.loadCircleCrop
 import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.view.loadAvatar
 
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -53,7 +53,7 @@ class FeedAdapter(
                 author.text = post.author
                 published.text = post.published.toString()
                 content.text = post.content
-                avatar.loadCircleCrop(post.authorAvatar)
+                avatar.loadAvatar(post.authorAvatar, post.author)
                 like.isChecked = post.likedByMe
                 like.text = "${post.likeOwnerIds?.size}"
 

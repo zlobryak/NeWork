@@ -17,12 +17,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
 import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 
 @AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
@@ -85,6 +88,16 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 }
 
         })
+
+// Получаем NavController из нашего FragmentContainerView
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+// Находим наше нижнее меню
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+// Связываем их одной магической строчкой!
+        NavigationUI.setupWithNavController(bottomNav, navController)
     }
 
     private fun requestNotificationsPermission() {

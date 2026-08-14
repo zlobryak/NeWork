@@ -8,12 +8,13 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 kotlin = "2.4.10"
-composeBom = "2026.06.01"
+composeBom = "2026.08.00"
 activity = "1.13.0"
 constraintlayout = "2.2.2"
+navigationUiKtx = "2.9.8"
 room = "2.8.4"
 hiltAndroid = "2.60.1"
-fragment = "1.8.9"
+fragment = "1.9.0"
 ksp = "2.3.4"
 lifecycleLivedataKtx = "2.11.0"
 material = "1.14.0"
@@ -25,13 +26,14 @@ gson = "2.14.0"
 loggingInterceptor = "5.4.0"
 navigationFragmentKtx = "2.9.8"
 glide = "5.0.9"
-pagingRuntimeKtx = "3.5.0"
+pagingRuntimeKtx = "3.5.1"
 swiperefreshlayout = "1.2.0"
 imagepicker = "2.1"
 ucrop = "2.2.11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
