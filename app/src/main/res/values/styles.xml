@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">true</item>
+
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- Кастомные стили именно для верхней панели (AppBar) -->
+        <item name="actionBarStyle">@style/Widget.App.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.App.ActionBar</item>
+
+        <!-- Иконка кнопки меню -->
+        <item name="actionOverflowButtonStyle">@style/CustomOverflowButton</item>
+    </style>
+
+    <!-- Стиль для ФОНА верхней панели -->
+    <style name="Widget.App.ActionBar" parent="Widget.MaterialComponents.ActionBar.Solid">
+        <item name="background">@color/white</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Стиль для ТЕКСТА И ИКОНОК на верхней панели -->
+    <style name="ThemeOverlay.App.ActionBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="colorControlNormal">@color/black</item> <!-- Иконки меню (три точки) -->
+        <item name="android:textColorPrimary">@color/black</item> <!-- Заголовок -->
     </style>
 
     <style name="Widget.AppCompat.LikeButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
@@ -18,6 +38,12 @@
         <item name="android:insetBottom">0dp</item>
         <item name="iconSize">16dp</item>
         <item name="iconPadding">8dp</item>
+    </style>
+
+    <!-- Стиль для кастомной кнопки меню -->
+    <style name="CustomOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_account_circle_24dp</item>
+        <item name="tint">@color/black</item>
     </style>
 
     <style name="Widget.AppCompat.StandardButtonWithText" parent="Widget.MaterialComponents.Button.TextButton.Icon">
@@ -56,6 +82,11 @@
         <item name="android:paddingEnd">@dimen/icon_button_padding</item>
         <item name="android:minWidth">@dimen/icon_button_min_size</item>
         <item name="android:minHeight">@dimen/icon_button_min_size</item>
+    </style>
+
+    <style name="ShapeAppearance.App.RoundedSquare" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
 </resources>

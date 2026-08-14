@@ -51,6 +51,9 @@ class FeedAdapter(
         fun bind(post: PostItem) {
             binding.apply {
                 author.text = post.author
+
+                //TODO Написать конвертер для даты
+
                 published.text = post.published.toString()
                 content.text = post.content
                 avatar.loadAvatar(post.authorAvatar, post.author)

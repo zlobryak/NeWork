@@ -90,7 +90,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         })
 
 // Получаем NavController из нашего FragmentContainerView
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
 // Находим наше нижнее меню
