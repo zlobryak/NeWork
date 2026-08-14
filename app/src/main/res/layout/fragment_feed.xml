@@ -91,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/add_post"
+        app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_add_24dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.App.RoundedSquare"/>
 
