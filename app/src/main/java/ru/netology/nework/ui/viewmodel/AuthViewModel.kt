@@ -18,3 +18,5 @@ class AuthViewModel @Inject constructor(private val auth: AppAuth) : ViewModel()
         get() = auth.authStateFlow.value.id != 0L
 }
 
+
+//TODO Рефаторинг авторизации под текущий API
