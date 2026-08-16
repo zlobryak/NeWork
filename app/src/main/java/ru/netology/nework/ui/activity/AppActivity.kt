@@ -14,9 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
 import ru.netology.nework.data.repository.PostRepository
@@ -69,19 +72,16 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.signin -> {
-                        // TODO: just hardcode it, implementation must be in homework
-                        auth.setAuth(5, "x-token")
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
                         true
                     }
 
                     R.id.signup -> {
-                        // TODO: just hardcode it, implementation must be in homework
-                        auth.setAuth(5, "x-token")
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_registrationFragment)
                         true
                     }
 
                     R.id.signout -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.removeAuth()
                         true
                     }

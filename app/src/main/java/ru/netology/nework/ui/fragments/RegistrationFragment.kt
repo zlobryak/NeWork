@@ -1,6 +1,5 @@
 package ru.netology.nework.ui.fragments
 
-
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
@@ -19,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
@@ -38,11 +37,16 @@ class RegistrationFragment : Fragment() {
     private val appViewModel: AuthViewModel by activityViewModels()
 
     // Picker для выбора аватарки
-    private var imagePicker = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        // Можно сохранить URI в ViewModel или показать превью
+    private val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedAvatarUri = uri
+        uri?.let {
+            // Показываем превью с помощью Glide
+            Glide.with(this)
+                .load(it)
+                .circleCrop()
+                .placeholder(R.drawable.ic_camera_24dp)
+                .into(binding.avatarPreview)
+        }
     }
 
     private var selectedAvatarUri: Uri? = null
@@ -62,19 +66,6 @@ class RegistrationFragment : Fragment() {
         //  Обработчик кнопки выбора аватарки
         binding.selectAvatarButton.setOnClickListener {
             imagePicker.launch("image/*")
-        }
-
-        //  Обработчик результата выбора изображения
-        imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            selectedAvatarUri = uri
-            uri?.let {
-                // Показываем превью с помощью Glide
-                Glide.with(this)
-                    .load(it)
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_like_outlined_24dp)
-                    .into(binding.avatarPreview)
-            }
         }
 
         binding.registerButton.setOnClickListener {
@@ -120,12 +111,15 @@ class RegistrationFragment : Fragment() {
             }
         }
 
-        // Показываем стрелку "Назад" и скрываем меню
-        AppBarConfiguration.Builder()
-            .build()
+        val appBarConfiguration = AppBarConfiguration.Builder().build()
+        val navController = findNavController()
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().popBackStack()
+        (requireActivity() as? AppCompatActivity)?.let { activity ->
+            NavigationUI.setupActionBarWithNavController(
+                activity,
+                navController,
+                appBarConfiguration
+            )
         }
 
 // Используем MenuProvider для управления меню
@@ -140,15 +134,6 @@ class RegistrationFragment : Fragment() {
 
 // Регистрируем провайдер меню с привязкой к жизненному циклу
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner)
-
-// Настраиваем отображение Up-кнопки (стрелки назад)
-        val actionBar = (requireActivity() as? AppCompatActivity)?.supportActionBar
-        actionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-        }
-
-
     }
 
     private fun validateInput(
