@@ -45,7 +45,7 @@ class FeedFragment : Fragment() {
 
         binding.list.layoutManager = LinearLayoutManager(requireContext())
         binding.list.post {
-            Log.e("RECYCLER_SIZE", "🔴 Ширина: ${binding.list.width}, Высота: ${binding.list.height}")
+            Log.e("RECYCLER_SIZE", "Ширина: ${binding.list.width}, Высота: ${binding.list.height}")
         }
 
         val adapter = FeedAdapter(object : FeedAdapter.OnInteractionListener {
