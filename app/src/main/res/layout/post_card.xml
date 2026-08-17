@@ -105,7 +105,7 @@
             android:id="@+id/edit_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="video_preview, video_preview_text, video_preview_count, play_arrow" />
 
         <ImageView
