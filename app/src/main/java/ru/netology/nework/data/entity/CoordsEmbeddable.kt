@@ -3,8 +3,8 @@ package ru.netology.nework.data.entity
 import ru.netology.nework.data.dto.Coords
 
 data class CoordsEmbeddable (
-    var lat: Int,
-    var long: Int
+    var lat: Double,
+    var long: Double
 ) {
     fun toDto() = Coords(lat, long)
     companion object{
