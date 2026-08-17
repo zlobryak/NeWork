@@ -68,9 +68,9 @@ interface ApiService {
     @Multipart
     @POST("users/registration")
     suspend fun register(
-        @Part("login") login: RequestBody,
-        @Part("pass") pass: RequestBody,
-        @Part("name") name: RequestBody,
+        @Query("login") login: RequestBody,
+        @Query("pass") pass: RequestBody,
+        @Query("name") name: RequestBody,
         @Part avatar: MultipartBody.Part? // nullable — аватарка опциональна
     ): Response<AuthResponse>
 
