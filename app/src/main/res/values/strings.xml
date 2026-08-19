@@ -57,4 +57,5 @@
     <string name="login_field">Login</string>
     <string name="password_field">Password</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="select_avatar">Select avatar</string>
 </resources>
