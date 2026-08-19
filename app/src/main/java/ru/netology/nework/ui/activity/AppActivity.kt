@@ -98,8 +98,17 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-// Связываем их одной магической строчкой!
         NavigationUI.setupWithNavController(bottomNav, navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.registrationFragment ||
+                destination.id == R.id.action_feedFragment_to_loginFragment) {
+                // Если мы на экране регистрации или авторизации - скрываем нижнее меню
+                bottomNav.visibility = View.GONE
+            } else {
+                // На всех остальных экранах - показываем
+                bottomNav.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun requestNotificationsPermission() {
