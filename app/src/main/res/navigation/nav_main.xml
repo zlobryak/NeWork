@@ -42,7 +42,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="ru.netology.nmedia.fragments.RegistrationFragment"
+        android:name="ru.netology.nework.ui.fragments.RegistrationFragment"
         android:label="RegistrationFragment" >
         <action
             android:id="@+id/action_registrationFragment_to_feedFragment"

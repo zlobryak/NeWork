@@ -2,12 +2,10 @@ package ru.netology.nework.ui.fragments
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +23,8 @@ import ru.netology.nework.databinding.FragmentRegistrationBinding
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import ru.netology.nework.ui.viewmodel.RegistrationState
 import ru.netology.nework.ui.viewmodel.RegistrationViewModel
+import android.graphics.BitmapFactory
+import android.webkit.MimeTypeMap
 
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
@@ -33,37 +33,39 @@ class RegistrationFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: RegistrationViewModel by viewModels()
-
     private val appViewModel: AuthViewModel by activityViewModels()
-
-    // Picker для выбора аватарки
-    private val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        selectedAvatarUri = uri
-        uri?.let {
-            // Показываем превью с помощью Glide
-            Glide.with(this)
-                .load(it)
-                .circleCrop()
-                .placeholder(R.drawable.ic_camera_24dp)
-                .into(binding.avatarPreview)
-        }
-    }
 
     private var selectedAvatarUri: Uri? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
-        return binding.root
+    // Picker для выбора аватарки
+    private val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {selectedUri ->
+            // Валидация изображения
+            when (val validationResult = validateImage(selectedUri)) {
+                is ImageValidationResult.Success -> {
+                    selectedAvatarUri = selectedUri
+                    // Показываем превью
+                    Glide.with(this)
+                        .load(selectedUri)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_camera_24dp)
+                        .into(binding.selectAvatarButton)
+                }
+                is ImageValidationResult.Error -> {
+                    selectedAvatarUri = null
+                    binding.selectAvatarButton.setImageResource(R.drawable.ic_camera_24dp)
+                    Toast.makeText(requireContext(), validationResult.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        } ?: run {
+            selectedAvatarUri = null
+            binding.selectAvatarButton.setImageResource(R.drawable.ic_camera_24dp)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //  Обработчик кнопки выбора аватарки
         binding.selectAvatarButton.setOnClickListener {
             imagePicker.launch("image/*")
         }
@@ -125,7 +127,7 @@ class RegistrationFragment : Fragment() {
 // Используем MenuProvider для управления меню
         val menuProvider = object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Очищаем меню — убираем все пункты (три точки)
+                // Очищаем меню — убираем все пункты
                 menu.clear()
             }
 
@@ -158,8 +160,8 @@ class RegistrationFragment : Fragment() {
             binding.login.error = null
         }
 
-        if (password.length < 6) {
-            binding.password.error = "Пароль должен содержать минимум 6 символов"
+        if (password.isBlank()) {
+            binding.password.error = "Введите пароль"
             valid = false
         } else {
             binding.password.error = null
@@ -173,6 +175,46 @@ class RegistrationFragment : Fragment() {
         }
 
         return valid
+    }
+
+    // Валидация изображения
+    private fun validateImage(uri: Uri): ImageValidationResult {
+        return try {
+            // Проверка формата
+            val mimeType = requireContext().contentResolver.getType(uri)
+            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+
+            if (extension !in listOf("jpg", "jpeg", "png")) {
+                return ImageValidationResult.Error("Разрешены только форматы JPEG и PNG")
+            }
+
+            // Проверка размера изображения
+            val options = BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+
+            requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                BitmapFactory.decodeStream(input, null, options)
+            }
+
+            val width = options.outWidth
+            val height = options.outHeight
+
+            if (width > 2048 || height > 2048) {
+                return ImageValidationResult.Error("Изображение не должно превышать 2048x2048 пикселей")
+            }
+
+            ImageValidationResult.Success
+
+        } catch (e: Exception) {
+            ImageValidationResult.Error("Ошибка при проверке изображения")
+        }
+    }
+
+    // sealed class для результатов валидации
+    private sealed class ImageValidationResult {
+        object Success : ImageValidationResult()
+        data class Error(val message: String) : ImageValidationResult()
     }
 
     override fun onDestroyView() {

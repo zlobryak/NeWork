@@ -24,7 +24,6 @@ sealed class RegistrationState {
     data class Error(val message: String) : RegistrationState()
 }
 
-
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val apiService: ApiService
@@ -44,14 +43,12 @@ class RegistrationViewModel @Inject constructor(
             _registrationState.value = RegistrationState.Loading
 
             try {
-                //Формируем часть с аватаркой (если выбрана)
                 val avatarPart = avatarUri?.let { uri ->
                     val file = getFileFromUri(uri, context)
                     val requestFile = file.asRequestBody("image/*".toMediaType())
                     MultipartBody.Part.createFormData("file", file.name, requestFile)
                 }
 
-                // Отправляем запрос через AuthApi
                 val response = apiService.register(
                     login = login.toRequestBody("text/plain".toMediaType()),
                     pass = password.toRequestBody("text/plain".toMediaType()),
@@ -66,8 +63,11 @@ class RegistrationViewModel @Inject constructor(
                         _registrationState.value = RegistrationState.Error("Пустой ответ от сервера")
                     }
                 } else {
-                    // Парсим ошибку, если сервер вернул тело
-                    val errorMessage = response.errorBody()?.string() ?: "Ошибка ${response.code()}"
+                    // Обработка 400 ошибки
+                    val errorMessage = when (response.code()) {
+                        400 -> "Пользователь с таким логином уже зарегистрирован"
+                        else -> response.errorBody()?.string() ?: "Ошибка ${response.code()}"
+                    }
                     _registrationState.value = RegistrationState.Error(errorMessage)
                 }
             } catch (e: Exception) {
@@ -76,7 +76,6 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    // Вспомогательный метод: Uri → File
     private fun getFileFromUri(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Не удалось открыть Uri: $uri")
@@ -90,6 +89,3 @@ class RegistrationViewModel @Inject constructor(
         return tempFile
     }
 }
-
-
-//TODO Рефаторинг авторизации под текущий API
