@@ -26,6 +26,7 @@ import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 
 @AndroidEntryPoint
@@ -95,9 +96,15 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+// Настраиваем фрагмент верхнего уровня
+        val appBarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(R.id.feedFragment)
+        )
+
 // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
+// Связываем их
         NavigationUI.setupWithNavController(bottomNav, navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.registrationFragment ||
@@ -109,6 +116,12 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 bottomNav.visibility = View.VISIBLE
             }
         }
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private fun requestNotificationsPermission() {

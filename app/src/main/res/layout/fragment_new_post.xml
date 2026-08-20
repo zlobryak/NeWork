@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:inputType="textMultiLine"
-                android:padding="@dimen/common_spacing" />
+                android:padding="@dimen/common_spacing"
+                tools:text="Шляпа — это головной убор, который носили в Древней Греции. В наше время шляпы носят для защиты от солнца или просто для красоты." />
 
             <FrameLayout
                 android:id="@+id/photoContainer"
@@ -35,16 +36,20 @@
 
                 <ImageView
                     android:id="@+id/photo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:contentDescription="@string/photo" />
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/photo"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@drawable/tool_podcast" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/removePhoto"
+                    style="Widget.AppTheme.PhotoRemoveButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="16dp"
                     android:text="@string/remove" />
             </FrameLayout>
         </LinearLayout>
@@ -80,13 +85,31 @@
             app:icon="@drawable/ic_camera_24dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/takePhoto"
+            android:id="@+id/attachFile"
             style="@style/Widget.AppTheme.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/take_photo"
             android:padding="@dimen/common_spacing"
-            app:icon="@drawable/ic_camera_24dp" />
+            app:icon="@drawable/ic_attach_file_24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addUser"
+            style="@style/Widget.AppTheme.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/take_photo"
+            android:padding="@dimen/common_spacing"
+            app:icon="@drawable/ic_users_24_dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addPlace"
+            style="@style/Widget.AppTheme.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/take_photo"
+            android:padding="@dimen/common_spacing"
+            app:icon="@drawable/ic_location_pin_24dp" />
     </LinearLayout>
 
 
