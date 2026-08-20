@@ -1,7 +1,6 @@
 package ru.netology.nework.api
 
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -25,9 +24,11 @@ interface ApiService {
     suspend fun savePost(@Body post: PostItem): PostItem
 
     @DELETE("posts/{id}")
-    suspend fun deletePost(@Path("id") id: Long) : Response<Unit>
+    suspend fun deletePost(@Path("id") id: Long): Response<Unit>
+
     @GET("posts/latest")
     suspend fun getLatest(@Query("count") count: Int): Response<List<PostItem>>
+
     @GET("posts/{id}/before")
     suspend fun getBefore(
         @Path("id") id: Long,
@@ -68,10 +69,10 @@ interface ApiService {
     @Multipart
     @POST("users/registration")
     suspend fun register(
-        @Query("login") login: RequestBody,
-        @Query("pass") pass: RequestBody,
-        @Query("name") name: RequestBody,
-        @Part avatar: MultipartBody.Part? // nullable — аватарка опциональна
+        @Query("login") login: String,
+        @Query("pass") pass: String,
+        @Query("name") name: String,
+        @Part avatar: MultipartBody.Part // Всегда не null
     ): Response<AuthResponse>
 
     //TODO Рефакторинг регистрации

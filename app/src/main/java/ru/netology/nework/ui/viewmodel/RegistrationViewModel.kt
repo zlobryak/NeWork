@@ -24,11 +24,10 @@ sealed class RegistrationState {
     data class Error(val message: String) : RegistrationState()
 }
 
-
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val apiService: ApiService
-): ViewModel() {
+) : ViewModel() {
 
     private val _registrationState = MutableLiveData<RegistrationState>(RegistrationState.Idle)
     val registrationState: LiveData<RegistrationState> = _registrationState
@@ -44,18 +43,24 @@ class RegistrationViewModel @Inject constructor(
             _registrationState.value = RegistrationState.Loading
 
             try {
-                //Формируем часть с аватаркой (если выбрана)
-                val avatarPart = avatarUri?.let { uri ->
-                    val file = getFileFromUri(uri, context)
-                    val requestFile = file.asRequestBody("image/*".toMediaType())
+                // Формируем часть для аватара
+                val avatarPart = if (avatarUri != null) {
+                    val file = getFileFromUri(avatarUri, context)
+                    val mimeType = context.contentResolver.getType(avatarUri) ?: "image/jpeg"
+                    val requestFile = file.asRequestBody(mimeType.toMediaType())
                     MultipartBody.Part.createFormData("file", file.name, requestFile)
+                } else {
+                    //Создаем часть без имени файла (null) и без типа контента (null).
+
+                    val emptyBody = "".toRequestBody(null)
+                    MultipartBody.Part.createFormData("file", null, emptyBody)
                 }
 
-                // Отправляем запрос через AuthApi
+                // Отправляем запрос
                 val response = apiService.register(
-                    login = login.toRequestBody("text/plain".toMediaType()),
-                    pass = password.toRequestBody("text/plain".toMediaType()),
-                    name = name.toRequestBody("text/plain".toMediaType()),
+                    login = login,
+                    pass = password,
+                    name = name,
                     avatar = avatarPart
                 )
 
@@ -63,20 +68,26 @@ class RegistrationViewModel @Inject constructor(
                     response.body()?.let { auth ->
                         _registrationState.value = RegistrationState.Success(auth)
                     } ?: run {
-                        _registrationState.value = RegistrationState.Error("Пустой ответ от сервера")
+                        _registrationState.value =
+                            RegistrationState.Error("Пустой ответ от сервера")
                     }
                 } else {
-                    // Парсим ошибку, если сервер вернул тело
-                    val errorMessage = response.errorBody()?.string() ?: "Ошибка ${response.code()}"
-                    _registrationState.value = RegistrationState.Error(errorMessage)
+                    // Формируем понятное сообщение для пользователя (для Toast)
+                    val userErrorMessage = when (response.code()) {
+                        400 -> "Пользователь с таким логином уже зарегистрирован"
+                        415 -> "Неподдерживаемый формат файла. Используйте JPEG или PNG"
+                        else -> "Ошибка сервера: ${response.code()}"
+                    }
+                    // Отправляем состояние ошибки во Fragment (там сработает короткий Toast)
+                    _registrationState.value = RegistrationState.Error(userErrorMessage)
                 }
             } catch (e: Exception) {
-                _registrationState.value = RegistrationState.Error(e.message ?: "Неизвестная ошибка")
+                _registrationState.value =
+                    RegistrationState.Error(e.message ?: "Неизвестная ошибка")
             }
         }
     }
 
-    // Вспомогательный метод: Uri → File
     private fun getFileFromUri(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Не удалось открыть Uri: $uri")
@@ -90,6 +101,3 @@ class RegistrationViewModel @Inject constructor(
         return tempFile
     }
 }
-
-
-//TODO Рефаторинг авторизации под текущий API
