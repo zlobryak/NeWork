@@ -1,14 +1,10 @@
 package ru.netology.nework.ui.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +12,6 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
@@ -55,9 +49,9 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         viewModel.data.observe(this) {
             invalidateOptionsMenu()
         }
-
-        checkGoogleApiAvailability()
-        requestNotificationsPermission()
+// В проекте не используется
+//        checkGoogleApiAvailability()
+//        requestNotificationsPermission()
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -124,32 +118,32 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-    private fun requestNotificationsPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return
-        }
+//    private fun requestNotificationsPermission() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//            return
+//        }
+//
+//        val permission = Manifest.permission.POST_NOTIFICATIONS
+//
+//        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+//            return
+//        }
+//
+//        requestPermissions(arrayOf(permission), 1)
+//    }
 
-        val permission = Manifest.permission.POST_NOTIFICATIONS
-
-        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
-        requestPermissions(arrayOf(permission), 1)
-    }
-
-    private fun checkGoogleApiAvailability() {
-        with(GoogleApiAvailability.getInstance()) {
-            val code = isGooglePlayServicesAvailable(this@AppActivity)
-            if (code == ConnectionResult.SUCCESS) {
-                return@with
-            }
-            if (isUserResolvableError(code)) {
-                getErrorDialog(this@AppActivity, code, 9000)?.show()
-                return
-            }
-            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
-                .show()
-        }
-    }
+//    private fun checkGoogleApiAvailability() {
+//        with(GoogleApiAvailability.getInstance()) {
+//            val code = isGooglePlayServicesAvailable(this@AppActivity)
+//            if (code == ConnectionResult.SUCCESS) {
+//                return@with
+//            }
+//            if (isUserResolvableError(code)) {
+//                getErrorDialog(this@AppActivity, code, 9000)?.show()
+//                return
+//            }
+//            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
+//                .show()
+//        }
+//    }
 }

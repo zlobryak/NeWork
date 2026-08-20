@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services) В проекте не используется
 }
 
 android {
