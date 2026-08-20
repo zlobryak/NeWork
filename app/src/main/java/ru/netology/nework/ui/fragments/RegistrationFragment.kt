@@ -24,6 +24,9 @@ import ru.netology.nework.ui.viewmodel.AuthViewModel
 import ru.netology.nework.ui.viewmodel.RegistrationState
 import ru.netology.nework.ui.viewmodel.RegistrationViewModel
 import android.graphics.BitmapFactory
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 
 @AndroidEntryPoint
@@ -61,6 +64,21 @@ class RegistrationFragment : Fragment() {
             selectedAvatarUri = null
             binding.selectAvatarButton.setImageResource(R.drawable.ic_camera_24dp)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Логи для отладки
+        Log.d("REG_DEBUG", "=== onCreateView RegistrationFragment ВЫЗВАН ===")
+
+        // Инфлейтим (создаем) View из XML с помощью ViewBinding
+        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+
+        Log.d("REG_DEBUG", "Binding создан, возвращаем root")
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -206,7 +224,7 @@ class RegistrationFragment : Fragment() {
 
             ImageValidationResult.Success
 
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             ImageValidationResult.Error("Ошибка при проверке изображения")
         }
     }
