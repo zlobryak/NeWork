@@ -75,14 +75,6 @@ class NewPostFragment : Fragment() {
                 .createIntent(pickPhotoLauncher::launch)
         }
 
-        binding.takePhoto.setOnClickListener {
-            ImagePicker.with(this)
-                .crop()
-                .compress(2048)
-                .provider(ImageProvider.CAMERA)
-                .createIntent(pickPhotoLauncher::launch)
-        }
-
         binding.removePhoto.setOnClickListener {
             viewModel.changePhoto(null)
         }
