@@ -23,13 +23,14 @@ mapsMobile = "4.29.0-navikit"
 mapsMobileVersion = "4.39.1-navikit"
 converterGson = "3.0.0"
 gson = "2.14.0"
-loggingInterceptor = "5.4.0"
+loggingInterceptor = "5.5.0"
 navigationFragmentKtx = "2.9.8"
 glide = "5.0.9"
 pagingRuntimeKtx = "3.5.1"
 swiperefreshlayout = "1.2.0"
 imagepicker = "2.1"
 ucrop = "2.2.11"
+roomKtx = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -71,9 +72,10 @@ androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "ro
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+#google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

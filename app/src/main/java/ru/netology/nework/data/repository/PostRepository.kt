@@ -10,7 +10,8 @@ interface PostRepository {
     val data: Flow<PagingData<PostItem>>
     suspend fun getAll()
     suspend fun save(post: PostItem, upload: MediaUpload?)
-    suspend fun removeById(id: Long)
-    suspend fun likeById(id: Long)
+    suspend fun removeById(id: Int)
+    suspend fun likePost(id: Int, likedByMe: Boolean)
     suspend fun upload(upload: MediaUpload): Media
+    suspend fun restorePost(post: PostItem)
 }

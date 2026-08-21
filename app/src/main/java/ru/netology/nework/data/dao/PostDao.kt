@@ -29,17 +29,17 @@ interface PostDao {
     suspend fun insert(posts: List<PostEntity>)
 
     @Query("DELETE FROM PostEntity WHERE id = :id")
-    suspend fun removeById(id: Long)
+    suspend fun removeById(id: Int)
 
     @Query("DELETE FROM PostEntity")
     suspend fun removeAll()
 
     @Query("UPDATE PostEntity SET isDeleting = :deleting WHERE id = :id")
-    fun markAsDeleting(id: Long, deleting: Boolean)
+    fun markAsDeleting(id: Int, deleting: Boolean)
 
     @Query("UPDATE PostEntity SET likedByMe = NOT likedByMe WHERE id = :id")
-    suspend fun likedByMe(id: Long)
+    suspend fun likedByMe(id: Int)
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
-    fun getPostById(id: Long): PostEntity
+    fun getPostById(id: Int): PostEntity
 }

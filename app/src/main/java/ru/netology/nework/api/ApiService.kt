@@ -24,7 +24,7 @@ interface ApiService {
     suspend fun savePost(@Body post: PostItem): PostItem
 
     @DELETE("posts/{id}")
-    suspend fun deletePost(@Path("id") id: Long): Response<Unit>
+    suspend fun deletePost(@Path("id") id: Int): Response<Unit>
 
     @GET("posts/latest")
     suspend fun getLatest(@Query("count") count: Int): Response<List<PostItem>>
@@ -52,10 +52,10 @@ interface ApiService {
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
     @POST("posts/{id}/likes")
-    suspend fun likeById(@Path("id") id: Long): Response<PostItem>
+    suspend fun likeById(@Path("id") id: Int): Response<PostItem>
 
     @DELETE("posts/{id}/likes")
-    suspend fun dislikeById(@Path("id") id: Long): Response<PostItem>
+    suspend fun dislikeById(@Path("id") id: Int): Response<PostItem>
 
     @FormUrlEncoded
     @POST("users/authentication")

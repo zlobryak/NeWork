@@ -88,3 +88,5 @@ class AuthFragment : Fragment() {
         _binding = null
     }
 }
+
+// TODO Починить авторизацю. Сейчас не обрабоатывает код 400 Неправильный парольл
