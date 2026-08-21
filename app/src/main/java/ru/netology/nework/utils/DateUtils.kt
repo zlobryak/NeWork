@@ -8,7 +8,7 @@ import java.util.Locale
 
 object DateUtils {
     // Формат, который требуется по заданию: 21.08.2026 17:41
-    private val outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault())
+    private var outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault())
 
     fun formatIsoDate(isoDateString: String): String {
         return try {
