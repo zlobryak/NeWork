@@ -86,7 +86,10 @@ class FeedAdapter(
                 }
 
                 like.setOnClickListener {
-                    Log.d("LIKE_DEBUG", "Клик по лайку! Post ID: ${post.id}, текущий likedByMe: ${post.likedByMe}")
+                    Log.d(
+                        "LIKE_DEBUG",
+                        "Клик по лайку! Post ID: ${post.id}, текущий likedByMe: ${post.likedByMe}"
+                    )
                     onInteractionListener.onLike(post)
                 }
 

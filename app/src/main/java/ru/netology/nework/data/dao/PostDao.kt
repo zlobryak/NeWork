@@ -37,8 +37,9 @@ interface PostDao {
     @Query("UPDATE PostEntity SET isDeleting = :deleting WHERE id = :id")
     suspend fun markAsDeleting(id: Int, deleting: Boolean)
 
-    @Query("UPDATE PostEntity SET likedByMe = NOT likedByMe WHERE id = :id")
-    suspend fun likedByMe(id: Int)
+    //Не нужен, при получении лайка переписываем пост из ответа сервера
+//    @Query("UPDATE PostEntity SET likedByMe = NOT likedByMe WHERE id = :id")
+//    suspend fun likedByMe(id: Int)
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
     suspend fun getPostById(id: Int): PostEntity

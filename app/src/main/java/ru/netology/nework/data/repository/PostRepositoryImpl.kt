@@ -107,6 +107,7 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
     }
+
     //TODO Переделать функцию под текущий API. Продумать: Сервер возвращает нам likedByMe - true, если пользователь поставил лайк и авторизован.
     override suspend fun likePost(id: Int, likedByMe: Boolean) {
         try {
@@ -119,16 +120,27 @@ class PostRepositoryImpl @Inject constructor(
                 apiService.dislikeById(id)
             } else {
                 apiService.likeById(id)
+
             }
 
             if (!response.isSuccessful) {
                 //TODO Обработать ошибку 403 -> предлагать пользователю авторизоваться
-                Log.e("LikeDebug", "6. Ошибка API: code=${response.code()}, message=${response.message()}")
+                Log.e(
+                    "LikeDebug",
+                    "6. Ошибка API: code=${response.code()}, message=${response.message()}"
+                )
                 throw ApiError(response.code(), response.message())
             }
 
             Log.d("LikeDebug", "7. Успешный ответ API. Обновляем БД.")
-            postDao.likedByMe(id)
+
+            val updatedPost = response.body()
+                ?: throw ApiError(response.code(), "Пустой ответ от сервера при обновлении лайка")
+
+
+            postDao.insert(
+                PostEntity.fromDto(updatedPost, currentUserId)
+            )
 
         } catch (e: ApiError) {
             //Ловим ApiError отдельно и пробрасываем его дальше во ViewModel для перенаправления на логин
