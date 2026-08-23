@@ -43,8 +43,11 @@ class AuthFragment : Fragment() {
             // Логика авторизации
             Toast.makeText(requireContext(), "Вход...", Toast.LENGTH_SHORT).show()
             viewModel.login(username, password)
+        }
 
-
+        // Если пользователь нажимает на предложение зарегистрироваться, переходим на фрагмент регистрации
+        binding.registerPrompt.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
 
         // Наблюдаем за состоянием авторизации
@@ -89,4 +92,4 @@ class AuthFragment : Fragment() {
     }
 }
 
-// TODO Починить авторизацю. Сейчас не обрабоатывает код 400 Неправильный парольл
+//TODO Добавить обработку ввода неправильного пароля и логина
