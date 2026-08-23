@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
 import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAvatar
 
 class FeedAdapter(
@@ -36,7 +37,7 @@ class FeedAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         Log.d(
             "ADAPTER_DEBUG",
-            "🔗 onBindViewHolder для позиции $position. der для позиции $position.)"
+            "onBindViewHolder для позиции $position для позиции $position.)"
         )
         getItem(position)?.let { post ->
             (holder as PostViewHolder).bind(post)
@@ -51,10 +52,7 @@ class FeedAdapter(
         fun bind(post: PostItem) {
             binding.apply {
                 author.text = post.author
-
-                //TODO Написать конвертер для даты
-
-                published.text = post.published.toString()
+                published.text = DateUtils.formatIsoDate(post.published)
                 content.text = post.content
                 avatar.loadAvatar(post.authorAvatar, post.author)
                 like.isChecked = post.likedByMe
