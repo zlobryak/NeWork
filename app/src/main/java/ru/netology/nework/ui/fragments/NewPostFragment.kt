@@ -122,4 +122,4 @@ class NewPostFragment : Fragment() {
     }
 }
 
-//TODO Refactor
+//TODO Refactor Добавить обработку кнопок в нижнем меню
