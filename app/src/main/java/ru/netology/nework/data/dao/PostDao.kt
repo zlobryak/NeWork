@@ -35,11 +35,11 @@ interface PostDao {
     suspend fun removeAll()
 
     @Query("UPDATE PostEntity SET isDeleting = :deleting WHERE id = :id")
-    fun markAsDeleting(id: Int, deleting: Boolean)
+    suspend fun markAsDeleting(id: Int, deleting: Boolean)
 
     @Query("UPDATE PostEntity SET likedByMe = NOT likedByMe WHERE id = :id")
     suspend fun likedByMe(id: Int)
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
-    fun getPostById(id: Int): PostEntity
+    suspend fun getPostById(id: Int): PostEntity
 }
