@@ -101,7 +101,9 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         NavigationUI.setupWithNavController(bottomNav, navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.registrationFragment ||
-                destination.id == R.id.action_feedFragment_to_loginFragment) {
+                destination.id == R.id.loginFragment ||
+                destination.id == R.id.newPostFragment
+            ) {
                 // Если мы на экране регистрации или авторизации - скрываем нижнее меню
                 bottomNav.visibility = View.GONE
             } else {
