@@ -115,7 +115,7 @@ class FeedFragment : Fragment() {
         // Актуальный вариант
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest{pagingData ->
+                viewModel.data.collectLatest { pagingData ->
                     Log.d("FRAGMENT", "collectLatest received PagingData")
                     adapter.submitData(pagingData)
                 }
@@ -140,8 +140,8 @@ class FeedFragment : Fragment() {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swiperefresh.isRefreshing =
                         state.refresh is LoadState.Loading
-                    //В коде из лекции индикатор загрузки отображается во всех трех состояниях.
-                    //Для выполнения задания номер 1 оставляем индикатор только для REFRESH
+                                //В коде из лекции индикатор загрузки отображается во всех трех состояниях.
+                                //Для выполнения задания номер 1 оставляем индикатор только для REFRESH
                                 || state.prepend is LoadState.Loading ||
                                 state.append is LoadState.Loading
                 }
@@ -151,7 +151,13 @@ class FeedFragment : Fragment() {
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
 
         binding.addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            //Если пользователь не авторизован, переходим на страницу логина
+            if (auth.authStateFlow.value.token != null) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else {
+                findNavController().navigate(R.id.loginFragment)
+            }
+            //TODO Проверить, как должно выглядеть предложение залогиниться для создания нового поста
         }
 
         return binding.root

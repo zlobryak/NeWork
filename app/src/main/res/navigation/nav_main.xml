@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/feedFragment"
         android:name="ru.netology.nework.ui.fragments.FeedFragment"
-        android:label="fragment_feed"
+        android:label="AppName"
         tools:layout="@layout/fragment_feed">
         <action
             android:id="@+id/action_feedFragment_to_newPostFragment"
@@ -27,13 +27,13 @@
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.netology.nework.ui.fragments.NewPostFragment"
-        android:label="fragment_new_post"
+        android:label="New post"
         tools:layout="@layout/fragment_new_post" />
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="ru.netology.nework.ui.fragments.AuthFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_feedFragment"
@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/registrationFragment"
         android:name="ru.netology.nework.ui.fragments.RegistrationFragment"
-        android:label="RegistrationFragment"
+        android:label="Registration"
         tools:layout="@layout/fragment_registration">
         <action
             android:id="@+id/action_registrationFragment_to_feedFragment"
