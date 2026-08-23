@@ -28,7 +28,9 @@ data class PostEntity(
     val published: String,
     val users: Users?,
     val ownedByMe: Boolean,
-    val isDeleting: Boolean = false
+    val isDeleting: Boolean = false,
+    val isSynced: Boolean,
+    val syncStatus: SyncStatus = SyncStatus.PENDING,
 
 ) {
     fun toDto() = PostItem(
@@ -49,7 +51,7 @@ data class PostEntity(
         users,
         ownedByMe,
         isDeleting,
-
+        isSynced,
     )
 
     companion object {
@@ -71,9 +73,17 @@ data class PostEntity(
                 published = dto.published,
                 users = dto.users,
                 ownedByMe = if (currentUserId != null) (dto.authorId == currentUserId) else false,
-                isDeleting = false //Локальное поле, по умолчанию всегда false
+                isDeleting = false, //Локальное поле, по умолчанию всегда false
+                isSynced = dto.isSynced,
+                syncStatus = SyncStatus.SYNCED,
             )
 
+    }
+
+    enum class SyncStatus {
+        PENDING,
+        SYNCED,
+        FAILED
     }
 }
 

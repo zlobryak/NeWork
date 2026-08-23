@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services) В проекте не используется
 }
 
 android {
@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

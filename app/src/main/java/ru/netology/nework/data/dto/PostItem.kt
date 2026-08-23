@@ -2,6 +2,7 @@ package ru.netology.nework.data.dto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import ru.netology.nework.data.entity.PostEntity
 
 @Parcelize
 data class PostItem(
@@ -23,6 +24,10 @@ data class PostItem(
     @Transient
     val ownedByMe: Boolean,
     @Transient
-    val isDeleting: Boolean = false
+    val isDeleting: Boolean = false,
+    @Transient
+    val isSynced: Boolean,
+    @Transient
+    val syncStatus: PostEntity.SyncStatus? = null,
 
-): Parcelable
+    ): Parcelable

@@ -53,6 +53,7 @@ class AuthFragmentViewModel @Inject constructor(
             } catch (e: Exception) {
                 //  Обработка ошибки
                 _loginState.value = LoginState.Error(e.message ?: "Неизвестная ошибка")
+                //TODO Добавить обработки ошибок из документации
             }
         }
 

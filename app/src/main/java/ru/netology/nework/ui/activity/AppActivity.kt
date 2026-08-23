@@ -1,14 +1,10 @@
 package ru.netology.nework.ui.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +12,6 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
@@ -26,6 +20,7 @@ import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 
 @AndroidEntryPoint
@@ -54,9 +49,9 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         viewModel.data.observe(this) {
             invalidateOptionsMenu()
         }
-
-        checkGoogleApiAvailability()
-        requestNotificationsPermission()
+// В проекте не используется
+//        checkGoogleApiAvailability()
+//        requestNotificationsPermission()
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -95,9 +90,15 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+// Настраиваем фрагмент верхнего уровня
+        val appBarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(R.id.feedFragment)
+        )
+
 // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
+// Связываем их
         NavigationUI.setupWithNavController(bottomNav, navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.registrationFragment ||
@@ -109,34 +110,40 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 bottomNav.visibility = View.VISIBLE
             }
         }
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
-    private fun requestNotificationsPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return
-        }
-
-        val permission = Manifest.permission.POST_NOTIFICATIONS
-
-        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
-        requestPermissions(arrayOf(permission), 1)
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-    private fun checkGoogleApiAvailability() {
-        with(GoogleApiAvailability.getInstance()) {
-            val code = isGooglePlayServicesAvailable(this@AppActivity)
-            if (code == ConnectionResult.SUCCESS) {
-                return@with
-            }
-            if (isUserResolvableError(code)) {
-                getErrorDialog(this@AppActivity, code, 9000)?.show()
-                return
-            }
-            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
-                .show()
-        }
-    }
+//    private fun requestNotificationsPermission() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//            return
+//        }
+//
+//        val permission = Manifest.permission.POST_NOTIFICATIONS
+//
+//        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+//            return
+//        }
+//
+//        requestPermissions(arrayOf(permission), 1)
+//    }
+
+//    private fun checkGoogleApiAvailability() {
+//        with(GoogleApiAvailability.getInstance()) {
+//            val code = isGooglePlayServicesAvailable(this@AppActivity)
+//            if (code == ConnectionResult.SUCCESS) {
+//                return@with
+//            }
+//            if (isUserResolvableError(code)) {
+//                getErrorDialog(this@AppActivity, code, 9000)?.show()
+//                return
+//            }
+//            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
+//                .show()
+//        }
+//    }
 }

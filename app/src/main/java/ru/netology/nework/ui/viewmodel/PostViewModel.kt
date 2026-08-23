@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.MediaUpload
 import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -34,6 +35,8 @@ private val empty = PostItem(
     users = null,
     ownedByMe = false,
     isDeleting = false,
+    isSynced = true,
+    syncStatus = PostEntity.SyncStatus.SYNCED,
 )
 
 private val noPhoto = PhotoModel()
@@ -75,6 +78,10 @@ class PostViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
+
+    private val _errorEvent = SingleLiveEvent<String>()
+    val errorEvent: LiveData<String> = _errorEvent
+
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
@@ -93,7 +100,7 @@ class PostViewModel @Inject constructor(
             _dataState.value = FeedModelState(loading = true)
             // repository.stream.cachedIn(viewModelScope).
             _dataState.value = FeedModelState()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
     }
@@ -131,9 +138,25 @@ class PostViewModel @Inject constructor(
     fun changePhoto(uri: Uri?) {
         _photo.value = PhotoModel(uri)
     }
+//TODO Предлажить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
-    fun likeById(id: Int) {
-        TODO()
+    fun likePost(post: PostItem) {
+        val currentPost = post.copy() //Сохраняем копию поста, на случай ошибок
+
+        viewModelScope.launch {
+            try {
+                if (post.isSynced) {
+                    repository.likePost(post.id, post.likedByMe)
+                } else {
+                    _errorEvent.value = "Post is not synchronised, try later"
+                    repository.restorePost(currentPost)
+                }
+            } catch (_: Throwable) {
+                _dataState.value = FeedModelState(error = true)
+                repository.restorePost(currentPost) //Возвращаем старый пост, при ошибках
+            }
+
+        }
     }
 
     fun removeById(id: Int) {

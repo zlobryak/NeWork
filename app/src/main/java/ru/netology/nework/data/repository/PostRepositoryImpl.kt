@@ -44,7 +44,8 @@ class PostRepositoryImpl @Inject constructor(
     ).flow.map { pagingData ->
         pagingData.map(PostEntity::toDto)
     }
-    val currentUserId = auth.authStateFlow.value.id.toInt()
+    private val currentUserId: Int
+        get() = auth.authStateFlow.value.id.toInt()
 
     override suspend fun getAll() {
         try {
@@ -84,7 +85,7 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeById(id: Long) {
+    override suspend fun removeById(id: Int) {
         var success = false
         try {
             postDao.markAsDeleting(id, true)
@@ -105,12 +106,8 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
     }
-
-    //TODO Тут не будет обращения к базе данных для изменения количества лайков,
-    //В базе хранится список ID лайкнувших, если лайкаем свой пост - меняем статус likedByMe
-    //Количество лайков вычисляется из списка Id, его менять вручную не нужно.
-    //Бует ли меняться на сервере likedByMe?
-    override suspend fun likeById(id: Long) {
+    //TODO Переделать функцию под текущий API. Продумать: Сервер возвращает нам likedByMe - true, если пользователь поставил лайк и авторизован.
+    override suspend fun likePost(id: Int, likedByMe: Boolean) {
         val isLikedByMe = postDao.getPostById(id).likedByMe
 
         try {
@@ -127,6 +124,24 @@ class PostRepositoryImpl @Inject constructor(
         } catch (_: Exception) {
             throw UnknownError
         }
+    }
+
+    override suspend fun restorePost(post: PostItem) {
+        // Полная перезапись поста старыми данными
+        if (post.isSynced) {
+            postDao.insert(PostEntity.fromDto(post, currentUserId))
+        } else {
+            //Для постов, которые не синхронизированы, вернем флаг и исходное состояние.
+            post.syncStatus?.let {
+                postDao.insert(
+                    PostEntity.fromDto(post, currentUserId).copy(
+                        isSynced = false,
+                        syncStatus = it
+                    )
+                )
+            }
+        }
+
     }
 
     override suspend fun upload(upload: MediaUpload): Media {
