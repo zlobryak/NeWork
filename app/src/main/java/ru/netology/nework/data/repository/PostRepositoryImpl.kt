@@ -1,5 +1,6 @@
 package ru.netology.nework.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -107,21 +108,34 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
     //TODO Переделать функцию под текущий API. Продумать: Сервер возвращает нам likedByMe - true, если пользователь поставил лайк и авторизован.
-    override suspend fun likePost(id: Int, likedByMe: Boolean) {
-        val isLikedByMe = postDao.getPostById(id).likedByMe
-
+    override suspend fun likePost(id: Int, passedLikedState: Boolean) {
         try {
+            // ВАЖНО: getPostById может вернуть null, если пост удален или еще не загружен.
+            // Это вызовет NullPointerException при вызове .likedByMe, который сейчас тихо гасится.
+            val dbPost = postDao.getPostById(id)
+            val isLikedByMe = dbPost?.likedByMe ?: passedLikedState
 
-            val response = if (isLikedByMe) apiService.dislikeById(id) else apiService.likeById(id)
+            Log.d("LikeDebug", "5. Статус в БД: $isLikedByMe. Отправляем запрос...")
+
+            val response = if (isLikedByMe) {
+                apiService.dislikeById(id)
+            } else {
+                apiService.likeById(id)
+            }
 
             if (!response.isSuccessful) {
+                Log.e("LikeDebug", "6. Ошибка API: code=${response.code()}, message=${response.message()}")
                 throw ApiError(response.code(), response.message())
-            } //При ошибке прерываем функцию
+            }
 
-            postDao.likedByMe(id) //Если нет ошибок, обращаемся к базе данных, которая меняет boolean на противоположный
-        } catch (_: IOException) {
+            Log.d("LikeDebug", "7. Успешный ответ API. Обновляем БД.")
+            postDao.likedByMe(id)
+
+        } catch (e: IOException) {
+            Log.e("LikeDebug", "8. Сетевая ошибка (NetworkError)", e)
             throw NetworkError
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.e("LikeDebug", "9. Неизвестная ошибка", e)
             throw UnknownError
         }
     }

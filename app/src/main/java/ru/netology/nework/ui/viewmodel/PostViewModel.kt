@@ -141,21 +141,33 @@ class PostViewModel @Inject constructor(
 //TODO Предлажить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
     fun likePost(post: PostItem) {
-        val currentPost = post.copy() //Сохраняем копию поста, на случай ошибок
+        fun likePost(post: PostItem) {
+            Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
+            val currentPost = post.copy()
 
-        viewModelScope.launch {
-            try {
-                if (post.isSynced) {
-                    repository.likePost(post.id, post.likedByMe)
-                } else {
-                    _errorEvent.value = "Post is not synchronised, try later"
+            viewModelScope.launch {
+                try {
+                    if (post.isSynced) {
+                        Log.d("LikeDebug", "2. Вызываем repository.likePost")
+                        repository.likePost(post.id, post.likedByMe)
+                        Log.d("LikeDebug", "3. repository.likePost успешно завершен")
+                    } else {
+
+                        //TODO Пересмотреть работу DTO, всегда возвращает isSynced = false
+                        Log.w("LikeDebug", "Пост не синхронизирован, прерываем")
+                        _errorEvent.value = "Post is not synchronised, try later"
+                        // Примечание: вызывать restorePost здесь странно, так как мы еще ничего не меняли
+                    }
+                } catch (e: Throwable) { // <-- Заменили _ на e
+                    Log.e(
+                        "LikeDebug",
+                        "4. Произошла ошибка при лайке",
+                        e
+                    ) // <-- ВАЖНО: теперь ошибка будет в Logcat!
+                    _dataState.value = FeedModelState(error = true)
                     repository.restorePost(currentPost)
                 }
-            } catch (_: Throwable) {
-                _dataState.value = FeedModelState(error = true)
-                repository.restorePost(currentPost) //Возвращаем старый пост, при ошибках
             }
-
         }
     }
 

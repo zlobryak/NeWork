@@ -54,6 +54,11 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: PostItem) {
+                // 2. Второй лог. Если он есть, а первого нет -> странно. Если его нет -> проблема в передаче слушателя
+                Log.d(
+                    "LIKE_DEBUG",
+                    "Fragment получил onLike для Post ID: ${post.id}, isSynced: ${post.isSynced}"
+                )
                 viewModel.likePost(post)
             }
 
@@ -146,6 +151,17 @@ class FeedFragment : Fragment() {
                                 state.append is LoadState.Loading
                 }
             }
+        }
+
+// Наблюдаем за одноразовыми событиями ошибки
+        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
+            Log.e("LIKE_DEBUG", "ПОЙМАНА ОШИБКА: $errorMessage")
+            // Для наглядности можно вывести Toast, чтобы точно увидеть ошибку на экране
+            android.widget.Toast.makeText(
+                requireContext(),
+                errorMessage,
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
