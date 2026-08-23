@@ -176,6 +176,16 @@ class FeedFragment : Fragment() {
             //TODO Проверить, как должно выглядеть предложение залогиниться для создания нового поста
         }
 
+        // Наблюдение за событием перехода на экран логина при нажатии на кнопку лайк(если сервер вернул код 403)
+        viewModel.navigateToLoginEvent.observe(viewLifecycleOwner) {
+            Log.d("NAV_DEBUG", "Получен код 403, переходим на экран авторизации")
+
+            // Очищаем состояние авторизации для фоновых процессов.
+            auth.removeAuth()
+
+            findNavController().navigate(R.id.action_feedFragment_to_loginFragment)
+        }
+
         return binding.root
     }
 }

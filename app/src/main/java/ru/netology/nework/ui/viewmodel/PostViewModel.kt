@@ -14,6 +14,7 @@ import ru.netology.nework.data.dto.MediaUpload
 import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
 
@@ -73,6 +74,10 @@ class PostViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
+
+    // Событие для навигации на экран авторизации
+    private val _navigateToLoginEvent = SingleLiveEvent<Unit>()
+    val navigateToLoginEvent: LiveData<Unit> = _navigateToLoginEvent
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -138,7 +143,7 @@ class PostViewModel @Inject constructor(
     fun changePhoto(uri: Uri?) {
         _photo.value = PhotoModel(uri)
     }
-//TODO Предлажить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
+//TODO Предложить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
     fun likePost(post: PostItem) {
         Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
@@ -151,18 +156,20 @@ class PostViewModel @Inject constructor(
                     repository.likePost(post.id, post.likedByMe)
                     Log.d("LikeDebug", "3. repository.likePost успешно завершен")
                 } else {
-                    //TODO Пересмотреть работу DTO, всегда возвращает isSynced = false
+
                     Log.w("LikeDebug", "Пост не синхронизирован, прерываем")
                     _errorEvent.value = "Post is not synchronised, try later"
                 }
             } catch (e: Throwable) {
-                Log.e(
-                    "LikeDebug",
-                    "4. Произошла ошибка при лайке",
-                    e
-                )
-                _dataState.value = FeedModelState(error = true)
-                repository.restorePost(currentPost)
+                // Проверяем, является ли ошибка ApiError с кодом 403
+                if (e is ApiError && e.status == 403) {
+                    // Токен недействителен или отсутствует, отправляем событие навигации
+                    _navigateToLoginEvent.value = Unit
+                } else {
+                    // Все остальные ошибки (сеть, 500 и т.д.)
+                    _errorEvent.value = "Ошибка при обработке лайка: ${e.message}"
+                    repository.restorePost(currentPost)
+                }
             }
         }
 
