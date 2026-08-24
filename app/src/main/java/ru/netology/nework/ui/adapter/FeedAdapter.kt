@@ -12,7 +12,10 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
 import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.utils.DateUtils
+import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
+
+
 
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -95,6 +98,16 @@ class FeedAdapter(
 
                 share.setOnClickListener {
                     onInteractionListener.onShare(post)
+                }
+
+                val attachmentUrl = post.attachment?.url
+                if (!attachmentUrl.isNullOrBlank()) {
+                    attachment.loadAttachment(attachmentUrl)
+                    // Показываем блок с вложением
+                    attachment.visibility = View.VISIBLE
+                } else {
+                    // Скрываем блок, вложения, если его нет
+                    attachment.visibility = View.GONE
                 }
             }
         }

@@ -24,3 +24,12 @@ fun ImageView.loadAvatar(url: String?, authorName: String?, vararg transforms: B
         .transform(CircleCrop(), *transforms)
         .into(this)
 }
+
+fun ImageView.loadAttachment(url: String?) {
+    Glide.with(context)
+        .load(url)
+        .placeholder(R.drawable.ic_loading_100dp)
+        .error(R.drawable.ic_error_100dp)
+        .timeout(10_000)
+        .into(this)
+}
