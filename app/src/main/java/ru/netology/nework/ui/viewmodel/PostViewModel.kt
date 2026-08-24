@@ -14,6 +14,7 @@ import ru.netology.nework.data.dto.MediaUpload
 import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
 
@@ -74,6 +75,10 @@ class PostViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
+    // Событие для навигации на экран авторизации
+    private val _navigateToLoginEvent = SingleLiveEvent<Unit>()
+    val navigateToLoginEvent: LiveData<Unit> = _navigateToLoginEvent
+
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
@@ -84,6 +89,11 @@ class PostViewModel @Inject constructor(
 
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
+
+    private val _state = MutableLiveData(FeedModelState())
+    private val _successEvent = SingleLiveEvent<String>()
+    val successEvent: LiveData<String> = _successEvent
+
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
@@ -106,11 +116,11 @@ class PostViewModel @Inject constructor(
     }
 
     fun save() {
-        edited.value?.let {
+        edited.value?.let { postItem ->
             viewModelScope.launch {
                 try {
                     repository.save(
-                        it, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
+                        postItem, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
                     )
 
                     _postCreated.value = Unit
@@ -138,40 +148,48 @@ class PostViewModel @Inject constructor(
     fun changePhoto(uri: Uri?) {
         _photo.value = PhotoModel(uri)
     }
-//TODO Предлажить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
+//TODO Предложить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
     fun likePost(post: PostItem) {
-        fun likePost(post: PostItem) {
-            Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
-            val currentPost = post.copy()
+        Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
+        val currentPost = post.copy()
 
-            viewModelScope.launch {
-                try {
-                    if (post.isSynced) {
-                        Log.d("LikeDebug", "2. Вызываем repository.likePost")
-                        repository.likePost(post.id, post.likedByMe)
-                        Log.d("LikeDebug", "3. repository.likePost успешно завершен")
-                    } else {
+        viewModelScope.launch {
+            try {
+                if (post.isSynced) {
+                    Log.d("LikeDebug", "2. Вызываем repository.likePost")
+                    repository.likePost(post.id, post.likedByMe)
+                    Log.d("LikeDebug", "3. repository.likePost успешно завершен")
+                } else {
 
-                        //TODO Пересмотреть работу DTO, всегда возвращает isSynced = false
-                        Log.w("LikeDebug", "Пост не синхронизирован, прерываем")
-                        _errorEvent.value = "Post is not synchronised, try later"
-                        // Примечание: вызывать restorePost здесь странно, так как мы еще ничего не меняли
-                    }
-                } catch (e: Throwable) { // <-- Заменили _ на e
-                    Log.e(
-                        "LikeDebug",
-                        "4. Произошла ошибка при лайке",
-                        e
-                    ) // <-- ВАЖНО: теперь ошибка будет в Logcat!
-                    _dataState.value = FeedModelState(error = true)
+                    Log.w("LikeDebug", "Пост не синхронизирован, прерываем")
+                    _errorEvent.value = "Post is not synchronised, try later"
+                }
+            } catch (e: Throwable) {
+                // Проверяем, является ли ошибка ApiError с кодом 403
+                if (e is ApiError && e.status == 403) {
+                    // Токен недействителен или отсутствует, отправляем событие навигации
+                    _navigateToLoginEvent.value = Unit
+                } else {
+                    // Все остальные ошибки (сеть, 500 и т.д.)
+                    _errorEvent.value = "Ошибка при обработке лайка: ${e.message}"
                     repository.restorePost(currentPost)
                 }
             }
         }
+
     }
 
-    fun removeById(id: Int) {
-        TODO()
+    fun removePost(post: PostItem) {
+        val currentPosts = post.copy()
+        viewModelScope.launch {
+            try {
+                repository.removeById(post.id)
+                _successEvent.value = "Post deleted"
+            } catch (_: Throwable) {
+                _state.value = FeedModelState(error = true)
+                repository.restorePost(currentPosts)
+            }
+        }
     }
 }

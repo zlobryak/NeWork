@@ -107,13 +107,11 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
     }
-    //TODO Переделать функцию под текущий API. Продумать: Сервер возвращает нам likedByMe - true, если пользователь поставил лайк и авторизован.
-    override suspend fun likePost(id: Int, passedLikedState: Boolean) {
+
+    override suspend fun likePost(id: Int, likedByMe: Boolean) {
         try {
-            // ВАЖНО: getPostById может вернуть null, если пост удален или еще не загружен.
-            // Это вызовет NullPointerException при вызове .likedByMe, который сейчас тихо гасится.
             val dbPost = postDao.getPostById(id)
-            val isLikedByMe = dbPost?.likedByMe ?: passedLikedState
+            val isLikedByMe = dbPost.likedByMe ?: likedByMe
 
             Log.d("LikeDebug", "5. Статус в БД: $isLikedByMe. Отправляем запрос...")
 
@@ -121,21 +119,36 @@ class PostRepositoryImpl @Inject constructor(
                 apiService.dislikeById(id)
             } else {
                 apiService.likeById(id)
+
             }
 
             if (!response.isSuccessful) {
-                Log.e("LikeDebug", "6. Ошибка API: code=${response.code()}, message=${response.message()}")
+                Log.e(
+                    "LikeDebug",
+                    "6. Ошибка API: code=${response.code()}, message=${response.message()}"
+                )
                 throw ApiError(response.code(), response.message())
             }
 
             Log.d("LikeDebug", "7. Успешный ответ API. Обновляем БД.")
-            postDao.likedByMe(id)
 
+            val updatedPost = response.body()
+                ?: throw ApiError(response.code(), "Пустой ответ от сервера при обновлении лайка")
+
+
+            postDao.insert(
+                PostEntity.fromDto(updatedPost, currentUserId)
+            )
+
+        } catch (e: ApiError) {
+            //Ловим ApiError отдельно и пробрасываем его дальше во ViewModel для перенаправления на логин
+            Log.e("LikeDebug", "8. Пробрасываем ApiError во ViewModel", e)
+            throw e
         } catch (e: IOException) {
-            Log.e("LikeDebug", "8. Сетевая ошибка (NetworkError)", e)
+            Log.e("LikeDebug", "9. Сетевая ошибка (NetworkError)", e)
             throw NetworkError
         } catch (e: Exception) {
-            Log.e("LikeDebug", "9. Неизвестная ошибка", e)
+            Log.e("LikeDebug", "10. Неизвестная ошибка", e)
             throw UnknownError
         }
     }
