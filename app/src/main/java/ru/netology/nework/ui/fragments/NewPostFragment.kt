@@ -1,6 +1,7 @@
 package ru.netology.nework.ui.fragments
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,10 +14,12 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
+import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
 import ru.netology.nework.ui.viewmodel.PostViewModel
+import ru.netology.nework.utils.PostItemArg
 import kotlin.getValue
 
 @AndroidEntryPoint
@@ -24,6 +27,9 @@ class NewPostFragment : Fragment() {
 
     companion object {
         var Bundle.textArg: String? by StringArg
+        var Bundle.PostItemArg: PostItem? by PostItemArg
+        private const val DRAFT_KEY = "new_post_draft"
+        private var sharedPreferences: SharedPreferences? = null
     }
 
     private val viewModel: PostViewModel by activityViewModels()
@@ -121,6 +127,8 @@ class NewPostFragment : Fragment() {
         super.onDestroyView()
     }
 }
+
+
 
 //TODO Refactor Добавить обработку кнопок в нижнем меню
 //TODO Добавить прокрутку ленты при добавлении нового поста

@@ -162,8 +162,7 @@
             android:layout_marginTop="@dimen/common_spacing"
             android:checkable="true"
             android:contentDescription="@string/like_icon"
-
-            app:icon="@drawable/ic_liked_24"
+            app:icon="@drawable/ic_like_selector"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/barrier3"
             tools:text="10" />
@@ -177,8 +176,7 @@
             app:icon="@drawable/ic_share_24"
             app:layout_constraintBottom_toBottomOf="@id/like"
             app:layout_constraintStart_toEndOf="@id/like"
-            app:layout_constraintTop_toTopOf="@id/like"
-            />
+            app:layout_constraintTop_toTopOf="@id/like" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

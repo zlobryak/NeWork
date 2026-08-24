@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx) //Навигация между фрагментами
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.glide) //Для загрузи изображений
+    ksp(libs.ksp)
     implementation(libs.androidx.paging.runtime.ktx) //Пагинация
     implementation(libs.androidx.room.paging) //Бд
     implementation(libs.androidx.swiperefreshlayout) //Обновление страницы

@@ -17,9 +17,7 @@ data class AttachmentEmbeddable(
 
 enum class AttachmentType {
     IMAGE,
-    VIDEO
+    VIDEO,
+    AUDIO
 }
-
-//TODO Файл скопирован, нужно переработать
-
 

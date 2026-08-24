@@ -48,22 +48,6 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     auth: AppAuth,
 ) : ViewModel() {
-//    private val cached: Flow<PagingData<FeedItem>> = repository
-//        .data
-//        .map { pagingData ->
-//            pagingData.insertSeparators(
-//                generator = { before, after ->
-//                    if (before?.id?.rem(5) != 0L) null else
-//                        Ad(
-//                            Random.nextLong(),
-//                            "https://netology.ru",
-//                            "figma.jpg"
-//                        )
-//                }
-//            )
-//        }
-//        .cachedIn(viewModelScope)
-
     val data: Flow<PagingData<PostItem>> = auth.authStateFlow
         .onEach { Log.d("AUTH", "authStateFlow emitted: $it") }
         .flatMapLatest { (myId, _) ->
@@ -87,7 +71,7 @@ class PostViewModel @Inject constructor(
     private val _errorEvent = SingleLiveEvent<String>()
     val errorEvent: LiveData<String> = _errorEvent
 
-    private val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(empty) //TODO Делаеме редактирование
     private val _postCreated = SingleLiveEvent<Unit>()
 
     private val _state = MutableLiveData(FeedModelState())
@@ -148,7 +132,6 @@ class PostViewModel @Inject constructor(
     fun changePhoto(uri: Uri?) {
         _photo.value = PhotoModel(uri)
     }
-//TODO Предложить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
     fun likePost(post: PostItem) {
         Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
