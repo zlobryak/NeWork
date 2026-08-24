@@ -89,6 +89,11 @@ class PostViewModel @Inject constructor(
 
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
+
+    private val _state = MutableLiveData(FeedModelState())
+    private val _successEvent = SingleLiveEvent<String>()
+    val successEvent: LiveData<String> = _successEvent
+
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
@@ -111,11 +116,11 @@ class PostViewModel @Inject constructor(
     }
 
     fun save() {
-        edited.value?.let {
+        edited.value?.let { postItem ->
             viewModelScope.launch {
                 try {
                     repository.save(
-                        it, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
+                        postItem, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
                     )
 
                     _postCreated.value = Unit
@@ -175,7 +180,16 @@ class PostViewModel @Inject constructor(
 
     }
 
-    fun removeById(id: Int) {
-        TODO()
+    fun removePost(post: PostItem) {
+        val currentPosts = post.copy()
+        viewModelScope.launch {
+            try {
+                repository.removeById(post.id)
+                _successEvent.value = "Post deleted"
+            } catch (_: Throwable) {
+                _state.value = FeedModelState(error = true)
+                repository.restorePost(currentPosts)
+            }
+        }
     }
 }

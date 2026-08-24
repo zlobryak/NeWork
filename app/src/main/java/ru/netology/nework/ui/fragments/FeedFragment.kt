@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -63,7 +64,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onRemove(post: PostItem) {
-                viewModel.removeById(post.id)
+                viewModel.removePost(post)
             }
 
             override fun onShare(post: PostItem) {
@@ -157,10 +158,10 @@ class FeedFragment : Fragment() {
         viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
             Log.e("LIKE_DEBUG", "ПОЙМАНА ОШИБКА: $errorMessage")
             // Для наглядности можно вывести Toast, чтобы точно увидеть ошибку на экране
-            android.widget.Toast.makeText(
+            Toast.makeText(
                 requireContext(),
                 errorMessage,
-                android.widget.Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT
             ).show()
         }
 
@@ -184,6 +185,16 @@ class FeedFragment : Fragment() {
             auth.removeAuth()
 
             findNavController().navigate(R.id.action_feedFragment_to_loginFragment)
+        }
+
+        //Показываем сообщение при удачном удалении
+        viewModel.successEvent.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+
+        //Показываем ошибку пользователю
+        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
         }
 
         return binding.root
