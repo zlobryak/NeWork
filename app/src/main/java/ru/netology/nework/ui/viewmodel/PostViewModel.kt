@@ -17,6 +17,7 @@ import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 private val empty = PostItem(
     id = 0,
@@ -87,15 +88,20 @@ class PostViewModel @Inject constructor(
     private val _errorEvent = SingleLiveEvent<String>()
     val errorEvent: LiveData<String> = _errorEvent
 
-    private val edited = MutableLiveData(empty)
+    // Приватное изменяемое состояние. Инициализируем его значением 'empty', чтобы избежать null
+    private val _edited = MutableLiveData(empty)
+
+    // Публичное только-для-чтения состояние для наблюдения во Fragment
+    val edited: LiveData<PostItem>
+        get() = _edited
     private val _postCreated = SingleLiveEvent<Unit>()
+    val postCreated: LiveData<Unit>
+        get() = _postCreated
 
     private val _state = MutableLiveData(FeedModelState())
     private val _successEvent = SingleLiveEvent<String>()
     val successEvent: LiveData<String> = _successEvent
 
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
 
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>
@@ -129,12 +135,15 @@ class PostViewModel @Inject constructor(
                 }
             }
         }
-        edited.value = empty
+        _edited.value = empty
         _photo.value = noPhoto
     }
 
     fun edit(post: PostItem) {
-        edited.value = post
+        _edited.value = post
+        if (post.attachment != null) {
+            changePhoto(post.attachment.url.toUri())
+        }
     }
 
     fun changeContent(content: String) {
@@ -142,7 +151,7 @@ class PostViewModel @Inject constructor(
         if (edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        _edited.value = edited.value?.copy(content = text)
     }
 
     fun changePhoto(uri: Uri?) {
