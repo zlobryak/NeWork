@@ -157,7 +157,6 @@ class PostViewModel @Inject constructor(
     fun changePhoto(uri: Uri?) {
         _photo.value = PhotoModel(uri)
     }
-//TODO Предложить авторизацию, если пользователь не авторизован. Сейчас ничего не происходит, если нет авторизации
 
     fun likePost(post: PostItem) {
         Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
