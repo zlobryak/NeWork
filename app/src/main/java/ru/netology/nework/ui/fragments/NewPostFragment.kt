@@ -3,7 +3,6 @@ package ru.netology.nework.ui.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
@@ -18,24 +17,23 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
-import ru.netology.nework.data.dto.PostItem
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
 import ru.netology.nework.ui.viewmodel.PostViewModel
-import ru.netology.nework.utils.PostItemArg
-import kotlin.getValue
+import androidx.navigation.fragment.navArgs
+import androidx.core.net.toUri
+import ru.netology.nework.view.loadAttachment
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
 
     companion object {
         var Bundle.textArg: String? by StringArg
-        var Bundle.postItemArg: PostItem? by PostItemArg()
-
         private const val DRAFT_KEY = "new_post_draft"
     }
 
+    private val args: NewPostFragmentArgs by navArgs()
     private val viewModel: PostViewModel by activityViewModels()
     private var fragmentBinding: FragmentNewPostBinding? = null
     private lateinit var sharedPreferences: SharedPreferences
@@ -50,94 +48,106 @@ class NewPostFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentNewPostBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        val binding = FragmentNewPostBinding.inflate(inflater, container, false)
         this.fragmentBinding = binding
 
         //  Определяем режим: редактирование или создание
-        val postToEdit = arguments?.postItemArg
+        val postToEdit = args.postItemArg
+        val isEditMode = postToEdit != null
 
-        if (postToEdit != null) {
-            // Режим редактирования: передаем пост в ViewModel
+        // Инициализируем состояние ViewModel (Единая точка входа для данных)
+        if (isEditMode) {
             viewModel.edit(postToEdit)
         } else {
-            // Режим создания: проверяем аргумент текста или черновик
             val initialText = arguments?.textArg ?: sharedPreferences.getString(DRAFT_KEY, "")
             if (!initialText.isNullOrEmpty()) {
                 viewModel.changeContent(initialText)
             }
         }
 
-        // Реактивное заполнение UI из состояния ViewModel
+        observeViewModel(binding, isEditMode)
+
+        // Настраиваем взаимодействие с UI
+        setupImagePicker(binding)
+        setupMenu(isEditMode)
+        setupBackPressed(isEditMode, binding)
+
+        // Запрашиваем фокус только при создании нового поста
+        if (!isEditMode) {
+            binding.edit.requestFocus()
+        }
+
+        return binding.root
+    }
+
+    // Методы
+
+    private fun observeViewModel(binding: FragmentNewPostBinding, isEditMode: Boolean) {
         viewModel.edited.observe(viewLifecycleOwner) { post ->
-            if (post.id != 0) { // Это существующий пост
-                binding.edit.setText(post.content)
-                viewModel.changePhoto(Uri.parse(post.attachment?.url))
+            // Всегда берем текст из ViewModel, чтобы избежать рассинхронизации
+            binding.edit.setText(post.content)
+
+            // Если это редактирование и есть вложение, инициализируем фото
+            if (isEditMode && post.attachment?.url != null) {
+                viewModel.changePhoto(post.attachment.url.toUri())
             }
         }
 
-        viewModel.photo.observe(viewLifecycleOwner) {
-            if (it.uri == null) {
+        viewModel.photo.observe(viewLifecycleOwner) { photoModel ->
+            if (photoModel.uri == null) {
                 binding.photoContainer.visibility = View.GONE
-                return@observe
-            }
+            } else {
+                binding.photoContainer.visibility = View.VISIBLE
 
-            binding.photoContainer.visibility = View.VISIBLE
-            binding.photo.setImageURI(it.uri)
-        }
+                val uriString = photoModel.uri.toString()
 
-        arguments?.textArg
-            ?.let(binding.edit::setText)
-
-        binding.edit.requestFocus()
-
-        val pickPhotoLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                when (it.resultCode) {
-                    ImagePicker.RESULT_ERROR -> {
-                        Snackbar.make(
-                            binding.root,
-                            ImagePicker.getError(it.data),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-
-                    Activity.RESULT_OK -> viewModel.changePhoto(it.data?.data)
+                // Это удаленная ссылка или локальный файл?
+                if (uriString.startsWith("http://") || uriString.startsWith("https://")) {
+                    // Загружаем через Glide (так же, как в адаптере)
+                    binding.photo.loadAttachment(uriString)
+                } else {
+                    // Загружаем локальный файл, выбранный пользователем
+                    binding.photo.setImageURI(photoModel.uri)
                 }
             }
+        }
+
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun setupImagePicker(binding: FragmentNewPostBinding) {
+        val pickPhotoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                ImagePicker.RESULT_ERROR -> {
+                    Snackbar.make(binding.root, ImagePicker.getError(result.data), Snackbar.LENGTH_LONG).show()
+                }
+                Activity.RESULT_OK -> {
+                    viewModel.changePhoto(result.data?.data)
+                }
+            }
+        }
 
         binding.pickPhoto.setOnClickListener {
             ImagePicker.with(this)
                 .crop()
                 .compress(2048)
                 .provider(ImageProvider.GALLERY)
-                .galleryMimeTypes(
-                    arrayOf(
-                        "image/png",
-                        "image/jpeg",
-                    )
-                )
+                .galleryMimeTypes(arrayOf("image/png", "image/jpeg"))
                 .createIntent(pickPhotoLauncher::launch)
         }
 
         binding.removePhoto.setOnClickListener {
             viewModel.changePhoto(null)
         }
+    }
 
-        // Навигация при успешном создании/обновлении
-        viewModel.postCreated.observe(viewLifecycleOwner) {
-            findNavController().navigateUp()
-        }
-
-        // Обработка кнопки "Сохранить" в меню
+    private fun setupMenu(isEditMode: Boolean) {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_new_post, menu)
-                menu.findItem(R.id.save)?.title = if (postToEdit != null) getString(R.string.save) else getString(R.string.publish)
-
+                menu.findItem(R.id.save)?.title = if (isEditMode) getString(R.string.save) else getString(R.string.publish)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
@@ -147,32 +157,32 @@ class NewPostFragment : Fragment() {
                             viewModel.changeContent(it.edit.text.toString())
                             viewModel.save()
                             AndroidUtils.hideKeyboard(requireView())
-                            if (postToEdit == null) {
+
+                            // Очищаем черновик только при создании нового поста
+                            if (!isEditMode) {
                                 sharedPreferences.edit { remove(DRAFT_KEY) }
                             }
                         }
                         true
                     }
-
                     else -> false
                 }
-
         }, viewLifecycleOwner)
+    }
 
-        // Обработка системной кнопки "Назад" для сохранения черновика
+    private fun setupBackPressed(isEditMode: Boolean, binding: FragmentNewPostBinding) {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val draftText = binding.edit.text?.toString()?.trim()
-                // Сохраняем черновик только если мы в режиме создания и текст не пустой
-                if (postToEdit == null && !draftText.isNullOrEmpty()) {
+
+                // Сохраняем черновик только для новых постов, если текст не пустой
+                if (!isEditMode && !draftText.isNullOrEmpty()) {
                     sharedPreferences.edit { putString(DRAFT_KEY, draftText) }
                 }
                 findNavController().navigateUp()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
-
-        return binding.root
     }
 
     override fun onDestroyView() {
@@ -181,4 +191,4 @@ class NewPostFragment : Fragment() {
     }
 }
 
-//TODO Refactor
+//TODO НА этот экран не должен попадать неавторизованный пользователь

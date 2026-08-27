@@ -49,22 +49,6 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     auth: AppAuth,
 ) : ViewModel() {
-//    private val cached: Flow<PagingData<FeedItem>> = repository
-//        .data
-//        .map { pagingData ->
-//            pagingData.insertSeparators(
-//                generator = { before, after ->
-//                    if (before?.id?.rem(5) != 0L) null else
-//                        Ad(
-//                            Random.nextLong(),
-//                            "https://netology.ru",
-//                            "figma.jpg"
-//                        )
-//                }
-//            )
-//        }
-//        .cachedIn(viewModelScope)
-
     val data: Flow<PagingData<PostItem>> = auth.authStateFlow
         .onEach { Log.d("AUTH", "authStateFlow emitted: $it") }
         .flatMapLatest { (myId, _) ->
@@ -125,9 +109,15 @@ class PostViewModel @Inject constructor(
         edited.value?.let { postItem ->
             viewModelScope.launch {
                 try {
-                    repository.save(
-                        postItem, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
-                    )
+
+                    // Проверяем, является ли URI локальным файлом (content:// или file://)
+                    val localFile = _photo.value?.uri?.takeIf { uri ->
+                        uri.scheme == "content" || uri.scheme == "file"
+                    }?.toFile()
+
+                    val mediaUpload = localFile?.let { MediaUpload(it) }
+
+                    repository.save(postItem, mediaUpload)
 
                     _postCreated.value = Unit
                 } catch (e: Exception) {
