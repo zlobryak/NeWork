@@ -25,6 +25,7 @@ import ru.netology.nework.ui.adapter.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.PostViewModel
 import javax.inject.Inject
 
@@ -51,7 +52,9 @@ class FeedFragment : Fragment() {
 
         val adapter = FeedAdapter(object : FeedAdapter.OnInteractionListener {
             override fun onEdit(post: PostItem) {
-                viewModel.edit(post)
+                Log.d("NAVIGATION_DEBUG", "Попытка редактирования поста с ID: ${post.id}")
+                val action = actionFeedFragmentToNewPostFragment(post)
+                findNavController().navigate(action)
             }
 
             override fun onLike(post: PostItem) {
@@ -128,41 +131,15 @@ class FeedFragment : Fragment() {
             }
         }
 
-        // Устаревший вариант
-        /*
-        lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest { state ->
-                binding.swiperefresh.isRefreshing =
-                    state.refresh is LoadState.Loading ||
-                    state.prepend is LoadState.Loading ||
-                    state.append is LoadState.Loading
-            }
-        }
-         */
-
-        // Актуальный вариант
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swiperefresh.isRefreshing =
                         state.refresh is LoadState.Loading
-                                //В коде из лекции индикатор загрузки отображается во всех трех состояниях.
-                                //Для выполнения задания номер 1 оставляем индикатор только для REFRESH
                                 || state.prepend is LoadState.Loading ||
                                 state.append is LoadState.Loading
                 }
             }
-        }
-
-// Наблюдаем за одноразовыми событиями ошибки
-        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
-            Log.e("LIKE_DEBUG", "ПОЙМАНА ОШИБКА: $errorMessage")
-            // Для наглядности можно вывести Toast, чтобы точно увидеть ошибку на экране
-            Toast.makeText(
-                requireContext(),
-                errorMessage,
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)

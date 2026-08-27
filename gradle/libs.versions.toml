@@ -18,19 +18,20 @@ fragment = "1.9.0"
 ksp = "2.3.4"
 lifecycleLivedataKtx = "2.11.0"
 material = "1.14.0"
-googleServices = "4.5.0"
+#googleServices = "4.5.0"
 mapsMobile = "4.29.0-navikit"
 mapsMobileVersion = "4.39.1-navikit"
 converterGson = "3.0.0"
 gson = "2.14.0"
 loggingInterceptor = "5.5.0"
-navigationFragmentKtx = "2.9.8"
+navigationFragmentKtx = "2.10.0"
 glide = "5.0.9"
 pagingRuntimeKtx = "3.5.1"
 swiperefreshlayout = "1.2.0"
 imagepicker = "2.1"
 ucrop = "2.2.11"
 roomKtx = "2.8.4"
+navigation = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -78,4 +79,5 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 #google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
