@@ -29,13 +29,39 @@
         android:id="@+id/newPostFragment"
         android:name="ru.netology.nework.ui.fragments.NewPostFragment"
         android:label="New post"
-        tools:layout="@layout/fragment_new_post" />
+        tools:layout="@layout/fragment_new_post">
+
+        <argument
+            android:name="postItemArg"
+            app:argType="ru.netology.nework.data.dto.PostItem"
+            app:nullable="true" />
+
+        <argument
+            android:name="textArg"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <argument
+        android:name="post_item_arg"
+        android:defaultValue="@null"
+        app:argType="ru.netology.nework.data.dto.PostItem"
+        app:nullable="true" />
+
+
+    <argument
+        android:name="textArg"
+        android:defaultValue="@null"
+        app:argType="string"
+        app:nullable="true" />
+
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="ru.netology.nework.ui.fragments.AuthFragment"
         android:label="Login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_feedFragment"
             app:destination="@id/feedFragment" />

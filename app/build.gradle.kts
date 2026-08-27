@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin) //Передаем объекты для редактирования в фрагменты для их сзодания
 //    alias(libs.plugins.google.services) В проекте не используется
 }
 
@@ -92,6 +93,4 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout) //Обновление страницы
     implementation(libs.imagepicker) //Выбор фото для загрузки
     implementation(libs.ucrop)
-
-
 }
