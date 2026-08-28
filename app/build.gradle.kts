@@ -1,10 +1,12 @@
+import org.gradle.kotlin.dsl.ksp
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.androidx.navigation.safeargs.kotlin) //Передаем объекты для редактирования в фрагменты для их сзодания
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin) //Передаем объекты для редактирования во фрагменты для их сзодания
 //    alias(libs.plugins.google.services) В проекте не используется
 }
 
@@ -88,6 +90,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx) //Навигация между фрагментами
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.glide) //Для загрузи изображений
+    ksp(libs.glide.ksp) // Процессор аннотаций через KSP
+    implementation(libs.glide.okhttp3.integration)
     implementation(libs.androidx.paging.runtime.ktx) //Пагинация
     implementation(libs.androidx.room.paging) //Бд
     implementation(libs.androidx.swiperefreshlayout) //Обновление страницы
