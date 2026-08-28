@@ -24,7 +24,7 @@ import ru.netology.nework.ui.adapter.FeedAdapter
 import ru.netology.nework.ui.adapter.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.PostViewModel
 import javax.inject.Inject

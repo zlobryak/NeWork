@@ -10,8 +10,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.dto.MediaUpload
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.data.repository.PostRepository
 import ru.netology.nework.error.ApiError

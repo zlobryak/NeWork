@@ -1,7 +1,9 @@
-package ru.netology.nework.data.dto
+package ru.netology.nework.data.dto.post
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.entity.PostEntity
 
 @Parcelize

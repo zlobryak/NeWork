@@ -3,8 +3,8 @@ package ru.netology.nework.data.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.netology.nework.data.dto.PostItem
-import ru.netology.nework.data.dto.Users
+import ru.netology.nework.data.dto.post.PostItem
+import ru.netology.nework.data.dto.post.Users
 import kotlin.String
 
 @Entity

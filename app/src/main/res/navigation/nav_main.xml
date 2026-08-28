@@ -34,14 +34,14 @@
         <argument
             android:name="postItemArg"
             android:defaultValue="@null"
-            app:argType="ru.netology.nework.data.dto.PostItem"
+            app:argType="ru.netology.nework.data.dto.post.PostItem"
             app:nullable="true" />
     </fragment>
 
     <argument
         android:name="post_item_arg"
         android:defaultValue="@null"
-        app:argType="ru.netology.nework.data.dto.PostItem"
+        app:argType="ru.netology.nework.data.dto.post.PostItem"
         app:nullable="true" />
 
 

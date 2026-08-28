@@ -10,9 +10,9 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-import ru.netology.nework.data.dto.AuthResponse
-import ru.netology.nework.data.dto.Media
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.AuthResponse
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.PostItem
 
 interface ApiService {
     @GET("posts")

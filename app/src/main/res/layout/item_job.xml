@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/common_spacing"
+    android:layout_marginVertical="@dimen/common_spacing"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="12dp"
+    app:strokeColor="#CAC4D0"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_spacing">
+
+
+        <TextView
+            android:id="@+id/place"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:singleLine="true"
+            android:textColor="@color/Text_color_post_headers"
+            app:layout_constraintBottom_toTopOf="@id/job"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Адмирал" />
+
+        <TextView
+            android:id="@+id/job"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            app:layout_constraintBottom_toTopOf="@id/link"
+            app:layout_constraintStart_toStartOf="@id/place"
+            app:layout_constraintTop_toTopOf="@id/place"
+            tools:text="Начальник смены" />
+
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:autoLink="web"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Post_card_content_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/job"
+            tools:text="https://www.figma.com/design/8z1sV6KIf6Sc1y02TrY2XS/Nmedia?node-id=81-2655&t=dVgxGVwszzW14HVn-0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

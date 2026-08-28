@@ -2,9 +2,9 @@ package ru.netology.nework.data.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.netology.nework.data.dto.Media
-import ru.netology.nework.data.dto.MediaUpload
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.dto.post.PostItem
 
 interface PostRepository {
     val data: Flow<PagingData<PostItem>>

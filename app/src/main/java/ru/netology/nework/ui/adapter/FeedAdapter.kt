@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
