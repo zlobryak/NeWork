@@ -61,7 +61,6 @@ class AuthFragment : Fragment() {
                 is LoginState.Success -> {
                     binding.loading.visibility = View.GONE
                     binding.loginButton.isEnabled = true
-                    //Обновим посты после удачного логина, так что бы все новые сразу стали видимы
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.refresh()
                     }

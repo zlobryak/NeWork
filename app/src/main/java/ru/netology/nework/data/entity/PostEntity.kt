@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.dto.post.Users
+import ru.netology.nework.data.dto.user.Users
 import kotlin.String
 
 @Entity
@@ -32,7 +32,7 @@ data class PostEntity(
     val isSynced: Boolean,
     val syncStatus: SyncStatus,
 
-) {
+    ) {
     fun toDto() = PostItem(
         id,
         attachment?.toDto(),

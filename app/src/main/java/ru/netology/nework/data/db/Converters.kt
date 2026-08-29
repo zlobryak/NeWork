@@ -3,7 +3,7 @@ package ru.netology.nework.data.db
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.netology.nework.data.dto.post.Users
+import ru.netology.nework.data.dto.user.Users
 
 class Converters {
 

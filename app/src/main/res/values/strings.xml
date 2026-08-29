@@ -61,4 +61,6 @@
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="publish">Publish</string>
     <string name="save">Save</string>
+    <string name="jobs">Jobs</string>
+    <string name="wall">Wall</string>
 </resources>

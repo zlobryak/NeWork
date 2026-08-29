@@ -1,8 +1,12 @@
 package ru.netology.nework.data.dto.event
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
+import ru.netology.nework.data.dto.user.Users
 
+@Parcelize
 data class EventItem(
     val attachment: Attachment,
     val author: String,
@@ -21,5 +25,5 @@ data class EventItem(
     val published: String,
     val speakerIds: List<Int>,
     val type: String,
-    val users: Users
-)
+    val users: Users?
+) : Parcelable

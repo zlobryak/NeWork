@@ -23,6 +23,7 @@ import ru.netology.nework.error.UnknownError
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
 import java.io.IOException
@@ -169,6 +170,14 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
+    }
+
+    override suspend fun getPostsByUserId(userId: Int): List<PostItem> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getJobsByUserId(userId: Int): List<JobItem> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

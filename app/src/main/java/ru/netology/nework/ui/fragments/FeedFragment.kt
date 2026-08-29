@@ -58,7 +58,6 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: PostItem) {
-                // 2. Второй лог. Если он есть, а первого нет -> странно. Если его нет -> проблема в передаче слушателя
                 Log.d(
                     "LIKE_DEBUG",
                     "Fragment получил onLike для Post ID: ${post.id}, isSynced: ${post.isSynced}"
@@ -114,14 +113,6 @@ class FeedFragment : Fragment() {
             }
         }).attachToRecyclerView(binding.list)
 
-        // Устаревший вариант
-        /*
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
-        }
-         */
-
-        // Актуальный вариант
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest { pagingData ->

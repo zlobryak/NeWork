@@ -190,4 +190,8 @@ class PostViewModel @Inject constructor(
             }
         }
     }
+
+    fun loadUserPosts(userId: Int) {
+        //TODO загружать посты для стены
+    }
 }
