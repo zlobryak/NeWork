@@ -7,54 +7,55 @@
     android:layout_marginHorizontal="@dimen/common_spacing"
     android:layout_marginVertical="@dimen/common_spacing"
     app:cardCornerRadius="12dp"
-    app:cardElevation="12dp"
-    app:strokeColor="#CAC4D0"
+    app:cardElevation="2dp"
+    app:strokeColor="#E0E0E0"
     app:strokeWidth="1dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/common_spacing">
 
-
         <TextView
-            android:id="@+id/place"
-            android:layout_width="0dp"
+            android:id="@+id/name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/common_spacing"
-            android:ellipsize="end"
-            android:fontFamily="@font/roboto"
-            android:singleLine="true"
-            android:textColor="@color/Text_color_post_headers"
-            app:layout_constraintBottom_toTopOf="@id/job"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Адмирал" />
-
-        <TextView
-            android:id="@+id/job"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/common_spacing"
             android:fontFamily="@font/roboto"
             android:textColor="@color/Text_color_post_headers"
-            app:layout_constraintBottom_toTopOf="@id/link"
-            app:layout_constraintStart_toStartOf="@id/place"
-            app:layout_constraintTop_toTopOf="@id/place"
-            tools:text="Начальник смены" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="ПАО ПСБ" />
 
+        <TextView
+            android:id="@+id/dates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/roboto"
+            android:textColor="#757575"
+            android:textSize="12sp"
+            tools:text="1 августа 2020 – НВ" />
 
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="14sp"
+            tools:text="Главный инженер-программист" />
         <TextView
             android:id="@+id/link"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_spacing"
+            android:layout_marginTop="16dp"
             android:autoLink="web"
             android:fontFamily="@font/roboto"
-            android:textColor="@color/Post_card_content_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/job"
-            tools:text="https://www.figma.com/design/8z1sV6KIf6Sc1y02TrY2XS/Nmedia?node-id=81-2655&t=dVgxGVwszzW14HVn-0" />
+            android:textColor="#1976D2"
+            android:textSize="12sp"
+            tools:text="https://m2.material.io/components/cards" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
