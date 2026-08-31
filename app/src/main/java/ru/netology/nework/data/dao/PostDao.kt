@@ -43,4 +43,12 @@ interface PostDao {
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
     suspend fun getPostById(id: Int): PostEntity
+
+    // Метод для стены конкретного пользователя
+    @Query("SELECT * FROM PostEntity WHERE authorId = :authorId ORDER BY id DESC")
+    fun pagingSourceByAuthorId(authorId: Int): PagingSource<Int, PostEntity>
+
+    // Метод для очистки постов конкретного пользователя в RemoteMediator
+    @Query("DELETE FROM PostEntity WHERE authorId = :authorId")
+    suspend fun clearPostsByAuthorId(authorId: Int)
 }

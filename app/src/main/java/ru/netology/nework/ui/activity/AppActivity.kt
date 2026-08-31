@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment

@@ -13,7 +13,7 @@ import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.entity.PostEntity
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class PostViewModel @Inject constructor(
     val data: Flow<PagingData<PostItem>> = auth.authStateFlow
         .onEach { Log.d("AUTH", "authStateFlow emitted: $it") }
         .flatMapLatest { (myId, _) ->
-            repository.data.map { pagingData ->
+            repository.getAllPostsData.map { pagingData ->
                 pagingData.map { item ->
                     item.copy(ownedByMe = item.authorId == myId.toInt())
                 }

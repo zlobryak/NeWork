@@ -8,6 +8,7 @@ import ru.netology.nework.data.entity.PostRemoteKeyEntity
 
 @Dao
 interface PostRemoteKeyDao {
+    // Методы для общей ленты
     @Query("SELECT COUNT(*) == 0 FROM PostRemoteKeyEntity")
     suspend fun isEmpty(): Boolean
 

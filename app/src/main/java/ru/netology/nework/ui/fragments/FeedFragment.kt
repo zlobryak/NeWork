@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.R
 import ru.netology.nework.ui.adapter.FeedAdapter
 import ru.netology.nework.ui.adapter.PagingLoadStateAdapter

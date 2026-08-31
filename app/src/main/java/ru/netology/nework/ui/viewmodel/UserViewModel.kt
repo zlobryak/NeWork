@@ -7,13 +7,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.api.WallApiService
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
+    private val wallApiService: WallApiService,
     private val repository: PostRepository,
 ) : ViewModel() {
 

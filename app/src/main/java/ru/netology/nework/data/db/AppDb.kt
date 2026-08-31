@@ -7,10 +7,21 @@ import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.data.entity.PostRemoteKeyEntity
 import ru.netology.nework.data.dao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.UserWallRemoteKeyDao
+import ru.netology.nework.data.entity.UserWallRemoteKeyEntity
 
-@Database(entities = [PostEntity::class, PostRemoteKeyEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        PostEntity::class,
+        PostRemoteKeyEntity::class,
+        UserWallRemoteKeyEntity::class
+    ],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class AppDb : RoomDatabase() {
     abstract fun postDao(): PostDao
     abstract fun postRemoteKeyDao(): PostRemoteKeyDao
+    abstract fun userWallRemoteKeyDao(): UserWallRemoteKeyDao
 }

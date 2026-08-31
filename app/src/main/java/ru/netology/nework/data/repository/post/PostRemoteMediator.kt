@@ -1,4 +1,4 @@
-package ru.netology.nework.data.repository
+package ru.netology.nework.data.repository.post
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -107,7 +107,7 @@ class PostRemoteMediator @Inject constructor(
 
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            Log.e("POST_MEDIATOR_ERROR", "Ошибка загрузки в RemoteMediator", e)
+            Log.e("POST_MEDIATOR_ERROR", "Ошибка загрузки в PostRemoteMediator", e)
             return MediatorResult.Error(e)
         }
     }
