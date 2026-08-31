@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.dto.user.Users
+import ru.netology.nework.data.dto.user.UserItem
 import kotlin.String
 
 @Entity
@@ -26,7 +26,7 @@ data class PostEntity(
     val mentionIds: List<Int>?,
     val mentionedMe: Boolean,
     val published: String,
-    val users: Users?,
+    val users: Map<String, UserItem>? = null,
     val ownedByMe: Boolean,
     val isDeleting: Boolean = false,
     val isSynced: Boolean,

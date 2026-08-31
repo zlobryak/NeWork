@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
-import ru.netology.nework.data.dto.user.Users
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.PostEntity
 
 @Parcelize
@@ -23,7 +23,7 @@ data class PostItem(
     val mentionIds: List<Int>?,
     val mentionedMe: Boolean,
     val published: String,
-    val users: Users?,
+    val users: Map<String, UserItem>? = null,
     @Transient
     val ownedByMe: Boolean,
     @Transient

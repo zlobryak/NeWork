@@ -45,7 +45,7 @@ class UserFragment : Fragment() {
              setDisplayHomeAsUpEnabled(true)
          }
 
-        // 3. Загружаем аватар
+        //  Загружаем аватар
         Glide.with(this)
             .load(user.avatar)
             .into(binding.userPhoto)
@@ -62,7 +62,7 @@ class UserFragment : Fragment() {
         }
     }
 
-    private fun setupViewPager(userId: Int) {
+    private fun setupViewPager(userId: Int?) {
         val adapter = UserPagerAdapter(this, userId)
         binding.viewPager.adapter = adapter
 

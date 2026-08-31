@@ -7,7 +7,7 @@ import ru.netology.nework.ui.fragments.userfragment.UserWallFragment
 
 class UserPagerAdapter(
     fragment: Fragment,
-    private val userId: Int
+    private val userId: Int?
 ) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = 2

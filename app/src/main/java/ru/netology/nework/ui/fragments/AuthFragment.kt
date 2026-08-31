@@ -20,8 +20,12 @@ import ru.netology.nework.ui.viewmodel.LoginState
 class AuthFragment : Fragment() {
 
     private val viewModel: AuthFragmentViewModel by activityViewModels()
-
     private var _binding: FragmentLoginBinding? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.resetState()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

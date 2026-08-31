@@ -46,9 +46,6 @@ interface ApiService {
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
-    @DELETE("posts/{id}")
-    suspend fun removeById(@Path("id") id: Long): Response<Unit>
-
     @POST("posts/{id}/likes")
     suspend fun likeById(@Path("id") id: Int): Response<PostItem>
 
@@ -70,7 +67,6 @@ interface ApiService {
         @Part avatar: MultipartBody.Part // Всегда не null
     ): Response<AuthResponse>
 
-    //TODO Рефакторинг регистрации
 }
 
 //TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

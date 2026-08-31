@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
-import ru.netology.nework.data.dto.user.Users
+import ru.netology.nework.data.dto.user.UserItem
 
 @Parcelize
 data class EventItem(
@@ -25,5 +25,5 @@ data class EventItem(
     val published: String,
     val speakerIds: List<Int>,
     val type: String,
-    val users: Users?
+    val users: Map<String, UserItem>? = null,
 ) : Parcelable

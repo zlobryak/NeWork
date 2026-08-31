@@ -77,25 +77,25 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
                     R.id.signout -> {
                         auth.removeAuth()
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
                         true
                     }
-
                     else -> false
                 }
 
         })
 
-// Получаем NavController из нашего FragmentContainerView
+        // Получаем NavController из нашего FragmentContainerView
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-// Настраиваем фрагмент верхнего уровня
+        // Настраиваем фрагмент верхнего уровня
         val appBarConfiguration = AppBarConfiguration(
             topLevelDestinationIds = setOf(R.id.feedFragment)
         )
 
-// Находим наше нижнее меню
+        // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
 // Связываем их

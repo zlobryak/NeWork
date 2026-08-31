@@ -23,10 +23,10 @@ class UserJobsFragment : Fragment() {
     companion object {
         private const val ARG_USER_ID = "user_id_arg"
 
-        fun newInstance(userId: Int): UserWallFragment {
+        fun newInstance(userId: Int?): UserWallFragment {
             return UserWallFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_USER_ID, userId)
+                    putInt(ARG_USER_ID, userId!!)
                 }
             }
         }

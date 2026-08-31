@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="0dp">
 
-    <!-- 1. Свайп-рефреш и список (самый нижний слой) -->
+    <!--Свайп-рефреш и список (самый нижний слой) -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- 2. Оверлей с ошибками и прогрессом (поверх списка) -->
+    <!-- Оверлей с ошибками и прогрессом (поверх списка) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -83,7 +83,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 3. FAB (поверх всего, позиционируется через layout_gravity) -->
+    <!-- FAB (поверх всего, позиционируется через layout_gravity) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
         android:layout_width="wrap_content"

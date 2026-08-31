@@ -3,11 +3,12 @@ package ru.netology.nework.data.db
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.netology.nework.data.dto.user.Users
+import ru.netology.nework.data.dto.user.UserItem
 
 class Converters {
 
     private val gson = Gson()
+    private val mapType = object : TypeToken<Map<String, UserItem>>() {}.type
 
     @TypeConverter
     fun fromIntList(value: List<Int>?): String? {
@@ -25,17 +26,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromUsers(value: Users?): String? {
-        return value?.let { gson.toJson(it) }
+    fun fromUsersMap(map: Map<String, UserItem>?): String? {
+        return gson.toJson(map)
     }
 
     @TypeConverter
-    fun toUsers(value: String?): Users? {
-        if (value.isNullOrEmpty()) {
-            return null
-        }
-
-        val type = object : TypeToken<Users>() {}.type
-        return gson.fromJson(value, type)
+    fun toUsersMap(json: String?): Map<String, UserItem>? {
+        if (json == null) return null
+        return gson.fromJson(json, mapType)
     }
 }

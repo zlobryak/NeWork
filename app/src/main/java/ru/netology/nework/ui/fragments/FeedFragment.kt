@@ -140,9 +140,8 @@ class FeedFragment : Fragment() {
             if (auth.authStateFlow.value.token != null) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
             } else {
-                findNavController().navigate(R.id.loginFragment)
+                findNavController().navigate(R.id.action_feedFragment_to_loginFragment)
             }
-            //TODO Проверить, как должно выглядеть предложение залогиниться для создания нового поста
         }
 
         // Наблюдение за событием перехода на экран логина при нажатии на кнопку лайк(если сервер вернул код 403)

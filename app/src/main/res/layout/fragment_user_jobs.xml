@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/post_card" />
+            tools:listitem="@layout/job_card" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/common_spacing"
-            android:text="@string/empty_posts"
+            android:text="@string/empty_jobs"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

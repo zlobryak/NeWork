@@ -20,8 +20,7 @@ class AuthFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     // Приватный MutableLiveData для изменения состояния внутри ViewModel
-    private val _loginState = MutableLiveData<LoginState>()
-
+    private val _loginState = MutableLiveData<LoginState>(LoginState.Idle)
     // Публичный LiveData для наблюдения из Fragment
     val loginState: LiveData<LoginState> = _loginState
 
@@ -56,10 +55,10 @@ class AuthFragmentViewModel @Inject constructor(
                 //TODO Добавить обработки ошибок из документации
             }
         }
+    }
 
-        fun resetState() {
-            _loginState.value = LoginState.Idle
-        }
+    fun resetState() {
+        _loginState.value = LoginState.Idle
     }
     //Запрашивает новые посты при login
     suspend fun refresh(){
