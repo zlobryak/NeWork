@@ -79,10 +79,8 @@
         tools:layout="@layout/fragment_user">
 
     <argument
-        android:name="userItemArg"
-        android:defaultValue="@null"
-        app:argType="ru.netology.nework.data.dto.user.UserItem"
-        app:nullable="true" />
+        android:name="userIdArg"
+        app:argType="integer" />
     </fragment>
 
     </navigation>

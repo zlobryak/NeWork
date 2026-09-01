@@ -6,6 +6,7 @@ import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.post.Media
 import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.data.dto.post.PostItem
+import ru.netology.nework.data.dto.user.UserItem
 
 interface PostRepository {
     val getAllPostsData: Flow<PagingData<PostItem>>
@@ -18,4 +19,6 @@ interface PostRepository {
     suspend fun upload(upload: MediaUpload): Media
     suspend fun restorePost(post: PostItem)
     suspend fun getPostsByUserId(userId: Int): List<PostItem>
-    suspend fun getJobsByUserId(userId: Int): List<JobItem>}
+    suspend fun getJobsByUserId(userId: Int): List<JobItem>
+    suspend fun getUser(userId: Int): UserItem
+}

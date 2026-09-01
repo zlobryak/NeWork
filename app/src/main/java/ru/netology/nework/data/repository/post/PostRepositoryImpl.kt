@@ -26,6 +26,7 @@ import ru.netology.nework.data.dao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.job.JobItem
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
 import java.io.IOException
@@ -68,6 +69,7 @@ class PostRepositoryImpl @Inject constructor(
             pagingData.map(PostEntity::toDto)
         }
     }
+
     private val currentUserId: Int
         get() = auth.authStateFlow.value.id.toInt()
 
@@ -200,6 +202,21 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun getJobsByUserId(userId: Int): List<JobItem> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getUser(userId: Int): UserItem {
+        try {
+            val response = apiService.getUser(userId)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiError(response.code(), response.message())
+
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

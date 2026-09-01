@@ -36,6 +36,7 @@ class FeedFragment : Fragment() {
 
     @Inject
     lateinit var auth: AppAuth
+
     private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -79,6 +80,14 @@ class FeedFragment : Fragment() {
                 val shareIntent =
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
+            }
+
+            override fun onAuthorClick(userId: Int) {
+                val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
+                    userIdArg = userId
+                )
+                findNavController().navigate(action)
+
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

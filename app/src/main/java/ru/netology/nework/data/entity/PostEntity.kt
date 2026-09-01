@@ -59,7 +59,7 @@ data class PostEntity(
             PostEntity(
                 id = dto.id,
                 attachment = AttachmentEmbeddable.fromDto(dto.attachment),
-                author = dto.author,
+                author = dto.authorName,
                 authorAvatar = dto.authorAvatar,
                 authorId = dto.authorId,
                 authorJob = dto.authorJob,

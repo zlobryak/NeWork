@@ -16,7 +16,6 @@ import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
 
 
-
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
 ) : PagingDataAdapter<PostItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
@@ -26,6 +25,7 @@ class FeedAdapter(
         fun onEdit(post: PostItem) {}
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
+        fun onAuthorClick(userItem: Int) {}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -54,10 +54,18 @@ class FeedAdapter(
 
         fun bind(post: PostItem) {
             binding.apply {
-                author.text = post.author
+                author.text = post.authorName
+                avatar.loadAvatar(post.authorAvatar, post.authorName)
+                // Создаем одно действие для клика по автору и аватару
+                val navigateToProfileAction = View.OnClickListener {
+                    // Замените post.authorId на реальное имя поля в вашем DTO
+                    onInteractionListener.onAuthorClick(post.authorId)
+                }
+                author.setOnClickListener(navigateToProfileAction)
+                avatar.setOnClickListener(navigateToProfileAction)
+
                 published.text = DateUtils.formatIsoDate(post.published)
                 content.text = post.content
-                avatar.loadAvatar(post.authorAvatar, post.author)
                 like.isChecked = post.likedByMe
                 like.text = "${post.likeOwnerIds?.size}"
 

@@ -2,6 +2,7 @@ package ru.netology.nework.ui.viewmodel
 
 import android.net.Uri
 import android.util.Log
+import androidx.activity.R
 import androidx.core.net.toFile
 import androidx.lifecycle.*
 import androidx.paging.*
@@ -23,7 +24,7 @@ private val empty = PostItem(
     id = 0,
     content = "",
     authorId = 0,
-    author = "",
+    authorName = "",
     authorAvatar = "",
     likedByMe = false,
     attachment = null,

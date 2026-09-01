@@ -15,11 +15,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentUserBinding
 import ru.netology.nework.ui.adapter.UserPagerAdapter
+import ru.netology.nework.ui.viewmodel.UserUiState
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UserFragment : Fragment() {
+
+    // Инжектим ViewModel через Hilt
     private val viewModel: UserViewModel by viewModels()
+
+    // Получаем аргумент. Убедитесь, что в nav_graph.xml аргумент называется именно "userIdArg"
     private val args: UserFragmentArgs by navArgs()
 
     private var _binding: FragmentUserBinding? = null
@@ -37,32 +42,48 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ранний выход: если пользователя нет, просто выходим
-        val user = args.userItemArg ?: return
+        // 1. Запускаем загрузку данных при открытии фрагмента
+        viewModel.loadUserData(args.userIdArg)
 
-         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-             title = user.name
-             setDisplayHomeAsUpEnabled(true)
-         }
+        // 2. Наблюдаем за состоянием UI
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UserUiState.Loading -> {
+                    showLoading(true)
+                }
 
-        //  Загружаем аватар
-        Glide.with(this)
-            .load(user.avatar)
-            .into(binding.userPhoto)
+                is UserUiState.Success -> {
+                    showLoading(false)
+                    setupUI(state.user) // Передаем загруженного пользователя в метод отрисовки
+                }
 
-        // Запускаем загрузку данных для этого пользователя
-        viewModel.loadUserData(user.id)
-
-        // Настраиваем ViewPager2 и TabLayout
-        setupViewPager(user.id)
-
-        // Обрабатываем ошибки
-        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
-            Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
+                is UserUiState.Error -> {
+                    showLoading(false)
+                    Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
-    private fun setupViewPager(userId: Int?) {
+    // Вынесли настройку UI в отдельный чистый метод
+    private fun setupUI(user: ru.netology.nework.data.dto.user.UserItem) {
+        // Настройка Action Bar
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            title = user.name
+            setDisplayHomeAsUpEnabled(true)
+        }
+
+        // Загружаем аватар
+        Glide.with(this)
+            .load(user.avatar)
+            .placeholder(R.drawable.ic_manufacturing_24px) // Хорошая практика: ставить заглушку
+            .into(binding.userPhoto)
+
+        // Настраиваем ViewPager2 и TabLayout
+        setupViewPager(user.userId) // Передаем ID для загрузки постов/вакансий
+    }
+
+    private fun setupViewPager(userId: Int) {
         val adapter = UserPagerAdapter(this, userId)
         binding.viewPager.adapter = adapter
 
@@ -75,8 +96,14 @@ class UserFragment : Fragment() {
         }.attach()
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        // TODO Прогресс бар в разметке
+//        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        // binding.viewPager.visibility = if (isLoading) View.GONE else View.VISIBLE
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Защита от утечек памяти
+        _binding = null
     }
 }

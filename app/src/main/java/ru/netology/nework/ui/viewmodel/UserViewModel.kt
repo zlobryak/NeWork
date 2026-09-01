@@ -8,7 +8,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.netology.nework.api.WallApiService
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.repository.post.PostRepository
+import ru.netology.nework.error.ApiError
+import ru.netology.nework.error.NetworkError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
 
@@ -30,9 +33,36 @@ class UserViewModel @Inject constructor(
     private val _errorEvent = SingleLiveEvent<String>()
     val errorEvent: LiveData<String> = _errorEvent
 
+    private val _userState = MutableLiveData<Resource<UserItem>>()
+    val userState: LiveData<Resource<UserItem>> = _userState
+
+    private val _uiState = MutableLiveData<UserUiState>()
+    val uiState: LiveData<UserUiState> = _uiState
+
     fun loadUserData(userId: Int) {
         loadWall(userId)
+
         loadJobs(userId)
+
+        _uiState.value = UserUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                // Вызываем метод из Repository, который может бросить ApiError
+                val user = repository.getUser(userId)
+                _uiState.value = UserUiState.Success(user)
+
+            } catch (e: ApiError) {
+                //TODO Обработать ошибки согласно спецификации API
+                _uiState.value = UserUiState.Error("Ошибка сервера: ${e.message}")
+            } catch (e: NetworkError) {
+                _uiState.value = UserUiState.Error("Проверьте подключение к интернету")
+            } catch (e: UnknownError) {
+                _uiState.value = UserUiState.Error("Произошла непредвиденная ошибка")
+            } catch (e: Exception) {
+                _uiState.value = UserUiState.Error(e.message ?: "Неизвестная ошибка")
+            }
+        }
     }
 
     private fun loadWall(userId: Int) = viewModelScope.launch {
@@ -56,6 +86,19 @@ class UserViewModel @Inject constructor(
             _jobsState.value = FeedModelState(error = true)
         }
     }
+}
+
+sealed class Resource<T>(val data: T? = null, val message: String? = null) {
+    class Success<T>(data: T) : Resource<T>(data)
+    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+    class Loading<T> : Resource<T>()
+}
+
+// Описание всех возможных состояний экрана
+sealed class UserUiState {
+    object Loading : UserUiState()
+    data class Success(val user: UserItem) : UserUiState()
+    data class Error(val message: String) : UserUiState()
 }
 
 //TODO Заголовок -> Имя и логин.
