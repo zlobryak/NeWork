@@ -12,6 +12,6 @@ data class UserWallRemoteKeyEntity(
     val nextKey: Int? = null // Значение ключа (ID последнего поста)
 ) {
     enum class KeyType {
-        AFTER, BEFORE, NEXT
+        AFTER, BEFORE
     }
 }

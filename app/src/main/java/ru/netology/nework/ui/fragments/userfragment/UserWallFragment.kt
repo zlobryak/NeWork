@@ -7,85 +7,86 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.ui.adapter.FeedAdapter
-import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
-import ru.netology.nework.ui.viewmodel.PostViewModel // Или UserViewModel, если решите объединить
-import javax.inject.Inject
+import ru.netology.nework.ui.adapter.PostPagingAdapter
+import ru.netology.nework.ui.adapter.PostLoadStateAdapter
+import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UserWallFragment : Fragment() {
 
-    @Inject
-    lateinit var repository: PostRepository
+    // requireParentFragment() заставляет Hilt вернуть
+    // экземпляр UserViewModel, созданный для UserFragment
+    private val viewModel: UserViewModel by viewModels({ requireParentFragment() })
 
-    private val viewModel: PostViewModel by viewModels()
+    private var _binding: FragmentFeedBinding? = null
+    private val binding get() = _binding!!
 
-    companion object {
-        private const val ARG_USER_ID = "user_id_arg"
-
-        fun newInstance(userId: Int?): UserWallFragment {
-            return UserWallFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_USER_ID, userId!!)
-                }
-            }
-        }
-    }
+    private lateinit var adapter: PostPagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentFeedBinding.inflate(inflater, container, false)
-        binding.list.layoutManager = LinearLayoutManager(requireContext())
-
-        val adapter = FeedAdapter(object : FeedAdapter.OnInteractionListener {
-            override fun onEdit(post: PostItem) {
-                val action = actionFeedFragmentToNewPostFragment(post)
-                findNavController().navigate(action)
-            }
-
-            override fun onLike(post: PostItem) {
-
-                viewModel.likePost(post)
-            }
-
-            override fun onRemove(post: PostItem) {
-                viewModel.removePost(post)
-            }
-
-            override fun onShare(post: PostItem) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
-
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
-        })
-
-        return inflater.inflate(R.layout.fragment_feed, container, false)
+    ): View {
+        // Исправляем двойную инфляцию: используем только binding
+        _binding = FragmentFeedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //  Извлекаем userId из аргументов
-        val userId = requireArguments().getInt(ARG_USER_ID)
+        // Настраиваем RecyclerView и PagingDataAdapter
+        binding.list.layoutManager = LinearLayoutManager(requireContext())
 
-        // Теперь мы знаем, чью стену грузить!
-        // TODO: Вызвать метод ViewModel для загрузки постов этого пользователя
-        viewModel.loadUserPosts(userId)
+        adapter = PostPagingAdapter(
+            onLike = { post -> viewModel.likePost(post) },
+            onRemove = { post -> viewModel.removePost(post) },
+            onShare = { post -> sharePost(post) },
+            onEdit = { post ->
+                // TODO: Здесь  логика навигации к редактированию
+            }
+        )
+
+        //  Добавляем  индикатор загрузки внизу списка при подгрузке новых страниц
+        adapter.withLoadStateFooter(
+            footer = PostLoadStateAdapter { adapter.retry() }
+        )
+
+        binding.list.adapter = adapter
+
+        // Собираем Flow с данными.
+        // Как только UserViewModel загрузит данные, они автоматически попадут сюда.
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.wallPagingData.collect { pagingData ->
+                    adapter.submitData(pagingData)
+                }
+            }
+        }
+    }
+
+    private fun sharePost(post: PostItem) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, post.content)
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(intent, getString(R.string.chooser_share_post)))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

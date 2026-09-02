@@ -11,7 +11,7 @@ import ru.netology.nework.data.entity.PostEntity
 data class PostItem(
     val id: Int,
     val attachment: Attachment?,
-    val authorName: String,
+    val authorName: String?,
     val authorAvatar: String?,
     val authorId: Int,
     val authorJob: String?,

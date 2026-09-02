@@ -25,7 +25,6 @@ import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
-import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
@@ -45,7 +44,11 @@ class PostRepositoryImpl @Inject constructor(
     override val getAllPostsData: Flow<PagingData<PostItem>> = Pager(
         config = PagingConfig(pageSize = 5),
         remoteMediator = PostRemoteMediator(
-            apiService, appDb, postDao, postRemoteKeyDao, auth
+            service = apiService,
+            db = appDb,
+            postDao = postDao,
+            postRemoteKeyDao = postRemoteKeyDao,
+            auth = auth
         ),
         pagingSourceFactory = postDao::pagingSource,
     ).flow.map { pagingData ->
@@ -62,7 +65,6 @@ class PostRepositoryImpl @Inject constructor(
                 appDb = appDb,
                 postDao = postDao,
                 userWallRemoteKeyDao = userWallRemoteKeyDao,
-                auth = auth
             ),
             pagingSourceFactory = { postDao.pagingSourceByAuthorId(userId) }
         ).flow.map { pagingData ->
@@ -194,14 +196,6 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
-    }
-
-    override suspend fun getPostsByUserId(userId: Int): List<PostItem> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getJobsByUserId(userId: Int): List<JobItem> {
-        TODO("Not yet implemented")
     }
 
     override suspend fun getUser(userId: Int): UserItem {

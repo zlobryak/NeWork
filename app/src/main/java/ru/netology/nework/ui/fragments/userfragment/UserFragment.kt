@@ -7,15 +7,18 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentUserBinding
 import ru.netology.nework.ui.adapter.UserPagerAdapter
-import ru.netology.nework.ui.viewmodel.UserUiState
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
@@ -42,30 +45,31 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Запускаем загрузку данных при открытии фрагмента
+        // Запускаем загрузку данных при открытии фрагмента
         viewModel.loadUserData(args.userIdArg)
 
-        // 2. Наблюдаем за состоянием UI
-        viewModel.uiState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UserUiState.Loading -> {
-                    showLoading(true)
-                }
+        // Наблюдаем
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is UserViewModel.UserUiState.Loading -> showLoading(true)
+                        is UserViewModel.UserUiState.Success -> {
+                            showLoading(false)
+                            setupUI(state.user)
+                        }
 
-                is UserUiState.Success -> {
-                    showLoading(false)
-                    setupUI(state.user) // Передаем загруженного пользователя в метод отрисовки
-                }
-
-                is UserUiState.Error -> {
-                    showLoading(false)
-                    Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                        is UserViewModel.UserUiState.Error -> {
+                            showLoading(false)
+                            Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
         }
     }
 
-    // Вынесли настройку UI в отдельный чистый метод
+    // Вынесли настройку UI в отдельный метод
     private fun setupUI(user: ru.netology.nework.data.dto.user.UserItem) {
         // Настройка Action Bar
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
@@ -84,7 +88,7 @@ class UserFragment : Fragment() {
     }
 
     private fun setupViewPager(userId: Int) {
-        val adapter = UserPagerAdapter(this, userId)
+        val adapter = UserPagerAdapter(this)
         binding.viewPager.adapter = adapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->

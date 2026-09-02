@@ -1,105 +1,112 @@
 package ru.netology.nework.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import ru.netology.nework.api.WallApiService
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
-import ru.netology.nework.utils.SingleLiveEvent
+import ru.netology.nework.error.UnknownError
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val wallApiService: WallApiService,
-    private val repository: PostRepository,
+    private val repository: PostRepository
 ) : ViewModel() {
 
-    // Состояния для стены (постов)
-    private val _wallState = MutableLiveData<FeedModelState>()
-    val wallState: LiveData<FeedModelState> = _wallState
+    // Храним текущий userId в StateFlow.
+    // Это позволяет реактивно перезапускать загрузку при смене пользователя.
+    private val _userId = MutableStateFlow<Int?>(null)
 
-    // Состояния для работ (jobs)
-    private val _jobsState = MutableLiveData<FeedModelState>()
-    val jobsState: LiveData<FeedModelState> = _jobsState
+    // Основной поток данных для стены (Paging 3)
+    // flatMapLatest: если userId изменится, старый запрос отменится, и начнется новый.
+    // cachedIn: сохраняет данные в памяти при пересоздании ViewModel (например, при повороте экрана).
+    val wallPagingData: Flow<PagingData<PostItem>> = _userId
+        .filterNotNull()
+        .flatMapLatest { id ->
+            repository.getUserWallData(id)
+        }
+        .cachedIn(viewModelScope)
 
-    private val _errorEvent = SingleLiveEvent<String>()
-    val errorEvent: LiveData<String> = _errorEvent
+    // Грядет
+    private val _jobsState = MutableStateFlow<FeedModelState>(FeedModelState())
+    val jobsState: Flow<FeedModelState> = _jobsState
 
-    private val _userState = MutableLiveData<Resource<UserItem>>()
-    val userState: LiveData<Resource<UserItem>> = _userState
+    private val _userState = MutableStateFlow<Resource<UserItem>?>(null)
+    val userState: Flow<Resource<UserItem>?> = _userState
 
-    private val _uiState = MutableLiveData<UserUiState>()
-    val uiState: LiveData<UserUiState> = _uiState
+    private val _uiState = MutableStateFlow<UserUiState>(UserUiState.Loading)
+    val uiState: Flow<UserUiState> = _uiState
 
+    // Метод инициализации. Теперь он просто задает ID
     fun loadUserData(userId: Int) {
-        loadWall(userId)
+        _userId.value = userId // Это автоматически запустит загрузку стены через flatMapLatest
 
         loadJobs(userId)
-
-        _uiState.value = UserUiState.Loading
-
-        viewModelScope.launch {
-            try {
-                // Вызываем метод из Repository, который может бросить ApiError
-                val user = repository.getUser(userId)
-                _uiState.value = UserUiState.Success(user)
-
-            } catch (e: ApiError) {
-                //TODO Обработать ошибки согласно спецификации API
-                _uiState.value = UserUiState.Error("Ошибка сервера: ${e.message}")
-            } catch (e: NetworkError) {
-                _uiState.value = UserUiState.Error("Проверьте подключение к интернету")
-            } catch (e: UnknownError) {
-                _uiState.value = UserUiState.Error("Произошла непредвиденная ошибка")
-            } catch (e: Exception) {
-                _uiState.value = UserUiState.Error(e.message ?: "Неизвестная ошибка")
-            }
-        }
+        loadUser(userId)
     }
 
-    private fun loadWall(userId: Int) = viewModelScope.launch {
+    private fun loadUser(userId: Int) = viewModelScope.launch {
+        _uiState.value = UserUiState.Loading
         try {
-            _wallState.value = FeedModelState(loading = true)
-            val posts = repository.getPostsByUserId(userId)
-//            _wallState.value = FeedModelState(data = posts )
+            val user = repository.getUser(userId)
+            _userState.value = Resource.Success(user)
+            _uiState.value = UserUiState.Success(user)
+        } catch (e: ApiError) {
+            _uiState.value = UserUiState.Error("Ошибка сервера: ${e.message}")
+        } catch (e: NetworkError) {
+            _uiState.value = UserUiState.Error("Проверьте подключение к интернету")
+        } catch (e: UnknownError) {
+            _uiState.value = UserUiState.Error("Произошла непредвиденная ошибка")
         } catch (e: Exception) {
-            _errorEvent.value = "Ошибка загрузки стены"
-            _wallState.value = FeedModelState(error = true)
+            _uiState.value = UserUiState.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     private fun loadJobs(userId: Int) = viewModelScope.launch {
+//TODO
+    }
+
+    // Ваши существующие классы состояний (оставляем без изменений)
+    sealed class Resource<T>(val data: T? = null, val message: String? = null) {
+        class Success<T>(data: T) : Resource<T>(data)
+        class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+        class Loading<T> : Resource<T>()
+    }
+
+    sealed class UserUiState {
+        object Loading : UserUiState()
+        data class Success(val user: UserItem) : UserUiState()
+        data class Error(val message: String) : UserUiState()
+    }
+
+    fun likePost(post: PostItem) = viewModelScope.launch {
         try {
-            _jobsState.value = FeedModelState(loading = true)
-            val jobs = repository.getJobsByUserId(userId)
-//            _jobsState.value = FeedModelState(data = /* jobs */)
+            repository.likePost(post.id, post.likedByMe)
+
         } catch (e: Exception) {
-            _errorEvent.value = "Ошибка загрузки работ"
-            _jobsState.value = FeedModelState(error = true)
+            //TODO Обработка ошибки like
         }
     }
-}
 
-sealed class Resource<T>(val data: T? = null, val message: String? = null) {
-    class Success<T>(data: T) : Resource<T>(data)
-    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
-    class Loading<T> : Resource<T>()
-}
+    fun removePost(post: PostItem) = viewModelScope.launch {
+        try {
+            repository.removeById(post.id)
 
-// Описание всех возможных состояний экрана
-sealed class UserUiState {
-    object Loading : UserUiState()
-    data class Success(val user: UserItem) : UserUiState()
-    data class Error(val message: String) : UserUiState()
-}
+        } catch (e: Exception) {
+            //TODO Обработка ошибки remove
+        }
+    }
 
-//TODO Заголовок -> Имя и логин.
-//TODO _wallState и _jobsState должны получать данные для feed.
+}

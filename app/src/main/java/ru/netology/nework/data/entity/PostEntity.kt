@@ -13,9 +13,9 @@ data class PostEntity(
     val id: Int,
     @Embedded
     var attachment: AttachmentEmbeddable?,
-    val author: String,
+    val author: String?,
     val authorAvatar: String?,
-    val authorId: Int,
+    val authorId: Int, // В UserItem -> userId
     val authorJob: String?,
     val content: String?,
     @Embedded
