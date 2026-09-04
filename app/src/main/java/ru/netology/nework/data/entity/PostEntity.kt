@@ -3,8 +3,8 @@ package ru.netology.nework.data.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.netology.nework.data.dto.PostItem
-import ru.netology.nework.data.dto.Users
+import ru.netology.nework.data.dto.post.PostItem
+import ru.netology.nework.data.dto.user.UserItem
 import kotlin.String
 
 @Entity
@@ -13,9 +13,9 @@ data class PostEntity(
     val id: Int,
     @Embedded
     var attachment: AttachmentEmbeddable?,
-    val author: String,
+    val author: String?,
     val authorAvatar: String?,
-    val authorId: Int,
+    val authorId: Int, // В UserItem -> userId
     val authorJob: String?,
     val content: String?,
     @Embedded
@@ -26,13 +26,13 @@ data class PostEntity(
     val mentionIds: List<Int>?,
     val mentionedMe: Boolean,
     val published: String,
-    val users: Users?,
+    val users: Map<String, UserItem>? = null,
     val ownedByMe: Boolean,
     val isDeleting: Boolean = false,
     val isSynced: Boolean,
     val syncStatus: SyncStatus,
 
-) {
+    ) {
     fun toDto() = PostItem(
         id,
         attachment?.toDto(),
@@ -59,7 +59,7 @@ data class PostEntity(
             PostEntity(
                 id = dto.id,
                 attachment = AttachmentEmbeddable.fromDto(dto.attachment),
-                author = dto.author,
+                author = dto.authorName,
                 authorAvatar = dto.authorAvatar,
                 authorId = dto.authorId,
                 authorJob = dto.authorJob,

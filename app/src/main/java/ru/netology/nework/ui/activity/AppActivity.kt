@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.ui.viewmodel.AuthViewModel
 import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
@@ -77,25 +77,25 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
                     R.id.signout -> {
                         auth.removeAuth()
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
                         true
                     }
-
                     else -> false
                 }
 
         })
 
-// Получаем NavController из нашего FragmentContainerView
+        // Получаем NavController из нашего FragmentContainerView
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-// Настраиваем фрагмент верхнего уровня
+        // Настраиваем фрагмент верхнего уровня
         val appBarConfiguration = AppBarConfiguration(
             topLevelDestinationIds = setOf(R.id.feedFragment)
         )
 
-// Находим наше нижнее меню
+        // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
 // Связываем их
@@ -103,9 +103,10 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.registrationFragment ||
                 destination.id == R.id.loginFragment ||
-                destination.id == R.id.newPostFragment
+                destination.id == R.id.newPostFragment ||
+                destination.id == R.id.userFragment
             ) {
-                // Если мы на экране регистрации или авторизации - скрываем нижнее меню
+                // Если мы на экране регистрации, авторизации или на фрагменте пользователей - скрываем нижнее меню
                 bottomNav.visibility = View.GONE
             } else {
                 // На всех остальных экранах - показываем

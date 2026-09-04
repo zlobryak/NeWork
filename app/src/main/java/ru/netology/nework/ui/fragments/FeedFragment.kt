@@ -18,13 +18,13 @@ import androidx.recyclerview.widget.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.R
 import ru.netology.nework.ui.adapter.FeedAdapter
 import ru.netology.nework.ui.adapter.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.PostViewModel
 import javax.inject.Inject
@@ -36,6 +36,7 @@ class FeedFragment : Fragment() {
 
     @Inject
     lateinit var auth: AppAuth
+
     private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -58,7 +59,6 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: PostItem) {
-                // 2. Второй лог. Если он есть, а первого нет -> странно. Если его нет -> проблема в передаче слушателя
                 Log.d(
                     "LIKE_DEBUG",
                     "Fragment получил onLike для Post ID: ${post.id}, isSynced: ${post.isSynced}"
@@ -80,6 +80,14 @@ class FeedFragment : Fragment() {
                 val shareIntent =
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
+            }
+
+            override fun onAuthorClick(userId: Int) {
+                val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
+                    userIdArg = userId
+                )
+                findNavController().navigate(action)
+
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
@@ -114,14 +122,6 @@ class FeedFragment : Fragment() {
             }
         }).attachToRecyclerView(binding.list)
 
-        // Устаревший вариант
-        /*
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
-        }
-         */
-
-        // Актуальный вариант
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest { pagingData ->
@@ -149,9 +149,8 @@ class FeedFragment : Fragment() {
             if (auth.authStateFlow.value.token != null) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
             } else {
-                findNavController().navigate(R.id.loginFragment)
+                findNavController().navigate(R.id.action_feedFragment_to_loginFragment)
             }
-            //TODO Проверить, как должно выглядеть предложение залогиниться для создания нового поста
         }
 
         // Наблюдение за событием перехода на экран логина при нажатии на кнопку лайк(если сервер вернул код 403)

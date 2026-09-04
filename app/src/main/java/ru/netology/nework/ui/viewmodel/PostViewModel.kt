@@ -10,10 +10,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.dto.MediaUpload
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.entity.PostEntity
-import ru.netology.nework.data.repository.PostRepository
+import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -23,7 +23,7 @@ private val empty = PostItem(
     id = 0,
     content = "",
     authorId = 0,
-    author = "",
+    authorName = "",
     authorAvatar = "",
     likedByMe = false,
     attachment = null,
@@ -52,7 +52,7 @@ class PostViewModel @Inject constructor(
     val data: Flow<PagingData<PostItem>> = auth.authStateFlow
         .onEach { Log.d("AUTH", "authStateFlow emitted: $it") }
         .flatMapLatest { (myId, _) ->
-            repository.data.map { pagingData ->
+            repository.getAllPostsData.map { pagingData ->
                 pagingData.map { item ->
                     item.copy(ownedByMe = item.authorId == myId.toInt())
                 }
@@ -97,11 +97,11 @@ class PostViewModel @Inject constructor(
 
     fun loadPosts() = viewModelScope.launch {
         try {
-            _dataState.value = FeedModelState(loading = true)
+            _dataState.value = FeedModelState(isLoading = true)
             // repository.stream.cachedIn(viewModelScope).
             _dataState.value = FeedModelState()
         } catch (_: Exception) {
-            _dataState.value = FeedModelState(error = true)
+            _dataState.value = FeedModelState(isError = true)
         }
     }
 
@@ -185,9 +185,13 @@ class PostViewModel @Inject constructor(
                 repository.removeById(post.id)
                 _successEvent.value = "Post deleted"
             } catch (_: Throwable) {
-                _state.value = FeedModelState(error = true)
+                _state.value = FeedModelState(isError = true)
                 repository.restorePost(currentPosts)
             }
         }
+    }
+
+    fun loadUserPosts(userId: Int) {
+        //TODO загружать посты для стены
     }
 }

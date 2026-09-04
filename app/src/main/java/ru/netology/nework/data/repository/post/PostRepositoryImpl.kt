@@ -1,4 +1,4 @@
-package ru.netology.nework.data.repository
+package ru.netology.nework.data.repository.post
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -11,40 +11,73 @@ import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.db.AppDb
-import ru.netology.nework.data.dto.Media
-import ru.netology.nework.data.dto.MediaUpload
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.entity.PostEntity
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.dto.job.JobItem
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
 import java.io.IOException
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
-    appDb: AppDb,
+    private val appDb: AppDb,
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
+    private val userWallRemoteKeyDao: UserWallRemoteKeyDao,
     private val apiService: ApiService,
+    private val wallApiService: WallApiService,
     private val auth: AppAuth
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override val data: Flow<PagingData<PostItem>> = Pager(
+    override val getAllPostsData: Flow<PagingData<PostItem>> = Pager(
         config = PagingConfig(pageSize = 5),
         remoteMediator = PostRemoteMediator(
-            apiService, appDb, postDao, postRemoteKeyDao, auth
+            service = apiService,
+            db = appDb,
+            postDao = postDao,
+            postRemoteKeyDao = postRemoteKeyDao,
+            auth = auth
         ),
         pagingSourceFactory = postDao::pagingSource,
     ).flow.map { pagingData ->
         pagingData.map(PostEntity::toDto)
     }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getUserWallData(userId: Int): Flow<PagingData<PostItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 5),
+            remoteMediator = UserWallRemoteMediator(
+                authorId = userId,
+                wallApiService = wallApiService,
+                appDb = appDb,
+                postDao = postDao,
+                userWallRemoteKeyDao = userWallRemoteKeyDao,
+            ),
+            pagingSourceFactory = { postDao.pagingSourceByAuthorId(userId) }
+        ).flow.map { pagingData ->
+            pagingData.map(PostEntity::toDto)
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getUserJobsData(userId: Int): Flow<PagingData<PostItem>> {
+        TODO("Not yet implemented")
+    }
+
     private val currentUserId: Int
         get() = auth.authStateFlow.value.id.toInt()
 
@@ -169,6 +202,25 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
+    }
+
+    override suspend fun getUser(userId: Int): UserItem {
+        try {
+            val response = apiService.getUser(userId)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiError(response.code(), response.message())
+
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override fun getJobs(userId: Int): JobItem {
+        TODO("Not yet implemented")
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

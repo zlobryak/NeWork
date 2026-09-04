@@ -1,7 +1,7 @@
 package ru.netology.nework.utils
 
 import android.os.Bundle
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.PostItem
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
