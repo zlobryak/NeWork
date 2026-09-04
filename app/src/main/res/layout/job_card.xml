@@ -31,10 +31,9 @@
                 android:textColor="@color/Text_color_post_headers"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="ПАО ПСБ"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/dates"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="ПАО ПСБ" />
 
 
             <!-- Даты начала и окончания работы -->
@@ -86,7 +85,8 @@
                 android:paddingEnd="0dp"
                 app:icon="@drawable/ic_delete_18dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Должность -->
@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto"
+            android:padding="@dimen/common_spacing"
             android:textColor="@color/Text_color_post_headers"
             android:textSize="14sp"
             tools:text="Главный инженер-программист" />
@@ -108,6 +109,7 @@
             android:layout_marginTop="16dp"
             android:autoLink="web"
             android:fontFamily="@font/roboto"
+            android:padding="@dimen/common_spacing"
             android:textColor="#1976D2"
             android:textSize="12sp"
             tools:text="https://m2.material.io/components/cards" />
