@@ -17,6 +17,7 @@
         android:orientation="vertical"
         android:padding="@dimen/common_spacing">
 
+        <!-- Название компании -->
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
@@ -27,16 +28,42 @@
             android:textStyle="bold"
             tools:text="ПАО ПСБ" />
 
-        <TextView
-            android:id="@+id/dates"
+        <!-- Даты начала и окончания работы -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/roboto"
-            android:textColor="#757575"
-            android:textSize="12sp"
-            tools:text="1 августа 2020 – НВ" />
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                tools:text="1 августа 2020" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:fontFamily="@font/roboto"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                android:text="@string/date_divider" />
+
+            <TextView
+                android:id="@+id/finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                tools:text="НВ" />
+        </LinearLayout>
+
+        <!-- Должность -->
         <TextView
             android:id="@+id/position"
             android:layout_width="match_parent"
@@ -46,6 +73,8 @@
             android:textColor="@color/Text_color_post_headers"
             android:textSize="14sp"
             tools:text="Главный инженер-программист" />
+
+        <!-- Ссылка -->
         <TextView
             android:id="@+id/link"
             android:layout_width="match_parent"

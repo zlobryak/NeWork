@@ -25,6 +25,7 @@ import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.toEntity
@@ -70,6 +71,11 @@ class PostRepositoryImpl @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map(PostEntity::toDto)
         }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getUserJobsData(userId: Int): Flow<PagingData<PostItem>> {
+        TODO("Not yet implemented")
     }
 
     private val currentUserId: Int
@@ -211,6 +217,10 @@ class PostRepositoryImpl @Inject constructor(
         } catch (_: Exception) {
             throw UnknownError
         }
+    }
+
+    override fun getJobs(userId: Int): JobItem {
+        TODO("Not yet implemented")
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

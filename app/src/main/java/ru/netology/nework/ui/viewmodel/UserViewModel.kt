@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.repository.post.PostRepository
@@ -31,7 +32,7 @@ class UserViewModel @Inject constructor(
 
     // Основной поток данных для стены (Paging 3)
     // flatMapLatest: если userId изменится, старый запрос отменится, и начнется новый.
-    // cachedIn: сохраняет данные в памяти при пересоздании ViewModel (например, при повороте экрана).
+    // cachedIn: сохраняет данные в памяти при пересоздании ViewModel.
     val wallPagingData: Flow<PagingData<PostItem>> = _userId
         .filterNotNull()
         .flatMapLatest { id ->
@@ -40,9 +41,10 @@ class UserViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     // Грядет
-    private val _jobsState = MutableStateFlow<FeedModelState>(FeedModelState())
-    val jobsState: Flow<FeedModelState> = _jobsState
+    private val _jobsState = MutableStateFlow<Resource<JobItem>?>(null)
+    val jobsState: Flow<Resource<JobItem>?> = _jobsState
 
+    //TODO Нужно ли публичное в фрагменте?
     private val _userState = MutableStateFlow<Resource<UserItem>?>(null)
     val userState: Flow<Resource<UserItem>?> = _userState
 
@@ -59,23 +61,24 @@ class UserViewModel @Inject constructor(
 
     private fun loadUser(userId: Int) = viewModelScope.launch {
         _uiState.value = UserUiState.Loading
-        try {
-            val user = repository.getUser(userId)
-            _userState.value = Resource.Success(user)
-            _uiState.value = UserUiState.Success(user)
-        } catch (e: ApiError) {
-            _uiState.value = UserUiState.Error("Ошибка сервера: ${e.message}")
-        } catch (e: NetworkError) {
-            _uiState.value = UserUiState.Error("Проверьте подключение к интернету")
-        } catch (e: UnknownError) {
-            _uiState.value = UserUiState.Error("Произошла непредвиденная ошибка")
-        } catch (e: Exception) {
-            _uiState.value = UserUiState.Error(e.message ?: "Неизвестная ошибка")
-        }
+        safeApiCall(
+            action = { repository.getUser(userId) },
+            onSuccess = { user ->
+                _userState.value = Resource.Success(user)
+                _uiState.value = UserUiState.Success(user)
+            }
+        )
     }
 
     private fun loadJobs(userId: Int) = viewModelScope.launch {
-//TODO
+        safeApiCall(
+            action = { repository.getJobs(userId) },
+            onSuccess = { job ->
+                _jobsState.value = Resource.Success(job)
+            },
+            onError = { errorMessage ->
+                _jobsState.value = Resource.Error(errorMessage)
+            })
     }
 
     // Ваши существующие классы состояний (оставляем без изменений)
@@ -92,21 +95,43 @@ class UserViewModel @Inject constructor(
     }
 
     fun likePost(post: PostItem) = viewModelScope.launch {
-        try {
-            repository.likePost(post.id, post.likedByMe)
-
-        } catch (e: Exception) {
-            //TODO Обработка ошибки like
-        }
+        safeApiCall(
+            action = { repository.likePost(post.id, post.likedByMe) },
+            onSuccess = {
+                // TODO обновить локальный стейт поста,
+            }
+        )
     }
 
     fun removePost(post: PostItem) = viewModelScope.launch {
-        try {
-            repository.removeById(post.id)
+        safeApiCall(
+            action = { repository.removeById(post.id) },
+            onSuccess = {
+                // TODO инициировать обновление PagingData или локального списка.
+            }
+        )
+    }
 
-        } catch (e: Exception) {
-            //TODO Обработка ошибки remove
+    private suspend fun <T> safeApiCall(
+        action: suspend () -> T,
+        onSuccess: (T) -> Unit,
+        onError: (String) -> Unit = { errorMessage ->
+            _uiState.value = UserUiState.Error(errorMessage)
         }
+    ) {
+        try {
+            val result = action()
+            onSuccess(result)
+        } catch (e: Exception) {
+            onError(e.getErrorMessage())
+        }
+    }
+
+    private fun Exception.getErrorMessage(): String = when (this) {
+        is ApiError -> "Ошибка сервера: ${message}"
+        is NetworkError -> "Проверьте подключение к интернету"
+        is UnknownError -> "Произошла непредвиденная ошибка"
+        else -> message ?: "Неизвестная ошибка"
     }
 
 }

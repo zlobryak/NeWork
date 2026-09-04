@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class JobItem(
-    val finish: String,
     val id: Int,
     val link: String,
     val name: String,
     val position: String,
-    val start: String
+    val start: String,
+    val finish: String,
 ) : Parcelable

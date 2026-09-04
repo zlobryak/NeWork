@@ -17,17 +17,16 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.databinding.FragmentUserBinding
 import ru.netology.nework.ui.adapter.UserPagerAdapter
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UserFragment : Fragment() {
-
-    // Инжектим ViewModel через Hilt
     private val viewModel: UserViewModel by viewModels()
 
-    // Получаем аргумент. Убедитесь, что в nav_graph.xml аргумент называется именно "userIdArg"
+    // Получаем через аргументы ID пользователя
     private val args: UserFragmentArgs by navArgs()
 
     private var _binding: FragmentUserBinding? = null
@@ -70,7 +69,7 @@ class UserFragment : Fragment() {
     }
 
     // Вынесли настройку UI в отдельный метод
-    private fun setupUI(user: ru.netology.nework.data.dto.user.UserItem) {
+    private fun setupUI(user: UserItem) {
         // Настройка Action Bar
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
             title = user.name

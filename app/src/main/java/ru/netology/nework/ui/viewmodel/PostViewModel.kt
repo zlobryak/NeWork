@@ -97,11 +97,11 @@ class PostViewModel @Inject constructor(
 
     fun loadPosts() = viewModelScope.launch {
         try {
-            _dataState.value = FeedModelState(loading = true)
+            _dataState.value = FeedModelState(isLoading = true)
             // repository.stream.cachedIn(viewModelScope).
             _dataState.value = FeedModelState()
         } catch (_: Exception) {
-            _dataState.value = FeedModelState(error = true)
+            _dataState.value = FeedModelState(isError = true)
         }
     }
 
@@ -185,7 +185,7 @@ class PostViewModel @Inject constructor(
                 repository.removeById(post.id)
                 _successEvent.value = "Post deleted"
             } catch (_: Throwable) {
-                _state.value = FeedModelState(error = true)
+                _state.value = FeedModelState(isError = true)
                 repository.restorePost(currentPosts)
             }
         }
