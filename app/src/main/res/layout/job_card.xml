@@ -17,51 +17,77 @@
         android:orientation="vertical"
         android:padding="@dimen/common_spacing">
 
-        <!-- Название компании -->
-        <TextView
-            android:id="@+id/name"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto"
-            android:textColor="@color/Text_color_post_headers"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="ПАО ПСБ" />
+            android:padding="@dimen/common_spacing">
 
-        <!-- Даты начала и окончания работы -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
-
+            <!-- Название компании -->
             <TextView
-                android:id="@+id/start"
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:fontFamily="@font/roboto"
+                android:textColor="@color/Text_color_post_headers"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="ПАО ПСБ"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/dates"
+                />
+
+
+            <!-- Даты начала и окончания работы -->
+            <LinearLayout
+                android:id="@+id/dates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/name"
+                app:layout_constraintStart_toStartOf="@id/name">
+
+                <TextView
+                    android:id="@+id/start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="#757575"
+                    android:textSize="12sp"
+                    tools:text="1 августа 2020" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/date_divider"
+                    android:textColor="@color/Text_color_post_headers"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/finish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/Text_color_post_headers"
+                    android:textSize="12sp"
+                    tools:text="НВ" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/menu_button"
+                style="@style/Widget.AppCompat.JobDeleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                tools:text="1 августа 2020" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
-                android:fontFamily="@font/roboto"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                android:text="@string/date_divider" />
-
-            <TextView
-                android:id="@+id/finish"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:textColor="#757575"
-                android:textSize="12sp"
-                tools:text="НВ" />
-        </LinearLayout>
+                android:contentDescription="@string/menu_button"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                app:icon="@drawable/ic_delete_18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Должность -->
         <TextView

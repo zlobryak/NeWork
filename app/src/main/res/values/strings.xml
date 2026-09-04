@@ -67,4 +67,6 @@
     <string name="user_avatar_description">User avatar</string>
     <string name="error">Error</string>
     <string name="retry_button">Retry</string>
+    <string name="date_divider">–</string>
+    <string name="delete_button">Delete button</string>
 </resources>
