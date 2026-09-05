@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:textColor="#757575"
+                    android:textColor="@color/Text_color_post_headers"
                     android:textSize="12sp"
                     tools:text="1 августа 2020" />
 
@@ -76,14 +76,15 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/menu_button"
+                android:id="@+id/delete_button"
                 style="@style/Widget.AppCompat.JobDeleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/menu_button"
+                android:contentDescription="@string/delete_button"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
                 app:icon="@drawable/ic_delete_18dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

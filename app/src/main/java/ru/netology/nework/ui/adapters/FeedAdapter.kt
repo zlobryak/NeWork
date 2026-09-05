@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapter
+package ru.netology.nework.ui.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,41 +9,50 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
-import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.PostCardBinding
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
 
-class UserWallPostPagingAdapter(
-    private val onInteractionListener: OnInteractionListener
-) : PagingDataAdapter<PostItem, UserWallPostPagingAdapter.PostViewHolder>(POST_COMPARATOR) {
 
-    companion object {
-        // DiffUtil говорит Paging 3, как сравнивать посты, чтобы не перерисовывать весь список
-        private val POST_COMPARATOR = object : DiffUtil.ItemCallback<PostItem>() {
-            override fun areItemsTheSame(oldItem: PostItem, newItem: PostItem): Boolean =
-                oldItem.id == newItem.id
-
-            override fun areContentsTheSame(oldItem: PostItem, newItem: PostItem): Boolean =
-                oldItem == newItem
-        }
-    }
+class FeedAdapter(
+    private val onInteractionListener: OnInteractionListener,
+) : PagingDataAdapter<PostItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
 
     interface OnInteractionListener {
         fun onLike(post: PostItem) {}
         fun onEdit(post: PostItem) {}
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
-        fun onAuthorClick(userId: Int) {}
+        fun onAuthorClick(userItem: Int) {}
     }
 
-    inner class PostViewHolder(
-        private val binding: PostCardBinding,
-        private val onInteractionListener: OnInteractionListener
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(post: PostItem) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Log.d("ADAPTER_DEBUG", " onCreateViewHolder вызван! RecyclerView запрашивает новую ячейку.")
+        val layoutInflater = LayoutInflater.from(parent.context)
+        return PostViewHolder(
+            PostCardBinding.inflate(layoutInflater, parent, false),
+            onInteractionListener
+        )
+    }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        Log.d(
+            "ADAPTER_DEBUG",
+            "onBindViewHolder для позиции $position для позиции $position.)"
+        )
+        getItem(position)?.let { post ->
+            (holder as PostViewHolder).bind(post)
+        }
+    }
+
+    class PostViewHolder(
+        private val binding: PostCardBinding,
+        private val onInteractionListener: OnInteractionListener,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(post: PostItem) {
             binding.apply {
                 author.text = post.authorName
                 avatar.loadAvatar(post.authorAvatar, post.authorName)
@@ -110,19 +119,17 @@ class UserWallPostPagingAdapter(
                 }
             }
         }
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = PostCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener)
-    }
+    class FeedItemDiffCallback : DiffUtil.ItemCallback<PostItem>() {
+        override fun areItemsTheSame(oldItem: PostItem, newItem: PostItem): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        // getItem(position) безопасно возвращает PostItem? (может быть null, если данные еще грузятся)
-        val post = getItem(position)
-        if (post != null) {
-            holder.bind(post)
+        override fun areContentsTheSame(oldItem: PostItem, newItem: PostItem): Boolean {
+            return oldItem == newItem
         }
     }
 }
+
+//TODO FinishRefactor

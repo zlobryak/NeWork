@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.ui.adapter.UserWallPostPagingAdapter
-import ru.netology.nework.ui.adapter.PostLoadStateAdapter
+import ru.netology.nework.ui.adapters.UserWallPostPagingAdapter
+import ru.netology.nework.ui.adapters.PostLoadStateAdapter
 import ru.netology.nework.ui.fragments.FeedFragmentDirections
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.UserViewModel
@@ -41,7 +41,6 @@ class UserWallFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Исправляем двойную инфляцию: используем только binding
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -83,6 +82,7 @@ class UserWallFragment : Fragment() {
                         Intent.createChooser(intent, getString(R.string.chooser_share_post))
                     startActivity(shareIntent)
                 }
+                //TODO Добавить сюда открытие поста в отдельном фрагменте, когда оно будет реализовано
 
                 override fun onAuthorClick(userId: Int) {
                     val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
@@ -92,15 +92,6 @@ class UserWallFragment : Fragment() {
 
                 }
             })
-
-
-//            onLike = { post -> viewModel.likePost(post) },
-//            onRemove = { post -> viewModel.removePost(post) },
-//            onShare = { post -> sharePost(post) },
-//            onEdit = { post ->
-//                // TODO: Здесь  логика навигации к редактированию
-//
-
 
 //  Добавляем  индикатор загрузки внизу списка при подгрузке новых страниц
         adapter.withLoadStateFooter(

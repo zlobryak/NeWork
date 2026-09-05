@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nework.R
 import ru.netology.nework.data.repository.post.PostRepository
-import ru.netology.nework.ui.viewmodel.PostViewModel // Или UserViewModel, если решите объединить
+import ru.netology.nework.databinding.FragmentFeedBinding
+import ru.netology.nework.ui.adapters.UserJobPagingAdapter
+import ru.netology.nework.ui.adapters.UserWallPostPagingAdapter
+import ru.netology.nework.ui.viewmodel.UserViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -18,37 +21,37 @@ class UserJobsFragment : Fragment() {
     @Inject
     lateinit var repository: PostRepository
 
-    private val viewModel: PostViewModel by viewModels()
+    private val viewModel: UserViewModel by viewModels({ requireParentFragment() })
 
-    companion object {
-        private const val ARG_USER_ID = "user_id_arg"
+    private var _binding: FragmentFeedBinding? = null
 
-        fun newInstance(userId: Int?): UserWallFragment {
-            return UserWallFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_USER_ID, userId!!)
-                }
-            }
-        }
-    }
+    private val binding get() = _binding!!
+
+    private lateinit var adapter: UserJobPagingAdapter
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_feed, container, false)
+        _binding = FragmentFeedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 2. Извлекаем userId из аргументов
-        val userId = requireArguments().getInt(ARG_USER_ID)
+        // Настраиваем RecyclerView и PagingDataAdapter
+        binding.list.layoutManager = LinearLayoutManager(requireContext())
 
-        // Теперь мы знаем, чью стену грузить!
-        // TODO: Вызвать метод ViewModel для загрузки постов этого пользователя
-        viewModel.loadUserPosts(userId)
+        adapter = UserJobPagingAdapter(
+            object : UserWallPostPagingAdapter.OnInteractionListener {
+
+            }
+
+        )
+
     }
 }

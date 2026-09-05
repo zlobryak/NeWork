@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.databinding.FragmentUserBinding
-import ru.netology.nework.ui.adapter.UserPagerAdapter
+import ru.netology.nework.ui.adapters.UserPagerAdapter
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
