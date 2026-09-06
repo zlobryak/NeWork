@@ -8,6 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ class UserViewModel @Inject constructor(
     // Храним текущий userId в StateFlow.
     // Это позволяет реактивно перезапускать загрузку при смене пользователя.
     private val _userId = MutableStateFlow<Int?>(null)
+    val userId: StateFlow<Int?> = _userId.asStateFlow()
 
     // Основной поток данных для стены (Paging 3)
     // flatMapLatest: если userId изменится, старый запрос отменится, и начнется новый.
@@ -41,8 +44,8 @@ class UserViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     // Грядет
-    private val _jobsState = MutableStateFlow<Resource<JobItem>?>(null)
-    val jobsState: Flow<Resource<JobItem>?> = _jobsState
+    private val _jobsState = MutableStateFlow<Resource<List<JobItem>>?>(null)
+    val jobsState: StateFlow<Resource<List<JobItem>>?> = _jobsState.asStateFlow()
 
     //TODO Нужно ли публичное в фрагменте?
     private val _userState = MutableStateFlow<Resource<UserItem>?>(null)
@@ -73,12 +76,22 @@ class UserViewModel @Inject constructor(
     private fun loadJobs(userId: Int) = viewModelScope.launch {
         safeApiCall(
             action = { repository.getJobs(userId) },
-            onSuccess = { job ->
-                _jobsState.value = Resource.Success(job)
+            onSuccess = { jobsList ->
+                _jobsState.value = Resource.Success(jobsList)
             },
             onError = { errorMessage ->
                 _jobsState.value = Resource.Error(errorMessage)
             })
+    }
+
+    fun removeJob(job: JobItem) = viewModelScope.launch {
+        safeApiCall(
+            action = { repository.removeJobById(job.id) }, // Предполагаем, что такой метод есть в API
+            onSuccess = {
+                // После успешного удаления перезагружаем список работ
+                _userId.value?.let { loadJobs(it) }
+            }
+        )
     }
 
     // Ваши существующие классы состояний (оставляем без изменений)

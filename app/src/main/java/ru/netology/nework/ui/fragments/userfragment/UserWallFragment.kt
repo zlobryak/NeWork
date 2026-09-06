@@ -20,7 +20,6 @@ import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.ui.adapters.UserWallPostPagingAdapter
 import ru.netology.nework.ui.adapters.PostLoadStateAdapter
-import ru.netology.nework.ui.fragments.FeedFragmentDirections
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
@@ -84,13 +83,7 @@ class UserWallFragment : Fragment() {
                 }
                 //TODO Добавить сюда открытие поста в отдельном фрагменте, когда оно будет реализовано
 
-                override fun onAuthorClick(userId: Int) {
-                    val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
-                        userIdArg = userId
-                    )
-                    findNavController().navigate(action)
-
-                }
+                //Тут не должно быть навигации в фрагмент пользователя со стеной.
             })
 
 //  Добавляем  индикатор загрузки внизу списка при подгрузке новых страниц

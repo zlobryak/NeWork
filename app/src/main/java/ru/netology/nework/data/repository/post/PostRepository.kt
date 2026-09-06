@@ -10,11 +10,7 @@ import ru.netology.nework.data.dto.user.UserItem
 
 interface PostRepository {
     val getAllPostsData: Flow<PagingData<PostItem>>
-
     fun getUserWallData(userId: Int): Flow<PagingData<PostItem>>
-
-    suspend fun getUserJobsData(userId: Int): Flow<PagingData<PostItem>>
-
     suspend fun getAll()
     suspend fun save(post: PostItem, upload: MediaUpload?)
     suspend fun removeById(id: Int)
@@ -22,6 +18,7 @@ interface PostRepository {
     suspend fun upload(upload: MediaUpload): Media
     suspend fun restorePost(post: PostItem)
     suspend fun getUser(userId: Int): UserItem
-    fun getJobs(userId: Int): JobItem
+    suspend fun getJobs(userId: Int): List<JobItem>
+    fun removeJobById(id: Int)
 
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.api.JobsApiService
 import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.db.AppDb
@@ -39,6 +40,7 @@ class PostRepositoryImpl @Inject constructor(
     private val userWallRemoteKeyDao: UserWallRemoteKeyDao,
     private val apiService: ApiService,
     private val wallApiService: WallApiService,
+    private val jobsApiService: JobsApiService,
     private val auth: AppAuth
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
@@ -71,11 +73,6 @@ class PostRepositoryImpl @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map(PostEntity::toDto)
         }
-    }
-
-    @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getUserJobsData(userId: Int): Flow<PagingData<PostItem>> {
-        TODO("Not yet implemented")
     }
 
     private val currentUserId: Int
@@ -219,8 +216,32 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getJobs(userId: Int): JobItem {
-        TODO("Not yet implemented")
+    override suspend fun getJobs(userId: Int): List<JobItem> {
+        try {
+            val response = jobsApiService.getJobs(userId)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: emptyList()
+
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override fun removeJobById(userId: Int) {
+        try {
+            val response = jobsApiService.removeJobById(userId)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

@@ -3,21 +3,20 @@ package ru.netology.nework.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.data.dto.job.JobItem
-import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.JobCardBinding
-import ru.netology.nework.databinding.PostCardBinding
-import ru.netology.nework.ui.adapters.UserJobPagingAdapter.JobViewHolder
+import ru.netology.nework.ui.adapters.UserJobListAdapter.JobViewHolder
 
-class UserJobPagingAdapter(
-    private val onInteractionListener: OnInteractionListener
-) : PagingDataAdapter<JobItem, JobViewHolder>(JOB_COMPARATOR) {
+class UserJobListAdapter(
+    private val onInteractionListener: OnInteractionListener,
+    private val isMyJobs: Boolean
+) : ListAdapter<JobItem, JobViewHolder>(JOB_COMPARATOR) {
 
     interface OnInteractionListener {
-        fun onRemove(post: PostItem) {}
+        fun onRemove(job: JobItem) {}
     }
 
 
@@ -26,22 +25,20 @@ class UserJobPagingAdapter(
         viewType: Int
     ): JobViewHolder {
         val binding = JobCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return JobViewHolder(binding, onInteractionListener)
+        return JobViewHolder(binding, onInteractionListener, isMyJobs)
     }
 
     override fun onBindViewHolder(
         holder: JobViewHolder,
         position: Int
     ) {
-        val job = getItem(position)
-        if (job != null) {
-            holder.bind(job)
-        }
+        holder.bind(getItem(position))
     }
 
     class JobViewHolder(
         private val binding: JobCardBinding,
-        private val onInteractionListener: OnInteractionListener
+        private val onInteractionListener: OnInteractionListener,
+        private val isMyJobs: Boolean
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(job: JobItem) {
             binding.apply {
@@ -51,13 +48,13 @@ class UserJobPagingAdapter(
                 position.text = job.position
 
                 deleteButton.visibility =
-                    if (
-                //TODO Отображать кнопку удаления только для своих работ
-                ) View.VISIBLE else View.INVISIBLE
+                    if (isMyJobs) View.VISIBLE else View.INVISIBLE
 
+                deleteButton.setOnClickListener {
+                    onInteractionListener.onRemove(job)
+                }
             }
         }
-
     }
 
 
