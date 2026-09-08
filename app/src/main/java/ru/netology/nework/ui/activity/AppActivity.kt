@@ -80,6 +80,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                         findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
                         true
                     }
+
                     else -> false
                 }
 
@@ -92,7 +93,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
         // Настраиваем фрагмент верхнего уровня
         val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinationIds = setOf(R.id.feedFragment)
+            topLevelDestinationIds = setOf(
+                R.id.feedFragment,
+                R.id.eventsFragment,
+                R.id.usersFragment
+            )
         )
 
         // Находим наше нижнее меню

@@ -111,7 +111,7 @@
             android:autoLink="web"
             android:fontFamily="@font/roboto"
             android:padding="@dimen/common_spacing"
-            android:textColor="#1976D2"
+            android:textColor="@color/link_color"
             android:textSize="12sp"
             tools:text="https://m2.material.io/components/cards" />
 
