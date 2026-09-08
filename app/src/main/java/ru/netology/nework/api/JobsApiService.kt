@@ -9,9 +9,9 @@ import ru.netology.nework.data.dto.job.JobItem
 interface JobsApiService {
     /**
      * Метод для получения списка работ пользователя.
-     * Формирует URL вида: http://.../api/333/wall/latest?count=10
+     * Формирует URL вида: http://94.228.125.136:8080/api/333/jobs
      */
-    @GET("{userId}/wall/latest")
+    @GET("{userId}/jobs")
     suspend fun getJobs(
         @Path("userId") userId: Int,
     ): Response<List<JobItem>>

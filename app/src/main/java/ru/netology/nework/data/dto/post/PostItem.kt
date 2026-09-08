@@ -14,7 +14,7 @@ data class PostItem(
     val authorName: String?,
     val authorAvatar: String?,
     val authorId: Int,
-    val authorJob: String?,
+    val authorJob: String?, //Только последняя работа?
     val content: String?,
     val coords: Coords?,
     val likeOwnerIds: List<Int>?,

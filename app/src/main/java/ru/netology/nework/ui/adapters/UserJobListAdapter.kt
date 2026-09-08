@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.databinding.JobCardBinding
 import ru.netology.nework.ui.adapters.UserJobListAdapter.JobViewHolder
+import ru.netology.nework.utils.DateUtils
 
 class UserJobListAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -43,14 +44,14 @@ class UserJobListAdapter(
         fun bind(job: JobItem) {
             binding.apply {
                 name.text = job.name
-                start.text = job.start
-                finish.text = job.finish
+                start.text = DateUtils.formatIsoDate(job.start)
+                finish.text = DateUtils.formatIsoDate(job.finish)
                 position.text = job.position
 
-                deleteButton.visibility =
+                deleteButton?.visibility =
                     if (isMyJobs) View.VISIBLE else View.INVISIBLE
 
-                deleteButton.setOnClickListener {
+                deleteButton?.setOnClickListener {
                     onInteractionListener.onRemove(job)
                 }
             }
@@ -58,9 +59,7 @@ class UserJobListAdapter(
     }
 
 
-    companion object {
-        // DiffUtil говорит Paging 3, как сравнивать посты, чтобы не перерисовывать весь список
-        private val JOB_COMPARATOR: DiffUtil.ItemCallback<JobItem> =
+    companion object {        private val JOB_COMPARATOR: DiffUtil.ItemCallback<JobItem> =
             object : DiffUtil.ItemCallback<JobItem>() {
                 override fun areItemsTheSame(oldItem: JobItem, newItem: JobItem): Boolean =
                     oldItem.id == newItem.id
@@ -70,6 +69,3 @@ class UserJobListAdapter(
             }
     }
 }
-
-
-

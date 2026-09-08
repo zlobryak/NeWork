@@ -77,16 +77,16 @@ class UserFragment : Fragment() {
         }
 
         // Загружаем аватар
+        // TODO Сдеать отдельную заглушку для случаев, когда аватара нет
         Glide.with(this)
             .load(user.avatar)
-            .placeholder(R.drawable.ic_manufacturing_24px) // Хорошая практика: ставить заглушку
+            .placeholder(R.drawable.ic_manufacturing_24px)
             .into(binding.userPhoto)
 
-        // Настраиваем ViewPager2 и TabLayout
-        setupViewPager(user.userId) // Передаем ID для загрузки постов/вакансий
+        setupView()
     }
 
-    private fun setupViewPager(userId: Int) {
+    private fun setupView() {
         val adapter = UserPagerAdapter(this)
         binding.viewPager.adapter = adapter
 
@@ -110,3 +110,5 @@ class UserFragment : Fragment() {
         _binding = null
     }
 }
+
+//TODO FAB виден в фрагменте

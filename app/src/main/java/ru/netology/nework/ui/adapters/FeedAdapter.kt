@@ -59,7 +59,7 @@ class FeedAdapter(
                 // Создаем одно действие для клика по автору и аватару
                 val navigateToProfileAction = View.OnClickListener {
                     // Замените post.authorId на реальное имя поля в вашем DTO
-                    onInteractionListener.onAuthorClick(post.authorId)
+                    onInteractionListener.onAuthorClick(userItem = post.authorId)
                 }
                 author.setOnClickListener(navigateToProfileAction)
                 avatar.setOnClickListener(navigateToProfileAction)
