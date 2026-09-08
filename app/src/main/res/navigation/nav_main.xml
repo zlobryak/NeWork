@@ -31,12 +31,13 @@
     <fragment
         android:id="@+id/eventsFragment"
         android:name="ru.netology.nework.ui.fragment.EventsFragment"
-        android:label="События" />
+        tools:layout="@layout/fragment_events_feed"
+        android:label="Events" />
 
     <fragment
         android:id="@+id/usersFragment"
         android:name="ru.netology.nework.ui.fragment.UsersFragment"
-        android:label="Пользователи" />
+        android:label="Users" />
 
     <fragment
         android:id="@+id/newPostFragment"
