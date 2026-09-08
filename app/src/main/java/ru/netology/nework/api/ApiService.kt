@@ -10,9 +10,10 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-import ru.netology.nework.data.dto.AuthResponse
-import ru.netology.nework.data.dto.Media
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.AuthResponse
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.PostItem
+import ru.netology.nework.data.dto.user.UserItem
 
 interface ApiService {
     @GET("posts")
@@ -46,9 +47,6 @@ interface ApiService {
     @POST("media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
-    @DELETE("posts/{id}")
-    suspend fun removeById(@Path("id") id: Long): Response<Unit>
-
     @POST("posts/{id}/likes")
     suspend fun likeById(@Path("id") id: Int): Response<PostItem>
 
@@ -70,7 +68,9 @@ interface ApiService {
         @Part avatar: MultipartBody.Part // Всегда не null
     ): Response<AuthResponse>
 
-    //TODO Рефакторинг регистрации
+    @GET("users/{id}")
+    suspend fun getUser(@Path("id") userId:  Int): Response<UserItem>
+
 }
 
 //TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

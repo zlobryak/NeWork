@@ -14,7 +14,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.netology.nework.api.ApiService
-import ru.netology.nework.data.dto.AuthResponse
+import ru.netology.nework.data.dto.post.AuthResponse
 import java.io.File
 
 sealed class RegistrationState {

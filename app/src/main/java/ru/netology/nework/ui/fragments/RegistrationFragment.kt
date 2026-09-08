@@ -71,10 +71,8 @@ class RegistrationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Логи для отладки
         Log.d("REG_DEBUG", "=== onCreateView RegistrationFragment ВЫЗВАН ===")
 
-        // Инфлейтим (создаем) View из XML с помощью ViewBinding
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
         Log.d("REG_DEBUG", "Binding создан, возвращаем root")

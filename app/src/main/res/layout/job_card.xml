@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/common_spacing"
+    android:layout_marginVertical="@dimen/common_spacing"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/common_spacing">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/common_spacing">
+
+            <!-- Название компании -->
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:fontFamily="@font/roboto"
+                android:textColor="@color/Text_color_post_headers"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/dates"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="ПАО ПСБ" />
+
+
+            <!-- Даты начала и окончания работы -->
+            <LinearLayout
+                android:id="@+id/dates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/name"
+                app:layout_constraintStart_toStartOf="@id/name">
+
+                <TextView
+                    android:id="@+id/start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/Text_color_post_headers"
+                    android:textSize="12sp"
+                    tools:text="1 августа 2020" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/date_divider"
+                    android:textColor="@color/Text_color_post_headers"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/finish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/Text_color_post_headers"
+                    android:textSize="12sp"
+                    tools:text="НВ" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/delete_button"
+                style="@style/Widget.AppCompat.JobDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/delete_button"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                app:icon="@drawable/ic_delete_18dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Должность -->
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto"
+            android:padding="@dimen/common_spacing"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="14sp"
+            tools:text="Главный инженер-программист" />
+
+        <!-- Ссылка -->
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autoLink="web"
+            android:fontFamily="@font/roboto"
+            android:padding="@dimen/common_spacing"
+            android:textColor="#1976D2"
+            android:textSize="12sp"
+            tools:text="https://m2.material.io/components/cards" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

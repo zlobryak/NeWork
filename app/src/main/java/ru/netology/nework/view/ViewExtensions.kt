@@ -33,3 +33,5 @@ fun ImageView.loadAttachment(url: String?) {
         .timeout(10_000)
         .into(this)
 }
+
+//TODO Прверить что берет файлы и округляет

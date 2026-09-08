@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.netology.nework.data.dao.PostDao
 import ru.netology.nework.data.dao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.UserWallRemoteKeyDao
 import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)
@@ -16,4 +17,7 @@ object DaoModule {
 
     @Provides
     fun providePostRemoteKeyDao(db: AppDb): PostRemoteKeyDao = db.postRemoteKeyDao()
+
+    @Provides
+    fun provideUserWallRemoteKeyDao(db: AppDb): UserWallRemoteKeyDao = db.userWallRemoteKeyDao()
 }

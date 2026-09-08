@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapter
+package ru.netology.nework.ui.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostCardBinding
-import ru.netology.nework.data.dto.PostItem
+import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
-
 
 
 class FeedAdapter(
@@ -26,6 +25,7 @@ class FeedAdapter(
         fun onEdit(post: PostItem) {}
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
+        fun onAuthorClick(userItem: Int) {}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -54,10 +54,18 @@ class FeedAdapter(
 
         fun bind(post: PostItem) {
             binding.apply {
-                author.text = post.author
+                author.text = post.authorName
+                avatar.loadAvatar(post.authorAvatar, post.authorName)
+                // Создаем одно действие для клика по автору и аватару
+                val navigateToProfileAction = View.OnClickListener {
+                    // Замените post.authorId на реальное имя поля в вашем DTO
+                    onInteractionListener.onAuthorClick(userItem = post.authorId)
+                }
+                author.setOnClickListener(navigateToProfileAction)
+                avatar.setOnClickListener(navigateToProfileAction)
+
                 published.text = DateUtils.formatIsoDate(post.published)
                 content.text = post.content
-                avatar.loadAvatar(post.authorAvatar, post.author)
                 like.isChecked = post.likedByMe
                 like.text = "${post.likeOwnerIds?.size}"
 

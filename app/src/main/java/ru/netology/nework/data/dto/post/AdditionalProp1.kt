@@ -1,4 +1,4 @@
-package ru.netology.nework.data.dto
+package ru.netology.nework.data.dto.post
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

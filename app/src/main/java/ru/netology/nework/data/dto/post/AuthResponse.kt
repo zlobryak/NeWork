@@ -1,4 +1,4 @@
-package ru.netology.nework.data.dto
+package ru.netology.nework.data.dto.post
 
 import com.google.gson.annotations.SerializedName
 

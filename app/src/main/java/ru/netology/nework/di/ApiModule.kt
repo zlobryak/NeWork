@@ -12,6 +12,8 @@ import retrofit2.create
 import ru.netology.nework.BuildConfig
 import ru.netology.nework.api.ApiKeyInterceptor
 import ru.netology.nework.api.ApiService
+import ru.netology.nework.api.JobsApiService
+import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -19,7 +21,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class ApiModule {
-
     companion object {
         private const val BASE_URL: String = "${BuildConfig.BASE_URL}/api/"
     }
@@ -71,4 +72,16 @@ class ApiModule {
     fun provideApiService(
         retrofit: Retrofit
     ): ApiService = retrofit.create<ApiService>()
+
+    @Singleton
+    @Provides
+    fun provideWallApiService(
+        retrofit: Retrofit
+    ): WallApiService = retrofit.create<WallApiService>()
+
+    @Singleton
+    @Provides
+    fun provideJobsApiService(
+        retrofit: Retrofit
+    ): JobsApiService = retrofit.create<JobsApiService>()
 }

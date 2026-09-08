@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 
 @GlideModule
-class MyAppGlideModule : AppGlideModule() {
+class GlideModule : AppGlideModule() {
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         val okHttpClient = OkHttpClient.Builder()

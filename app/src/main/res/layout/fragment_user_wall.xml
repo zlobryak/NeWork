@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="0dp">
+    android:layout_height="match_parent">
 
-    <!--Свайп-рефреш и список (самый нижний слой) -->
+    <!-- Свайп-рефреш и список -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
@@ -22,12 +21,11 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Оверлей с ошибками и прогрессом (поверх списка) -->
+    <!-- Оверлей с ошибками и прогрессом -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.FeedFragment">
+        android:layout_height="match_parent">
 
         <ProgressBar
             android:id="@+id/progress"
@@ -82,17 +80,5 @@
             app:constraint_referenced_ids="retry, errorTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- FAB (поверх всего, позиционируется через layout_gravity) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/add_post"
-        app:backgroundTint="@color/colorPrimary"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.RoundedSquare"
-        app:srcCompat="@drawable/ic_add_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
