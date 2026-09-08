@@ -18,18 +18,18 @@ import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.post.Media
 import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.entity.PostEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
-import ru.netology.nework.data.dao.PostDao
-import ru.netology.nework.data.dao.PostRemoteKeyDao
-import ru.netology.nework.data.dao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.PostDao
+import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
-import ru.netology.nework.data.entity.toEntity
+import ru.netology.nework.data.entity.postEntity.toEntity
 import java.io.IOException
 import javax.inject.Inject
 

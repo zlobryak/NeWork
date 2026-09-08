@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.entity.PostEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
 import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent

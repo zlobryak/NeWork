@@ -1,10 +1,10 @@
-package ru.netology.nework.data.dao
+package ru.netology.nework.data.dao.postDao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.netology.nework.data.entity.PostRemoteKeyEntity
+import ru.netology.nework.data.entity.postEntity.PostRemoteKeyEntity
 
 @Dao
 interface PostRemoteKeyDao {

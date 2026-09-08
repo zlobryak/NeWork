@@ -1,4 +1,4 @@
-package ru.netology.nework.data.dao
+package ru.netology.nework.data.dao.postDao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import ru.netology.nework.data.entity.PostEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
 
 @Dao
 interface PostDao {

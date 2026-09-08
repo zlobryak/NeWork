@@ -4,9 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.netology.nework.data.dao.PostDao
-import ru.netology.nework.data.dao.PostRemoteKeyDao
-import ru.netology.nework.data.dao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.PostDao
+import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
 import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)

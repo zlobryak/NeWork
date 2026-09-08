@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.user.UserItem
-import ru.netology.nework.data.entity.PostEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
 
 @Parcelize
 data class PostItem(

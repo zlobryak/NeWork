@@ -8,10 +8,10 @@ import ru.netology.nework.data.dto.user.UserItem
 
 @Parcelize
 data class EventItem(
+    val authorId: Int,
     val attachment: Attachment,
     val author: String,
     val authorAvatar: String,
-    val authorId: Int,
     val authorJob: String,
     val content: String,
     val coords: Coords,
@@ -27,3 +27,5 @@ data class EventItem(
     val type: String,
     val users: Map<String, UserItem>? = null,
 ) : Parcelable
+
+
