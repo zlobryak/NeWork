@@ -1,7 +1,7 @@
-package ru.netology.nework.ui.fragments
+package ru.netology.nework.ui.fragments.events
 
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UsersFragment : Fragment() {}
+class EventDetailFragment : Fragment()

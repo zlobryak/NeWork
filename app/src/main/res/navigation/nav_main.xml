@@ -30,14 +30,40 @@
 
     <fragment
         android:id="@+id/eventsFragment"
-        android:name="ru.netology.nework.ui.fragment.EventsFragment"
-        tools:layout="@layout/fragment_events_feed"
-        android:label="Events" />
+        android:name="ru.netology.nework.ui.fragments.events.EventsFeedFragment"
+        android:label="Events"
+        tools:layout="@layout/fragment_events_feed">
+
+        <!-- Переход к созданию/редактированию события -->
+        <action
+            android:id="@+id/action_eventsFragment_to_newEventFragment"
+            app:destination="@id/newEventFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+
+        <!-- Переход к детальному просмотру события -->
+        <action
+            android:id="@+id/action_eventsFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+
+        <!-- Переход к авторизации (если пользователь не залогинен при клике на FAB) -->
+        <action
+            android:id="@+id/action_eventsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+
+        <!-- Переход к профилю автора (по клику на аватар в карточке) -->
+        <action
+            android:id="@+id/action_eventsFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/usersFragment"
-        android:name="ru.netology.nework.ui.fragment.UsersFragment"
-        android:label="Users" />
+        android:name="ru.netology.nework.ui.fragments.UsersFeedFragment"
+        android:label="Users"
+        tools:layout="@layout/fragment_user_jobs" />
 
     <fragment
         android:id="@+id/newPostFragment"
@@ -57,7 +83,6 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
-
 
 
     <fragment
@@ -89,9 +114,17 @@
         android:label="UserFragment"
         tools:layout="@layout/fragment_user">
 
-    <argument
-        android:name="userIdArg"
-        app:argType="integer" />
+        <argument
+            android:name="userIdArg"
+            app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="ru.netology.nework.ui.fragments.events.NewEventFragment"
+        android:label="NewEventFragment" />
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="ru.netology.nework.ui.fragments.events.EventDetailFragment"
+        android:label="EventDetailFragment" />
 
-    </navigation>
+</navigation>
