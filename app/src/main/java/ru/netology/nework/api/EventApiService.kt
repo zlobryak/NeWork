@@ -4,7 +4,7 @@ import retrofit2.Response
 import retrofit2.http.*
 import ru.netology.nework.data.dto.event.EventItem
 
-interface EventApi {
+interface EventApiService {
     /**
      * Формирует URL вида: http://94.228.125.136:8080/api/events/latest?count=15
      */

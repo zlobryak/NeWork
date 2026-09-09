@@ -9,12 +9,12 @@ import ru.netology.nework.data.dto.user.UserItem
 @Parcelize
 data class EventItem(
     val authorId: Int,
-    val attachment: Attachment,
+    val attachment: Attachment?,
     val author: String,
     val authorAvatar: String,
     val authorJob: String,
     val content: String,
-    val coords: Coords,
+    val coords: Coords?,
     val datetime: String,
     val id: Int,
     val likeOwnerIds: List<Int>,

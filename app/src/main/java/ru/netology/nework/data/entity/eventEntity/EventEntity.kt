@@ -32,9 +32,9 @@ data class EventEntity(
     @Embedded(prefix = "coords_")
     val coords: CoordsEmbeddable?,
     val link: String,
-    val isDeleting: Boolean = false, // Для оптимистичного обновления UI при удалении){}
+    val isDeleting: Boolean = false, // Для оптимистичного обновления UI при удалении
     val ownedByMe: Boolean
-){
+) {
     companion object {
         fun fromDto(dto: EventItem, currentUserId: Int?) =
             EventEntity(
@@ -58,6 +58,29 @@ data class EventEntity(
                 speakerIds = dto.participantsIds,
                 isDeleting = false,
             )
-
     }
+
+    fun toDto() = EventItem(
+        authorId = authorId,
+        attachment = attachment?.toDto(),
+        author = author,
+        authorAvatar = authorAvatar,
+        authorJob = authorJob,
+        content = authorJob,
+        coords = coords?.toDto(),
+        datetime = datetime,
+        id = id,
+        likeOwnerIds = likeOwnerIds,
+        likedByMe = likedByMe,
+        link = link,
+        participantsIds = participantsIds,
+        participatedByMe = participatedByMe,
+        published = published,
+        speakerIds = speakerIds,
+        type = type,
+    )
 }
+
+fun List<EventEntity>.toDto(): List<EventItem> = map(EventEntity::toDto)
+fun List<EventItem>.toEntity(currentUserId: Int?): List<EventEntity> =
+    map { EventEntity.fromDto(it, currentUserId) }
