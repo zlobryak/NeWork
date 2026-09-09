@@ -48,10 +48,10 @@ class UserJobListAdapter(
                 finish.text = DateUtils.formatIsoDate(job.finish)
                 position.text = job.position
 
-                deleteButton?.visibility =
+                deleteButton.visibility =
                     if (isMyJobs) View.VISIBLE else View.INVISIBLE
 
-                deleteButton?.setOnClickListener {
+                deleteButton.setOnClickListener {
                     onInteractionListener.onRemove(job)
                 }
             }
