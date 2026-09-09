@@ -9,11 +9,10 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.api.EventApiService
+import ru.netology.nework.api.EventApiService
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.entity.eventEntity.EventEntity
-import ru.netology.nework.data.entity.eventEntity.toDto
 import ru.netology.nework.data.entity.eventEntity.toEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
@@ -50,41 +49,9 @@ class EventRepositoryImpl @Inject constructor(
         pagingData.map(EventEntity::toDto)
     }
 
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getUserEventsData(userId: Int): Flow<PagingData<EventItem>> {
-        return Pager(
-            config = PagingConfig(pageSize = 10),
-            remoteMediator = UserEventRemoteMediator(
-                authorId = userId,
-                service = eventApiService,
-                db = appDb,
-                eventDao = eventDao,
-                eventRemoteKeyDao = eventRemoteKeyDao
-            ),
-            pagingSourceFactory = { eventDao.pagingSourceByAuthorId(userId) }
-        ).flow.map { pagingData ->
-            pagingData.map(EventEntity::toDto)
-        }
-    }
-
-    override suspend fun getAll() {
-        try {
-            val response = eventApiService.getAllEvents()
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            val body = response.body() ?: throw ApiError(response.code(), response.message())
-            eventDao.insertAll(body.map { it.toEntity(currentUserId) })
-        } catch (_: IOException) {
-            throw NetworkError
-        } catch (_: Exception) {
-            throw UnknownError
-        }
-    }
-
     override suspend fun save(event: EventItem) {
         try {
-            val response = eventApiService.saveEvent(event)
+            val response = eventApiService.createEvent(event)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

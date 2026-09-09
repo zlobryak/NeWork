@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.api.EventApiService
+import ru.netology.nework.api.EventApiService
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.entity.eventEntity.toEntity

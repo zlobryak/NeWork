@@ -15,7 +15,7 @@ import ru.netology.nework.api.ApiService
 import ru.netology.nework.api.JobsApiService
 import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.api.EventApiService
+import ru.netology.nework.api.EventApiService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 

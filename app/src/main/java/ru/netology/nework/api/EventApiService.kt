@@ -1,4 +1,4 @@
-package ru.netology.nework.data.api
+package ru.netology.nework.api
 
 import retrofit2.Response
 import retrofit2.http.*

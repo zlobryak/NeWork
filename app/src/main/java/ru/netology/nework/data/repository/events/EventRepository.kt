@@ -9,7 +9,6 @@ interface EventRepository {
     val getAllEventsData: Flow<PagingData<EventItem>>
 
     // Базовые операции
-    suspend fun getAll()
     suspend fun save(event: EventItem)
     suspend fun removeById(id: Int)
     suspend fun likeEvent(id: Int, likedByMe: Boolean)
