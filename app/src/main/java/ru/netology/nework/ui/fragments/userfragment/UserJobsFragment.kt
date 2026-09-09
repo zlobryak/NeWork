@@ -16,7 +16,7 @@ import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.ui.adapters.UserJobListAdapter
+import ru.netology.nework.ui.adapters.userFragment.UserJobListAdapter
 import ru.netology.nework.ui.viewmodel.UserViewModel
 import javax.inject.Inject
 

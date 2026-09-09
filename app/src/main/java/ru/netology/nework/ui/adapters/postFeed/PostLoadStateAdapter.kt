@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters
+package ru.netology.nework.ui.adapters.postFeed
 
 import android.view.LayoutInflater
 import android.view.View

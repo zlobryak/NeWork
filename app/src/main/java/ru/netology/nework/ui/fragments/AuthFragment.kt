@@ -13,8 +13,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentLoginBinding
-import ru.netology.nework.ui.viewmodel.AuthFragmentViewModel
-import ru.netology.nework.ui.viewmodel.LoginState
+import ru.netology.nework.ui.viewmodel.auth.AuthFragmentViewModel
+import ru.netology.nework.ui.viewmodel.auth.LoginState
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {

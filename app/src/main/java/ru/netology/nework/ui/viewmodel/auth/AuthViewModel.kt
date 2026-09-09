@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.viewmodel
+package ru.netology.nework.ui.viewmodel.auth
 
 
 import androidx.lifecycle.LiveData

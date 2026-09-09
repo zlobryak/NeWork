@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters
+package ru.netology.nework.ui.adapters.postFeed
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,7 +25,7 @@ class FeedAdapter(
         fun onEdit(post: PostItem) {}
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
-        fun onAuthorClick(userItem: Int) {}
+        fun onAuthorClick(userId: Int) {}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -59,7 +59,7 @@ class FeedAdapter(
                 // Создаем одно действие для клика по автору и аватару
                 val navigateToProfileAction = View.OnClickListener {
                     // Замените post.authorId на реальное имя поля в вашем DTO
-                    onInteractionListener.onAuthorClick(userItem = post.authorId)
+                    onInteractionListener.onAuthorClick(userId = post.authorId)
                 }
                 author.setOnClickListener(navigateToProfileAction)
                 avatar.setOnClickListener(navigateToProfileAction)

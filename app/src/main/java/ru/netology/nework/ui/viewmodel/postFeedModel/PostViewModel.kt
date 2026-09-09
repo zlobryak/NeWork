@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.viewmodel
+package ru.netology.nework.ui.viewmodel.postFeedModel
 
 import android.net.Uri
 import android.util.Log
@@ -18,6 +18,8 @@ import ru.netology.nework.error.ApiError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
 import androidx.core.net.toUri
+import ru.netology.nework.ui.viewmodel.FeedModelState
+import ru.netology.nework.ui.viewmodel.PhotoModel
 
 private val empty = PostItem(
     id = 0,

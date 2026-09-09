@@ -29,7 +29,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/eventsFragment"
+        android:id="@+id/eventsFeedFragment"
         android:name="ru.netology.nework.ui.fragments.events.EventsFeedFragment"
         android:label="Events"
         tools:layout="@layout/fragment_events_feed">
@@ -60,7 +60,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/usersFragment"
+        android:id="@+id/usersFeedFragment"
         android:name="ru.netology.nework.ui.fragments.UsersFeedFragment"
         android:label="Users"
         tools:layout="@layout/fragment_user_jobs" />

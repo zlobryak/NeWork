@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters
+package ru.netology.nework.ui.adapters.userFragment
 
 import android.util.Log
 import android.view.LayoutInflater

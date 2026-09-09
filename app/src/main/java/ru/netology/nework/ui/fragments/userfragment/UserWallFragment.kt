@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentFeedBinding
-import ru.netology.nework.ui.adapters.UserWallPostPagingAdapter
-import ru.netology.nework.ui.adapters.PostLoadStateAdapter
+import ru.netology.nework.ui.adapters.userFragment.UserWallPostPagingAdapter
+import ru.netology.nework.ui.adapters.postFeed.PostLoadStateAdapter
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
