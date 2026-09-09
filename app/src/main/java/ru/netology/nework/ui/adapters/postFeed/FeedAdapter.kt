@@ -1,6 +1,5 @@
 package ru.netology.nework.ui.adapters.postFeed
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,9 @@ import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
 
-
 class FeedAdapter(
     private val onInteractionListener: OnInteractionListener,
-) : PagingDataAdapter<PostItem, RecyclerView.ViewHolder>(FeedItemDiffCallback()) {
+) : PagingDataAdapter<PostItem, FeedAdapter.PostViewHolder>(FeedItemDiffCallback()) {
 
     interface OnInteractionListener {
         fun onLike(post: PostItem) {}
@@ -28,22 +26,15 @@ class FeedAdapter(
         fun onAuthorClick(userId: Int) {}
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        Log.d("ADAPTER_DEBUG", " onCreateViewHolder вызван! RecyclerView запрашивает новую ячейку.")
-        val layoutInflater = LayoutInflater.from(parent.context)
-        return PostViewHolder(
-            PostCardBinding.inflate(layoutInflater, parent, false),
-            onInteractionListener
-        )
+    // 1. Упрощаем создание ViewHolder, убираем лишний кастинг
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+        val binding = PostCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PostViewHolder(binding, onInteractionListener)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d(
-            "ADAPTER_DEBUG",
-            "onBindViewHolder для позиции $position для позиции $position.)"
-        )
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         getItem(position)?.let { post ->
-            (holder as PostViewHolder).bind(post)
+            holder.bind(post)
         }
     }
 
@@ -52,31 +43,23 @@ class FeedAdapter(
         private val onInteractionListener: OnInteractionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(post: PostItem) {
-            binding.apply {
-                author.text = post.authorName
-                avatar.loadAvatar(post.authorAvatar, post.authorName)
-                // Создаем одно действие для клика по автору и аватару
-                val navigateToProfileAction = View.OnClickListener {
-                    // Замените post.authorId на реальное имя поля в вашем DTO
-                    onInteractionListener.onAuthorClick(userId = post.authorId)
+        // Храним ссылку на текущий пост, чтобы слушатели знали, с чем работать
+        private var currentPost: PostItem? = null
+
+        init {
+            // Слушатели создаются при создании ячейки
+            val navigateToProfileAction = View.OnClickListener {
+                currentPost?.let { post ->
+                    onInteractionListener.onAuthorClick(post.authorId)
                 }
-                author.setOnClickListener(navigateToProfileAction)
-                avatar.setOnClickListener(navigateToProfileAction)
+            }
+            binding.author.setOnClickListener(navigateToProfileAction)
+            binding.avatar.setOnClickListener(navigateToProfileAction)
 
-                published.text = DateUtils.formatIsoDate(post.published)
-                content.text = post.content
-                like.isChecked = post.likedByMe
-                like.text = "${post.likeOwnerIds?.size}"
-
-                menuButton.visibility =
-                    if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
-
-                menuButton.setOnClickListener { view ->
+            binding.menuButton.setOnClickListener { view ->
+                currentPost?.let { post ->
                     PopupMenu(view.context, view).apply {
                         inflate(R.menu.options_post)
-                        // TODO: if we don't have other options, just remove dots
-                        // Здесь 'menu' ссылается на свойство PopupMenu, перекрывая внешний binding.menu
                         menu.setGroupVisible(R.id.owned, post.ownedByMe)
                         setOnMenuItemClickListener { item ->
                             when (item.itemId) {
@@ -84,37 +67,50 @@ class FeedAdapter(
                                     onInteractionListener.onRemove(post)
                                     true
                                 }
-
                                 R.id.edit -> {
                                     onInteractionListener.onEdit(post)
                                     true
                                 }
-
                                 else -> false
                             }
                         }
                     }.show()
                 }
+            }
 
-                like.setOnClickListener {
-                    Log.d(
-                        "LIKE_DEBUG",
-                        "Клик по лайку! Post ID: ${post.id}, текущий likedByMe: ${post.likedByMe}"
-                    )
+            binding.like.setOnClickListener {
+                currentPost?.let { post ->
                     onInteractionListener.onLike(post)
                 }
+            }
 
-                share.setOnClickListener {
+            binding.share.setOnClickListener {
+                currentPost?.let { post ->
                     onInteractionListener.onShare(post)
                 }
+            }
+        }
+
+        // Метод bind обновляет данные, не создавая объектов
+        fun bind(post: PostItem) {
+            currentPost = post // Обновляем ссылку для слушателей
+
+            binding.apply {
+                author.text = post.authorName
+                avatar.loadAvatar(post.authorAvatar, post.authorName)
+                published.text = DateUtils.formatIsoDate(post.published)
+                content.text = post.content
+
+                like.isChecked = post.likedByMe
+                like.text = "${post.likeOwnerIds?.size ?: 0}" // Защита от null
+
+                menuButton.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
                 val attachmentUrl = post.attachment?.url
                 if (!attachmentUrl.isNullOrBlank()) {
                     attachment.loadAttachment(attachmentUrl)
-                    // Показываем блок с вложением
                     attachment.visibility = View.VISIBLE
                 } else {
-                    // Скрываем блок, вложения, если его нет
                     attachment.visibility = View.GONE
                 }
             }
@@ -122,14 +118,10 @@ class FeedAdapter(
     }
 
     class FeedItemDiffCallback : DiffUtil.ItemCallback<PostItem>() {
-        override fun areItemsTheSame(oldItem: PostItem, newItem: PostItem): Boolean {
-            return oldItem.id == newItem.id
-        }
+        override fun areItemsTheSame(oldItem: PostItem, newItem: PostItem): Boolean =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: PostItem, newItem: PostItem): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(oldItem: PostItem, newItem: PostItem): Boolean =
+            oldItem == newItem
     }
 }
-
-//TODO FinishRefactor

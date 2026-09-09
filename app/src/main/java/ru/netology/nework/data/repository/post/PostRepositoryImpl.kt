@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
-import ru.netology.nework.api.JobsApiService
 import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.db.AppDb
@@ -26,8 +25,6 @@ import ru.netology.nework.data.dao.postDao.PostDao
 import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
 import ru.netology.nework.data.dto.Attachment
-import ru.netology.nework.data.dto.job.JobItem
-import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.postEntity.toEntity
 import java.io.IOException
@@ -40,7 +37,6 @@ class PostRepositoryImpl @Inject constructor(
     private val userWallRemoteKeyDao: UserWallRemoteKeyDao,
     private val apiService: ApiService,
     private val wallApiService: WallApiService,
-    private val jobsApiService: JobsApiService,
     private val auth: AppAuth
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
@@ -199,49 +195,6 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
-    }
-
-    override suspend fun getUser(userId: Int): UserItem {
-        try {
-            val response = apiService.getUser(userId)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            return response.body() ?: throw ApiError(response.code(), response.message())
-
-        } catch (_: IOException) {
-            throw NetworkError
-        } catch (_: Exception) {
-            throw UnknownError
-        }
-    }
-
-    override suspend fun getJobs(userId: Int): List<JobItem> {
-        try {
-            val response = jobsApiService.getJobs(userId)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            return response.body() ?: emptyList()
-
-        } catch (_: IOException) {
-            throw NetworkError
-        } catch (_: Exception) {
-            throw UnknownError
-        }
-    }
-
-    override fun removeJobById(userId: Int) {
-        try {
-            val response = jobsApiService.removeJobById(userId)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-        } catch (_: IOException) {
-            throw NetworkError
-        } catch (_: Exception) {
-            throw UnknownError
-        }
     }
 
     override suspend fun upload(upload: MediaUpload): Media {

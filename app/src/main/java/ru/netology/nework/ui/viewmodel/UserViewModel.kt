@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.dto.user.UserItem
+import ru.netology.nework.data.repository.jobs.JobRepository
 import ru.netology.nework.data.repository.post.PostRepository
+import ru.netology.nework.data.repository.user.UserRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
@@ -25,8 +27,11 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val repository: PostRepository
-) : ViewModel() {
+    private val userRepository: UserRepository,
+    private val jobRepository: JobRepository,
+    private val postRepository: PostRepository
+
+    ) : ViewModel() {
 
     // Храним текущий userId в StateFlow.
     // Это позволяет реактивно перезапускать загрузку при смене пользователя.
@@ -39,7 +44,7 @@ class UserViewModel @Inject constructor(
     val wallPagingData: Flow<PagingData<PostItem>> = _userId
         .filterNotNull()
         .flatMapLatest { id ->
-            repository.getUserWallData(id)
+            postRepository.getUserWallData(id)
         }
         .cachedIn(viewModelScope)
 
@@ -65,7 +70,7 @@ class UserViewModel @Inject constructor(
     private fun loadUser(userId: Int) = viewModelScope.launch {
         _uiState.value = UserUiState.Loading
         safeApiCall(
-            action = { repository.getUser(userId) },
+            action = { userRepository.getUser(userId) },
             onSuccess = { user ->
                 _userState.value = Resource.Success(user)
                 _uiState.value = UserUiState.Success(user)
@@ -75,7 +80,7 @@ class UserViewModel @Inject constructor(
 
     private fun loadJobs(userId: Int) = viewModelScope.launch {
         safeApiCall(
-            action = { repository.getJobs(userId) },
+            action = { jobRepository.getJobs(userId) },
             onSuccess = { jobsList ->
                 _jobsState.value = Resource.Success(jobsList)
             },
@@ -86,7 +91,7 @@ class UserViewModel @Inject constructor(
 
     fun removeJob(job: JobItem) = viewModelScope.launch {
         safeApiCall(
-            action = { repository.removeJobById(job.id) }, // Предполагаем, что такой метод есть в API
+            action = { jobRepository.removeJobById(job.id) }, // Предполагаем, что такой метод есть в API
             onSuccess = {
                 // После успешного удаления перезагружаем список работ
                 _userId.value?.let { loadJobs(it) }
@@ -109,7 +114,7 @@ class UserViewModel @Inject constructor(
 
     fun likePost(post: PostItem) = viewModelScope.launch {
         safeApiCall(
-            action = { repository.likePost(post.id, post.likedByMe) },
+            action = { postRepository.likePost(post.id, post.likedByMe) },
             onSuccess = {
                 // TODO обновить локальный стейт поста,
             }
@@ -118,7 +123,7 @@ class UserViewModel @Inject constructor(
 
     fun removePost(post: PostItem) = viewModelScope.launch {
         safeApiCall(
-            action = { repository.removeById(post.id) },
+            action = { postRepository.removeById(post.id) },
             onSuccess = {
                 // TODO инициировать обновление PagingData или локального списка.
             }
