@@ -26,7 +26,7 @@ class FeedAdapter(
         fun onAuthorClick(userId: Int) {}
     }
 
-    // 1. Упрощаем создание ViewHolder, убираем лишний кастинг
+    // Упрощаем создание ViewHolder, убираем лишний кастинг
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = PostCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, onInteractionListener)

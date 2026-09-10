@@ -1,4 +1,4 @@
-package ru.netology.nework.data.repository.event
+package ru.netology.nework.data.repository.events
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -12,7 +12,7 @@ import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.entity.eventEntity.toEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
-import ru.netology.nework.data.entity.eventEntity.EventRemoteKey
+import ru.netology.nework.data.entity.eventEntity.EventRemoteKeyEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class EventRemoteMediator(
@@ -32,7 +32,7 @@ class EventRemoteMediator(
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val remoteKey = eventRemoteKeyDao.getRemoteKey()
+                    val remoteKey = eventRemoteKeyDao.getRemoteKeyByEventId()
                     if (remoteKey?.endOfPaginationReached == true) {
                         return MediatorResult.Success(endOfPaginationReached = true)
                     }
@@ -61,7 +61,7 @@ class EventRemoteMediator(
                 eventDao.insertAll(entities)
 
                 eventRemoteKeyDao.insertOrUpdate(
-                    EventRemoteKey(
+                    EventRemoteKeyEntity(
                         nextPage = if (endOfPaginationReached) null else currentPage + 1,
                         endOfPaginationReached = endOfPaginationReached
                     )
@@ -74,3 +74,5 @@ class EventRemoteMediator(
         }
     }
 }
+
+//TODO Починить медиатор

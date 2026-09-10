@@ -8,4 +8,8 @@ data class EventRemoteKeyEntity(
     @PrimaryKey val eventId: Int,
     val prevKey: Int?,
     val nextKey: Int?
-)
+){
+    enum class KeyType {
+        AFTER, BEFORE, NEXT
+    }
+}

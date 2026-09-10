@@ -16,6 +16,7 @@ import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.entity.eventEntity.toEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
+import ru.netology.nework.data.repository.events.EventRemoteMediator
 import ru.netology.nework.data.repository.events.EventRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
