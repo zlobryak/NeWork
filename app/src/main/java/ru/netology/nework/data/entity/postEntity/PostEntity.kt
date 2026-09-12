@@ -1,10 +1,12 @@
-package ru.netology.nework.data.entity
+package ru.netology.nework.data.entity.postEntity
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.data.dto.user.UserItem
+import ru.netology.nework.data.entity.AttachmentEmbeddable
+import ru.netology.nework.data.entity.CoordsEmbeddable
 import kotlin.String
 
 @Entity

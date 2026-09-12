@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/common_spacing"
+    android:layout_marginVertical="@dimen/common_spacing"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="12dp"
+    app:strokeColor="#CAC4D0"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_spacing">
+
+        <!-- Аватар автора -->
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:contentDescription="@string/user_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/avatar" />
+
+        <!-- Имя автора -->
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:singleLine="true"
+            android:textColor="@color/Text_color_post_headers"
+            app:layout_constraintBottom_toTopOf="@id/published"
+            app:layout_constraintEnd_toStartOf="@id/menu_button"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintTop_toTopOf="@id/avatar"
+            tools:text="Adison Levin" />
+
+        <!-- Дата публикации -->
+        <TextView
+            android:id="@+id/published"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            app:layout_constraintBottom_toBottomOf="@id/avatar"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@id/author"
+            tools:text="21.08.22 14:23" />
+
+        <!-- Кнопка меню -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/menu_button"
+            style="@style/Widget.AppCompat.PostMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/menu_button"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:icon="@drawable/ic_more_vert_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Тип события (Online/Offline) -->
+        <TextView
+            android:id="@+id/event_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            tools:text="Online" />
+
+        <!-- Дата проведения события -->
+        <TextView
+            android:id="@+id/datetime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_type"
+            tools:text="28.08.22 19:00" />
+
+        <!-- Текст описания события -->
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:autoLink="web"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Post_card_content_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/datetime"
+            tools:text="Приглашаем вас на увлекательную лекцию о том, как правильно дрессировать котиков! Опытный кинолог расскажет вам о различных техниках и методах обучения, поделится забавными случаями из практики и ответит на ваши вопросы." />
+
+        <!-- Вложение (фото/аудио/видео) -->
+        <ImageView
+            android:id="@+id/attachment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/image_preview"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content"
+            tools:srcCompat="@drawable/tool_podcast"
+            tools:visibility="visible" />
+
+        <!-- Ссылка на событие -->
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:autoLink="web"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/link_color"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attachment"
+            tools:text="https://example.com/event"
+            tools:visibility="visible" />
+
+        <!-- Барьер для контента и вложений -->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="content, attachment, link" />
+
+        <!-- Кнопка лайка -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/like"
+            style="@style/Widget.AppCompat.LikeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:checkable="true"
+            android:contentDescription="@string/like_icon"
+            app:icon="@drawable/ic_liked_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_content"
+            tools:text="10" />
+
+        <!-- Кнопка поделиться -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/share"
+            style="@style/Widget.AppCompat.StandardButtonWithText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/share_icon"
+            app:icon="@drawable/ic_share_24"
+            app:layout_constraintBottom_toBottomOf="@id/like"
+            app:layout_constraintStart_toEndOf="@id/like"
+            app:layout_constraintTop_toTopOf="@id/like" />
+
+        <!-- Количество участников -->
+        <TextView
+            android:id="@+id/participants_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/roboto"
+            android:gravity="center_vertical"
+            android:textColor="@color/Text_color_post_headers"
+            app:drawableStartCompat="@drawable/ic_people_24"
+            app:layout_constraintBottom_toBottomOf="@id/like"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/like"
+            tools:text="2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

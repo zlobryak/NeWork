@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters
+package ru.netology.nework.ui.adapters.userFragment
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.databinding.JobCardBinding
-import ru.netology.nework.ui.adapters.UserJobListAdapter.JobViewHolder
+import ru.netology.nework.ui.adapters.userFragment.UserJobListAdapter.JobViewHolder
 import ru.netology.nework.utils.DateUtils
 
 class UserJobListAdapter(
@@ -48,10 +48,10 @@ class UserJobListAdapter(
                 finish.text = DateUtils.formatIsoDate(job.finish)
                 position.text = job.position
 
-                deleteButton?.visibility =
+                deleteButton.visibility =
                     if (isMyJobs) View.VISIBLE else View.INVISIBLE
 
-                deleteButton?.setOnClickListener {
+                deleteButton.setOnClickListener {
                     onInteractionListener.onRemove(job)
                 }
             }

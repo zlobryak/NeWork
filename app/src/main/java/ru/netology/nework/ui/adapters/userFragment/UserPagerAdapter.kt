@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters
+package ru.netology.nework.ui.adapters.userFragment
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

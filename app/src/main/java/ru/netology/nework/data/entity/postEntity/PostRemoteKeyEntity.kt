@@ -1,4 +1,4 @@
-package ru.netology.nework.data.entity
+package ru.netology.nework.data.entity.postEntity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,4 +13,3 @@ data class PostRemoteKeyEntity(
         AFTER, BEFORE, NEXT
     }
 }
-

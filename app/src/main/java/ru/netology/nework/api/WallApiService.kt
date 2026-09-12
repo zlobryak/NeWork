@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.dto.post.PostItem
 
 interface WallApiService {
@@ -39,4 +40,24 @@ interface WallApiService {
         @Path("id") id: Int,
         @Query("count") count: Int
     ): Response<List<PostItem>>
+
+    /**
+     * Пагинация вверх: события до указанного ID (используется при LoadType.PREPEND)
+     * Формирует URL вида:http://94.228.125.136:8080/api/events/10/before?count=10
+     */
+    @GET("events/{id}/before")
+    suspend fun getBefore(
+        @Path("id") id: Int,
+        @Query("count") count: Int
+    ): Response<List<EventItem>>
+
+    /**
+     * Пагинация вниз: события после указанного ID (используется при LoadType.APPEND)
+     * Формирует URL вида: http://94.228.125.136:8080/api/events/10/after?count=10
+     */
+    @GET("events/{id}/after")
+    suspend fun getAfter(
+        @Path("id") id: Int,
+        @Query("count") count: Int
+    ): Response<List<EventItem>>
 }

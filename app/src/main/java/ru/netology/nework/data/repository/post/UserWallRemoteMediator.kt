@@ -7,12 +7,12 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.netology.nework.api.WallApiService
-import ru.netology.nework.data.dao.PostDao
-import ru.netology.nework.data.dao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.PostDao
+import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
 import ru.netology.nework.data.db.AppDb
-import ru.netology.nework.data.entity.PostEntity
-import ru.netology.nework.data.entity.UserWallRemoteKeyEntity
-import ru.netology.nework.data.entity.toEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
+import ru.netology.nework.data.entity.postEntity.UserWallPostRemoteKeyEntity
+import ru.netology.nework.data.entity.postEntity.toEntity
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -51,7 +51,7 @@ class UserWallRemoteMediator @Inject constructor(
                     // При загрузке вниз получаем ключ (id последнего поста)
                     val remoteKey = userWallRemoteKeyDao.getRemoteKeyForAuthor(
                         authorId = authorId,
-                        type = UserWallRemoteKeyEntity.KeyType.AFTER
+                        type = UserWallPostRemoteKeyEntity.KeyType.AFTER
                     )
 
                     // Если ключа нет, значит нечего загружать (или это первый запуск, который должен быть REFRESH)
@@ -93,9 +93,9 @@ class UserWallRemoteMediator @Inject constructor(
 
                     if (nextKeyValue != null) {
                         userWallRemoteKeyDao.insert(
-                            UserWallRemoteKeyEntity(
+                            UserWallPostRemoteKeyEntity(
                                 authorId = authorId,
-                                type = UserWallRemoteKeyEntity.KeyType.AFTER,
+                                type = UserWallPostRemoteKeyEntity.KeyType.AFTER,
                                 nextKey = nextKeyValue
                             )
                         )

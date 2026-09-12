@@ -17,4 +17,5 @@
     <color name="divider_color">#ccc</color>
     <color name="Text_color_post_headers">#1D1B20</color>
     <color name="Post_card_content_text">#49454F</color>
+    <color name="link_color">#1976D2</color>
 </resources>

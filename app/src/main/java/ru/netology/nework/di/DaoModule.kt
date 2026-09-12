@@ -4,9 +4,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.netology.nework.data.dao.PostDao
-import ru.netology.nework.data.dao.PostRemoteKeyDao
-import ru.netology.nework.data.dao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.eventDao.EventDao
+import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.PostDao
+import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
 import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)
@@ -20,4 +22,10 @@ object DaoModule {
 
     @Provides
     fun provideUserWallRemoteKeyDao(db: AppDb): UserWallRemoteKeyDao = db.userWallRemoteKeyDao()
+
+    @Provides
+    fun provideUEventDao(db: AppDb): EventDao = db.eventDao()
+
+    @Provides
+    fun provideEventRemotKeyDao(db: AppDb): EventRemoteKeyDao = db.eventRemoteKeyDao()
 }

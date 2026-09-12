@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.R
 import ru.netology.nework.data.repository.post.PostRepository
-import ru.netology.nework.ui.viewmodel.AuthViewModel
+import ru.netology.nework.ui.viewmodel.auth.AuthViewModel
 import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -66,20 +66,21 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.signin -> {
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.loginFragment)
                         true
                     }
 
                     R.id.signup -> {
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_registrationFragment)
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.registrationFragment)
                         true
                     }
 
                     R.id.signout -> {
                         auth.removeAuth()
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.loginFragment)
                         true
                     }
+
                     else -> false
                 }
 
@@ -92,7 +93,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
         // Настраиваем фрагмент верхнего уровня
         val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinationIds = setOf(R.id.feedFragment)
+            topLevelDestinationIds = setOf(
+                R.id.feedFragment,
+                R.id.eventsFeedFragment,
+                R.id.usersFeedFragment
+            )
         )
 
         // Находим наше нижнее меню

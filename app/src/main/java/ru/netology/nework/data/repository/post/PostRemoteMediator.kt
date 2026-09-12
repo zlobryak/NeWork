@@ -9,13 +9,13 @@ import androidx.room.withTransaction
 import kotlinx.coroutines.CancellationException
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.data.dao.PostDao
+import ru.netology.nework.data.dao.postDao.PostDao
 import ru.netology.nework.data.db.AppDb
-import ru.netology.nework.data.entity.PostEntity
-import ru.netology.nework.data.entity.PostRemoteKeyEntity
-import ru.netology.nework.data.entity.toEntity
+import ru.netology.nework.data.entity.postEntity.PostEntity
+import ru.netology.nework.data.entity.postEntity.PostRemoteKeyEntity
+import ru.netology.nework.data.entity.postEntity.toEntity
 import ru.netology.nework.error.ApiError
-import ru.netology.nework.data.dao.PostRemoteKeyDao
+import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)

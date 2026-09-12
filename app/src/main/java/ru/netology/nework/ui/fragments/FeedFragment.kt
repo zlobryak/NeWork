@@ -20,13 +20,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nework.data.repository.post.PostRepository
 import ru.netology.nework.R
-import ru.netology.nework.ui.adapters.FeedAdapter
-import ru.netology.nework.ui.adapters.PagingLoadStateAdapter
+import ru.netology.nework.ui.adapters.postFeed.FeedAdapter
+import ru.netology.nework.ui.adapters.postFeed.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
-import ru.netology.nework.ui.viewmodel.PostViewModel
+import ru.netology.nework.ui.viewmodel.postFeedModel.PostViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentRegistrationBinding
-import ru.netology.nework.ui.viewmodel.AuthViewModel
+import ru.netology.nework.ui.viewmodel.auth.AuthViewModel
 import ru.netology.nework.ui.viewmodel.RegistrationState
 import ru.netology.nework.ui.viewmodel.RegistrationViewModel
 import android.graphics.BitmapFactory

@@ -60,6 +60,8 @@
     <string name="confirm_password">Confirm password</string>
     <string name="select_avatar">Select avatar</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+
+    <!-- Добавлены, но не отсортированы -->
     <string name="publish">Publish</string>
     <string name="save">Save</string>
     <string name="jobs">Jobs</string>
@@ -69,4 +71,6 @@
     <string name="retry_button">Retry</string>
     <string name="date_divider">–</string>
     <string name="delete_button">Delete button</string>
+    <string name="no_events">There are no events yet. Be the first to create one!</string>
+    <string name="add_event_button">Add event button</string>
 </resources>
