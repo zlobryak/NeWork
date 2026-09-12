@@ -1,4 +1,4 @@
-package ru.netology.nework.data.repository.event
+package ru.netology.nework.data.repository.events
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -16,8 +16,6 @@ import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.entity.eventEntity.toEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
-import ru.netology.nework.data.repository.events.EventRemoteMediator
-import ru.netology.nework.data.repository.events.EventRepository
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
@@ -57,7 +55,7 @@ class EventRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            eventDao.insert(body.toEntity(currentUserId))
+            eventDao.insert(EventEntity.fromDto(body, currentUserId))
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {
@@ -90,7 +88,7 @@ class EventRepositoryImpl @Inject constructor(
     override suspend fun likeEvent(id: Int, likedByMe: Boolean) {
         try {
             val dbEvent = eventDao.getEventById(id)
-            val isLikedByMe = dbEvent.likedByMe ?: likedByMe
+            val isLikedByMe = dbEvent?.likedByMe ?: likedByMe
 
             val response = if (isLikedByMe) {
                 eventApiService.dislikeEvent(id)
@@ -105,14 +103,14 @@ class EventRepositoryImpl @Inject constructor(
             val updatedEvent = response.body()
                 ?: throw ApiError(response.code(), "Пустой ответ от сервера при обновлении лайка")
 
-            eventDao.insert(updatedEvent.toEntity(currentUserId))
+            eventDao.insert(EventEntity.fromDto(updatedEvent, currentUserId))
 
         } catch (e: ApiError) {
             Log.e("EventLikeDebug", "Пробрасываем ApiError во ViewModel", e)
             throw e
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             throw NetworkError
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             throw UnknownError
         }
     }

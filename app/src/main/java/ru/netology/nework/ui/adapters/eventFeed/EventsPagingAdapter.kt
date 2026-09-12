@@ -5,35 +5,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.event.EventItem
-import ru.netology.nework.data.dto.event.eventItem
-import ru.netology.nework.databinding.eventCardBinding
-import ru.netology.nework.ui.adapters.eventFeed.FeedAdapter
-import ru.netology.nework.ui.adapters.eventFeed.FeedAdapter.FeedItemDiffCallback
-import ru.netology.nework.ui.adapters.eventFeed.FeedAdapter.eventViewHolder
-import ru.netology.nework.ui.adapters.postFeed.FeedAdapter
+import ru.netology.nework.databinding.EventCardBinding
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import ru.netology.nework.view.loadAvatar
 
-
 class EventsPagingAdapter(
+    private val currentUserId: Int,
     private val onInteractionListener: OnInteractionListener,
-) : PagingDataAdapter<EventItem, FeedAdapter.EventViewHolder>(FeedAdapter.FeedItemDiffCallback()) {
+) : PagingDataAdapter<EventItem, EventsPagingAdapter.EventViewHolder>(EventItemDiffCallback()) {
 
     interface OnInteractionListener {
-        fun onLike(event: eventItem) {}
-        fun onEdit(event: eventItem) {}
-        fun onRemove(event: eventItem) {}
-        fun onShare(event: eventItem) {}
+        fun onLike(event: EventItem) {}
+        fun onEdit(event: EventItem) {}
+        fun onRemove(event: EventItem) {}
+        fun onShare(event: EventItem) {}
         fun onAuthorClick(userId: Int) {}
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
-        val binding = eventCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return eventViewHolder(binding, onInteractionListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding = EventCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
@@ -42,18 +38,16 @@ class EventsPagingAdapter(
         }
     }
 
-    class EventViewHolder(
-        private val binding: eventCardBinding,
-        private val onInteractionListener: FeedAdapter.OnInteractionListener,
+    inner class EventViewHolder(
+        private val binding: EventCardBinding,
+        private val onInteractionListener: OnInteractionListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        // Храним ссылку на текущий пост, чтобы слушатели знали, с чем работать
         private var currentEvent: EventItem? = null
 
         init {
-            // Слушатели создаются при создании ячейки
             val navigateToProfileAction = View.OnClickListener {
-                currentevent?.let { event ->
+                currentEvent?.let { event ->
                     onInteractionListener.onAuthorClick(event.authorId)
                 }
             }
@@ -63,18 +57,19 @@ class EventsPagingAdapter(
             binding.menuButton.setOnClickListener { view ->
                 currentEvent?.let { event ->
                     PopupMenu(view.context, view).apply {
-                        inflate(R.menu.options_post)
-                        menu.setGroupVisible(R.id.owned, event.ownedByMe)
+                        inflate(R.menu.options_post) //Используем тоже меню, что и для поста
                         setOnMenuItemClickListener { item ->
                             when (item.itemId) {
                                 R.id.remove -> {
                                     onInteractionListener.onRemove(event)
                                     true
                                 }
+
                                 R.id.edit -> {
                                     onInteractionListener.onEdit(event)
                                     true
                                 }
+
                                 else -> false
                             }
                         }
@@ -95,20 +90,26 @@ class EventsPagingAdapter(
             }
         }
 
-        // Метод bind обновляет данные, не создавая объектов
         fun bind(event: EventItem) {
-            currentEvent = event // Обновляем ссылку для слушателей
+            currentEvent = event
+            val isOwnedByMe = if (event.authorId == currentUserId) {
+                true
+            } else {
+                false
+            }
 
             binding.apply {
-                author.text = event.authorName
-                avatar.loadAvatar(event.authorAvatar, event.authorName)
+
+                author.text = event.author
+                avatar.loadAvatar(event.authorAvatar, event.author)
                 published.text = DateUtils.formatIsoDate(event.published)
                 content.text = event.content
 
                 like.isChecked = event.likedByMe
-                like.text = "${event.likeOwnerIds?.size ?: 0}" // Защита от null
+                like.text = "${event.likeOwnerIds?.size ?: 0}"
 
-                menuButton.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
+
+                menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE
 
                 val attachmentUrl = event.attachment?.url
                 if (!attachmentUrl.isNullOrBlank()) {
@@ -120,5 +121,14 @@ class EventsPagingAdapter(
             }
         }
     }
+
+    class EventItemDiffCallback : DiffUtil.ItemCallback<EventItem>() {
+        override fun areItemsTheSame(oldItem: EventItem, newItem: EventItem): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: EventItem, newItem: EventItem): Boolean {
+            return oldItem == newItem
+        }
+    }
 }
-//todo

@@ -26,6 +26,21 @@ data class EventItem(
     val speakerIds: List<Int>,
     val type: String,
     val users: Map<String, UserItem>? = null,
-) : Parcelable
 
+    val isSynced: Boolean = true, //Локальные поля для удаления/восстановления
+    val syncStatus: String? = null
+) : Parcelable {
+    fun getUserById(id: Int): UserItem? = users?.get(id.toString())
 
+    fun getSpeakers(): List<UserItem> = speakerIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
+
+    fun getParticipants(): List<UserItem> = participantsIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
+
+    fun getLikers(): List<UserItem> = likeOwnerIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
+}

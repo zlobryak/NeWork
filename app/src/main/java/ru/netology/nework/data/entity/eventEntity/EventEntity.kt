@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentEmbeddable
 import ru.netology.nework.data.entity.CoordsEmbeddable
 
@@ -33,7 +34,13 @@ data class EventEntity(
     val coords: CoordsEmbeddable?,
     val link: String,
     val isDeleting: Boolean = false, // Для оптимистичного обновления UI при удалении
-    val ownedByMe: Boolean
+    val ownedByMe: Boolean,
+
+    //Поля для локальной синхронизации
+    val isSynced: Boolean = true,
+    val syncStatus: String? = null,
+
+    val users: Map<String, UserItem>? = null
 ) {
     companion object {
         fun fromDto(dto: EventItem, currentUserId: Int?) =
@@ -55,8 +62,11 @@ data class EventEntity(
                 type = dto.type,
                 participantsIds = dto.participantsIds,
                 participatedByMe = dto.participatedByMe,
-                speakerIds = dto.participantsIds,
+                speakerIds = dto.speakerIds,
                 isDeleting = false,
+                isSynced = dto.isSynced,
+                syncStatus = dto.syncStatus,
+                users = dto.users
             )
     }
 
@@ -66,7 +76,7 @@ data class EventEntity(
         author = author,
         authorAvatar = authorAvatar,
         authorJob = authorJob,
-        content = authorJob,
+        content = content,
         coords = coords?.toDto(),
         datetime = datetime,
         id = id,
@@ -78,9 +88,29 @@ data class EventEntity(
         published = published,
         speakerIds = speakerIds,
         type = type,
+        users = users,
+        isSynced = isSynced,
+        syncStatus = syncStatus
     )
+
+    // Вспомогательные методы для получения пользователей по ID из поля users
+    fun getUserById(id: Int): UserItem? = users?.get(id.toString())
+
+    fun getSpeakers(): List<UserItem> = speakerIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
+
+    fun getParticipants(): List<UserItem> = participantsIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
+
+    fun getLikers(): List<UserItem> = likeOwnerIds.mapNotNull { id ->
+        users?.get(id.toString())
+    }
 }
 
 fun List<EventEntity>.toDto(): List<EventItem> = map(EventEntity::toDto)
 fun List<EventItem>.toEntity(currentUserId: Int?): List<EventEntity> =
     map { EventEntity.fromDto(it, currentUserId) }
+
+//TODO Добавить обработку массива users для отображаения аватров

@@ -8,15 +8,15 @@ import ru.netology.nework.data.entity.eventEntity.EventRemoteKeyEntity
 
 @Dao
 interface EventRemoteKeyDao {
-    @Query("SELECT * FROM EventRemoteKeyEntity WHERE eventId = :id")
-    suspend fun getRemoteKeyByEventId(id: Int): EventRemoteKeyEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(remoteKey: EventRemoteKeyEntity)
+    // Получаем нашу единственную строку с глобальным ключом
+    @Query("SELECT * FROM EventRemoteKeyEntity LIMIT 1")
+    suspend fun getRemoteKey(): EventRemoteKeyEntity?
 
+    // REPLACE работает корректно только если у Entity есть PrimaryKey
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(remoteKeys: List<EventRemoteKeyEntity>)
+    suspend fun insertOrUpdate(key: EventRemoteKeyEntity)
 
     @Query("DELETE FROM EventRemoteKeyEntity")
-    suspend fun clearRemoteKeys()
+    suspend fun clear()
 }

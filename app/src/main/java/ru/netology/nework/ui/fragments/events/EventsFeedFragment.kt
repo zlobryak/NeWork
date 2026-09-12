@@ -11,22 +11,34 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
+import ru.netology.nework.auth.AppAuth
+import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.databinding.FragmentEventsFeedBinding // 1. Импортируем Binding
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.DbError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.ui.viewmodel.EventsFeedViewModel
 import ru.netology.nework.ui.adapters.eventFeed.EventsPagingAdapter
-
-
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
 
     private val viewModel: EventsFeedViewModel by viewModels()
+    private var _binding: FragmentEventsFeedBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: EventsPagingAdapter
+
+    @Inject
+    lateinit var auth: AppAuth
+
+    private val currentUserId: Int = (auth.authStateFlow.value.id ?: 0) as Int
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        _binding = FragmentEventsFeedBinding.bind(view)
 
         setupRecyclerView()
         observeViewModel()
@@ -34,49 +46,68 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
 
     private fun setupRecyclerView() {
         adapter = EventsPagingAdapter(
-            onLikeClick = { event -> viewModel.onEventLiked(event.id, event.likedByMe) },
-            onDeleteClick = { event -> viewModel.onEventDeleted(event.id) }
+            currentUserId = currentUserId,
+            onInteractionListener = object : EventsPagingAdapter.OnInteractionListener {
+                override fun onLike(event: EventItem) {
+                    viewModel.onEventLiked(event.id, event.likedByMe)
+                }
+
+                override fun onRemove(event: EventItem) {
+                    viewModel.onEventDeleted(event.id)
+                }
+
+                override fun onEdit(event: EventItem) {}
+                override fun onShare(event: EventItem) {}
+                override fun onAuthorClick(userId: Int) {}
+            }
         )
 
-        recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+        // Используем binding для доступа к View
+        binding.recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
             header = EventsLoadStateAdapter { adapter.retry() },
             footer = EventsLoadStateAdapter { adapter.retry() }
         )
 
-        // Собираем поток PagingData
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.eventsData.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
             }
         }
 
-        // Отслеживаем состояние загрузки для SwipeRefreshLayout
         adapter.addLoadStateListener { loadState ->
             val isRefreshing = loadState.refresh is LoadState.Loading
             val isInitialLoading = loadState.source.refresh is LoadState.Loading
 
-            // Уведомляем ViewModel о изменении состояния (опционально, можно управлять UI напрямую тут)
             if (!isRefreshing) {
                 viewModel.onRefreshFinished()
             }
 
-            swipeRefreshLayout.isRefreshing = isRefreshing
-            progressBar.isVisible = isInitialLoading
+            // 6. Доступ к View через binding
+            binding.swipeRefreshLayout.isRefreshing = isRefreshing
+            binding.progressBar.visibility = if (isInitialLoading) View.VISIBLE else View.GONE
+        }
+
+        // Не забудь настроить SwipeRefreshLayout, если он есть в макете
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            adapter.refresh()
         }
     }
 
     private fun observeViewModel() {
-        // Наблюдаем за SingleLiveEvent.
-        // Только один observer на этот объект во всем Fragment
         viewModel.showErrorEvent.observe(viewLifecycleOwner) { error ->
             val message = when (error) {
                 is NetworkError -> "Проверьте подключение к интернету"
                 is ApiError -> "Ошибка сервера: ${error.status}"
                 is DbError -> "Ошибка базы данных"
-                is UnknownError -> "Неизвестная ошибка"
+                else -> "Неизвестная ошибка: ${error?.message}" // 7. Добавлена ветка else для исчерпывающего when
             }
 
-            Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // 8. Очищаем binding для предотвращения утечек памяти
     }
 }
