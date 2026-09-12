@@ -17,6 +17,7 @@ import ru.netology.nework.databinding.FragmentEventsFeedBinding // 1. Импор
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.DbError
 import ru.netology.nework.error.NetworkError
+import ru.netology.nework.ui.adapters.eventFeed.EventsLoadStateAdapter
 import ru.netology.nework.ui.viewmodel.EventsFeedViewModel
 import ru.netology.nework.ui.adapters.eventFeed.EventsPagingAdapter
 import javax.inject.Inject
@@ -63,7 +64,7 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
         )
 
         // Используем binding для доступа к View
-        binding.recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = EventsLoadStateAdapter { adapter.retry() },
             footer = EventsLoadStateAdapter { adapter.retry() }
         )
@@ -82,13 +83,13 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
                 viewModel.onRefreshFinished()
             }
 
-            // 6. Доступ к View через binding
-            binding.swipeRefreshLayout.isRefreshing = isRefreshing
+            // Доступ к View через binding
+            binding.swiperefresh.isRefreshing = isRefreshing
             binding.progressBar.visibility = if (isInitialLoading) View.VISIBLE else View.GONE
         }
 
         // Не забудь настроить SwipeRefreshLayout, если он есть в макете
-        binding.swipeRefreshLayout.setOnRefreshListener {
+        binding.swiperefresh.setOnRefreshListener {
             adapter.refresh()
         }
     }

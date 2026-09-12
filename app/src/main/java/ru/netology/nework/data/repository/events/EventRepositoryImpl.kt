@@ -13,7 +13,6 @@ import ru.netology.nework.api.EventApiService
 import ru.netology.nework.data.db.AppDb
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.entity.eventEntity.EventEntity
-import ru.netology.nework.data.entity.eventEntity.toEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
 import ru.netology.nework.error.ApiError
@@ -26,10 +25,9 @@ class EventRepositoryImpl @Inject constructor(
     private val appDb: AppDb,
     private val eventDao: EventDao,
     private val eventRemoteKeyDao: EventRemoteKeyDao,
-    private val eventApiService: EventApiService, //TODO Проверить работу DI
+    private val eventApiService: EventApiService,
     private val auth: AppAuth
 ) : EventRepository {
-
     private val currentUserId: Int
         get() = auth.authStateFlow.value.id.toInt()
 
