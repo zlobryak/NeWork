@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_feedFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_eventsFeedFragment"
+            app:destination="@id/eventsFeedFragment" />
     </fragment>
 
     <fragment
@@ -45,17 +48,17 @@
 
         <!-- Переход к детальному просмотру события -->
         <action
-            android:id="@+id/action_eventsFragment_to_eventDetailFragment"
+            android:id="@+id/action_eventsFeedFragment_to_eventDetailFragment"
             app:destination="@id/eventDetailFragment" />
 
         <!-- Переход к авторизации (если пользователь не залогинен при клике на FAB) -->
         <action
-            android:id="@+id/action_eventsFragment_to_loginFragment"
+            android:id="@+id/action_eventsFeedFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
 
         <!-- Переход к профилю автора (по клику на аватар в карточке) -->
         <action
-            android:id="@+id/action_eventsFragment_to_userFragment"
+            android:id="@+id/action_eventsFeedFragment_to_userFragment"
             app:destination="@id/userFragment" />
     </fragment>
 

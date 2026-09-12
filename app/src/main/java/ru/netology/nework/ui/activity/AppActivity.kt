@@ -95,8 +95,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         val appBarConfiguration = AppBarConfiguration(
             topLevelDestinationIds = setOf(
                 R.id.feedFragment,
-                R.id.eventsFragment,
-                R.id.usersFragment
+                R.id.eventsFeedFragment,
+                R.id.usersFeedFragment
             )
         )
 

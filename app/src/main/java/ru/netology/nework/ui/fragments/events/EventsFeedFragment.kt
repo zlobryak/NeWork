@@ -1,6 +1,7 @@
 package ru.netology.nework.ui.fragments.events
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,18 +29,22 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
     private val viewModel: EventsFeedViewModel by viewModels()
     private var _binding: FragmentEventsFeedBinding? = null
     private val binding get() = _binding!!
+    private var currentUserId: Int = 0
 
     private lateinit var adapter: EventsPagingAdapter
 
     @Inject
     lateinit var auth: AppAuth
 
-    private val currentUserId: Int = (auth.authStateFlow.value.id ?: 0) as Int
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentEventsFeedBinding.bind(view)
+
+        currentUserId= (auth.authStateFlow.value.id.toInt() ?: 0)
+        Log.d("EVENTS_DEBUG", "Текущий ID пользователя: $currentUserId")
+
 
         setupRecyclerView()
         observeViewModel()

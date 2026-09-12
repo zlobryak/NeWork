@@ -37,12 +37,12 @@ android {
                 "proguard-rules.pro"
             )
             manifestPlaceholders["usesCleartextTraffic"] = false
-            buildConfigField("String", "BASE_URL", "\"http://94.228.125.136:8080\"")
+            buildConfigField("String", "BASE_URL", "\"https://94.228.125.136:443\"")
 
         }
         debug {
             manifestPlaceholders["usesCleartextTraffic"] = true
-            buildConfigField("String", "BASE_URL", "\"http://94.228.125.136:8080\"")
+            buildConfigField("String", "BASE_URL", "\"https://94.228.125.136:443\"")
 
         }
     }

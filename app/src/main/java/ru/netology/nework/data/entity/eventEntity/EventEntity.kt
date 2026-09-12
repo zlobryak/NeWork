@@ -13,14 +13,14 @@ data class EventEntity(
     @PrimaryKey val id: Int,
     val authorId: Int,
     val author: String,
-    val authorAvatar: String,
-    val authorJob: String,
+    val authorAvatar: String?,
+    val authorJob: String?,
     val published: String,
     val datetime: String,
-    val content: String,
+    val content: String?,
 
     // Для списков ID убедитесь, что в Converters есть методы List<Int> <-> String
-    val type: String,
+    val type: String?,
     val likeOwnerIds: List<Int>,
     val likedByMe: Boolean,
     val participantsIds: List<Int>,
@@ -32,7 +32,7 @@ data class EventEntity(
 
     @Embedded(prefix = "coords_")
     val coords: CoordsEmbeddable?,
-    val link: String,
+    val link: String?,
     val isDeleting: Boolean = false, // Для оптимистичного обновления UI при удалении
     val ownedByMe: Boolean,
 
