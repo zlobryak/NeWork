@@ -103,10 +103,16 @@ class EventsPagingAdapter(
                 author.text = event.author
                 avatar.loadAvatar(event.authorAvatar, event.author)
                 published.text = DateUtils.formatIsoDate(event.published)
+
+                eventType.text = event.type
+                datetime.text = DateUtils.formatIsoDate(event.datetime)
+
                 content.text = event.content
 
                 like.isChecked = event.likedByMe
-                like.text = "${event.likeOwnerIds?.size ?: 0}"
+                like.text = "${event.likeOwnerIds.size ?: 0}"
+
+                participantsCount.text = "${event.participantsIds.size ?: 0}"
 
 
                 menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE
