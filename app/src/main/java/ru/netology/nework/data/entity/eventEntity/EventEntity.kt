@@ -10,17 +10,18 @@ import ru.netology.nework.data.entity.CoordsEmbeddable
 
 @Entity(tableName = "EventEntity")
 data class EventEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
     val authorId: Int,
     val author: String,
-    val authorAvatar: String?,
+    val authorAvatar: String? = null,
     val authorJob: String?,
     val published: String,
     val datetime: String,
     val content: String?,
 
     // Для списков ID убедитесь, что в Converters есть методы List<Int> <-> String
-    val type: String?,
+    val type: String? = null,
     val likeOwnerIds: List<Int>,
     val likedByMe: Boolean,
     val participantsIds: List<Int>,
@@ -31,8 +32,8 @@ data class EventEntity(
     val attachment: AttachmentEmbeddable?,
 
     @Embedded(prefix = "coords_")
-    val coords: CoordsEmbeddable?,
-    val link: String?,
+    val coords: CoordsEmbeddable? = null,
+    val link: String? = null,
     val isDeleting: Boolean = false, // Для оптимистичного обновления UI при удалении
     val ownedByMe: Boolean,
 
@@ -71,26 +72,26 @@ data class EventEntity(
     }
 
     fun toDto() = EventItem(
-        authorId = authorId,
-        attachment = attachment?.toDto(),
-        author = author,
-        authorAvatar = authorAvatar,
-        authorJob = authorJob,
-        content = content,
-        coords = coords?.toDto(),
-        datetime = datetime,
-        id = id,
-        likeOwnerIds = likeOwnerIds,
-        likedByMe = likedByMe,
-        link = link,
-        participantsIds = participantsIds,
-        participatedByMe = participatedByMe,
-        published = published,
-        speakerIds = speakerIds,
-        type = type,
-        users = users,
-        isSynced = isSynced,
-        syncStatus = syncStatus
+        authorId,
+        attachment?.toDto(),
+        author,
+        authorAvatar,
+        authorJob,
+        content,
+        coords?.toDto(),
+        datetime,
+        id,
+        likeOwnerIds,
+        likedByMe,
+        link,
+        participantsIds,
+        participatedByMe,
+        published,
+        speakerIds,
+        type,
+        users,
+        isSynced,
+        syncStatus
     )
 
     // Вспомогательные методы для получения пользователей по ID из поля users
