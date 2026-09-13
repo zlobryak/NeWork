@@ -61,6 +61,13 @@
     <string name="select_avatar">Select avatar</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
 
+    <!-- Фрагмент детального просмотра события-->
+    <string name="speakers">Speakers</string>
+    <string name="likers">Likers</string>
+    <string name="participants">Participants</string>
+    <string name="event_cover">Event cover image</string>
+    <string name="participants_icon">Participants icon</string>
+
     <!-- Добавлены, но не отсортированы -->
     <string name="publish">Publish</string>
     <string name="save">Save</string>
