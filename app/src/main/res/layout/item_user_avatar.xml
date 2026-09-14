@@ -5,7 +5,8 @@
     android:id="@+id/user_avatar"
     android:layout_width="40dp"
     android:layout_height="40dp"
-    android:layout_marginStart="-12dp"
+    android:background="@drawable/avatar_border"
+    android:layout_marginStart="-6dp"
     android:contentDescription="@string/user_avatar"
     android:scaleType="centerCrop"
     tools:srcCompat="@drawable/avatar" />

@@ -66,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/author_avatar"
             tools:srcCompat="@drawable/tool_podcast"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <!-- Тип события (Online/Offline) -->
         <TextView
@@ -143,17 +143,16 @@
             app:layout_constraintTop_toBottomOf="@id/divider_speakers" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:paddingStart="@dimen/common_spacing"
+
             android:id="@+id/speakers_recycler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_spacing"
             android:clipToPadding="false"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/common_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/speakers_title"
             app:layout_constraintTop_toBottomOf="@id/speakers_title"
             tools:itemCount="3"
             tools:listitem="@layout/item_user_avatar" />
@@ -171,7 +170,6 @@
             app:layout_constraintTop_toBottomOf="@id/speakers_recycler" />
 
         <!-- Секция Likers -->
-        <!-- Секция Likers -->
         <TextView
             android:id="@+id/likers_title"
             android:layout_width="wrap_content"
@@ -186,7 +184,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_likers" />
 
-        <!-- Кнопка лайка (как в карточке) -->
+        <!-- Кнопка лайка -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/like"
             style="@style/Widget.AppCompat.LikeButton"
@@ -201,21 +199,34 @@
             app:layout_constraintTop_toBottomOf="@id/likers_title"
             tools:text="10" />
 
-        <!-- Список лайкнувших (справа от кнопки) -->
+        <!-- Список лайкнувших -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/likers_recycler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/common_spacing"
-            android:layout_marginTop="@dimen/common_spacing"
+            android:layout_marginStart="8dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
+            android:paddingStart="6dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@id/like"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/like"
             app:layout_constraintTop_toTopOf="@id/like"
             tools:itemCount="6"
             tools:listitem="@layout/item_user_avatar" />
+
+        <!-- Разделитель -->
+        <View
+            android:id="@+id/divider_participants"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:background="@color/divider_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/likers_recycler" />
 
         <!-- Секция Participants -->
         <TextView
@@ -232,47 +243,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_participants" />
 
-        <LinearLayout
-            android:id="@+id/participants_count_layout"
+        <!-- Счетчик участников с иконкой -->
+        <TextView
+            android:id="@+id/participants_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginStart="@dimen/common_spacing"
             android:layout_marginTop="@dimen/common_spacing"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/roboto"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:textColor="@color/Text_color_post_headers"
+            app:drawableStartCompat="@drawable/ic_people_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/participants_title">
+            app:layout_constraintTop_toBottomOf="@id/participants_title"
+            tools:text="2" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="@string/participants_icon"
-                android:src="@drawable/ic_people_24"
-                app:tint="@color/Text_color_secondary" />
-
-            <TextView
-                android:id="@+id/participants_count_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:fontFamily="@font/roboto"
-                android:textColor="@color/Text_color_post_headers"
-                tools:text="2" />
-        </LinearLayout>
-
+        <!-- Список участников -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/participants_recycler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_spacing"
+            android:layout_marginStart="8dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/common_spacing"
-            android:paddingStart="@dimen/common_spacing"
+            android:paddingStart="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@id/participants_count"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/participants_count_layout"
+            app:layout_constraintStart_toEndOf="@id/participants_count"
+            app:layout_constraintTop_toTopOf="@id/participants_count"
             tools:itemCount="2"
             tools:listitem="@layout/item_user_avatar" />
 
@@ -299,7 +299,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_map"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
