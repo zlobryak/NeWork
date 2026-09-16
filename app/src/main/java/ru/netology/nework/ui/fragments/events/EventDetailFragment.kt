@@ -1,21 +1,21 @@
 package ru.netology.nework.ui.fragments.events
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
+import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.event.EventItem
-import ru.netology.nework.data.entity.CoordsEmbeddable
+import ru.netology.nework.databinding.FragmentEventBinding
 import ru.netology.nework.ui.adapters.eventDetailFragmment.EventUserListItem
 import ru.netology.nework.ui.adapters.eventDetailFragmment.EventUsersAdapter
 import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
@@ -23,20 +23,41 @@ import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
 @AndroidEntryPoint
 class EventDetailFragment : Fragment() {
 
+    // Nullable backing property + геттер
+    private var _binding: FragmentEventBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: EventDetailViewModel by viewModels()
 
     private lateinit var speakersAdapter: EventUsersAdapter
     private lateinit var likersAdapter: EventUsersAdapter
     private lateinit var participantsAdapter: EventUsersAdapter
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEventBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerViews(view)
-        observeData(view)
+        setupRecyclerViews()   // адаптеры создаются один раз
+        setupListeners()       // слушатели создаются один раз
+        observeData()          // подписка на данные
     }
 
-    private fun setupRecyclerViews(view: View) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    // ---------- Настройка (вызывается один раз) ----------
+
+    private fun setupRecyclerViews() {
         speakersAdapter = EventUsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
             onMoreButtonClick = { openUsersListFragment(UserListType.SPEAKERS) }
@@ -52,28 +73,35 @@ class EventDetailFragment : Fragment() {
             onMoreButtonClick = { openUsersListFragment(UserListType.PARTICIPANTS) }
         )
 
-        view.findViewById<RecyclerView>(R.id.speakers_recycler).adapter = speakersAdapter
-        view.findViewById<RecyclerView>(R.id.likers_recycler).adapter = likersAdapter
-        view.findViewById<RecyclerView>(R.id.participants_recycler).adapter = participantsAdapter
-
-        // Обработчик кнопки Like
-        view.findViewById<MaterialButton>(R.id.like).setOnClickListener {
-            viewModel.likeEvent()
-            //TODO Кнопка частвовать/не участвовать
-        }
+        binding.speakersRecycler.adapter = speakersAdapter
+        binding.likersRecycler.adapter = likersAdapter
+        binding.participantsRecycler.adapter = participantsAdapter
     }
 
-    private fun observeData(view: View) {
+    private fun setupListeners() {
+        binding.like.setOnClickListener {
+            viewModel.likeEvent()
+        }
+
+        // TODO: кнопка участвовать/не участвовать
+        // binding.participate.setOnClickListener { viewModel.participateEvent() }
+    }
+
+    // ---------- Наблюдение за данными ----------
+
+    private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.eventState.collect { event ->
-                    event?.let { bindEvent(view, it) }
+                    event?.let { bindEvent(it) }
                 }
             }
         }
     }
 
-    private fun bindEvent(view: View, event: EventItem) {
+    // ---------- Только привязка данных, без слушателей ----------
+
+    private fun bindEvent(event: EventItem) {
         val speakers = event.getSpeakers().map {
             EventUserListItem.User(it.id, it.avatar)
         }
@@ -88,20 +116,36 @@ class EventDetailFragment : Fragment() {
         likersAdapter.submitList(likers)
         participantsAdapter.submitList(participants)
 
-        view.findViewById<TextView>(R.id.author_name).text = event.author
-        view.findViewById<TextView>(R.id.author_job).text =
-            event.authorJob ?: getString(R.string.job_searching)
-        view.findViewById<TextView>(R.id.event_type).text = event.type ?: ""
-        view.findViewById<TextView>(R.id.event_datetime).text = event.datetime
-        view.findViewById<TextView>(R.id.event_description).text = event.content
-        view.findViewById<MaterialButton>(R.id.like).text =
-            event.likeOwnerIds.size.toString()
-        view.findViewById<MaterialButton>(R.id.like).isChecked = event.likedByMe
+        with(binding) {
+            authorName.text = event.author
+            authorJob.text = event.authorJob ?: getString(R.string.job_searching)
+            eventType.text = event.type ?: ""
+            eventDatetime.text = event.datetime
+            eventDescription.text = event.content
+            like.text = event.likeOwnerIds.size.toString()
+            like.isChecked = event.likedByMe
+            participantsCount.text = event.participantsIds.size.toString()
+
+            // Обложка
+            event.attachment?.let { attachment ->
+                eventCover.visibility = View.VISIBLE
+                // Glide/Coil: load(attachment.url).into(eventCover)
+            } ?: run {
+                eventCover.visibility = View.GONE
+            }
+
+            // Карта
+            event.coords?.let { coords ->
+                mapView.visibility = View.VISIBLE
+                setupMap(mapView, coords)
+            } ?: run {
+                mapView.visibility = View.GONE
+            }
+        }
     }
 
-    private fun setupMap(mapView: MapView, coords: CoordsEmbeddable) {
+    private fun setupMap(mapView: MapView, coords: Coords) {
         // Инициализация Yandex Map и установка маркера
-        // Здесь нужно реализовать логику с MapKit
     }
 
     private fun openUsersListFragment(type: UserListType) {
