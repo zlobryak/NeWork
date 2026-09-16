@@ -19,7 +19,7 @@ import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.DbError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.ui.adapters.eventFeed.EventsLoadStateAdapter
-import ru.netology.nework.ui.viewmodel.EventsFeedViewModel
+import ru.netology.nework.ui.viewmodel.events.EventsFeedViewModel
 import ru.netology.nework.ui.adapters.eventFeed.EventsPagingAdapter
 import javax.inject.Inject
 

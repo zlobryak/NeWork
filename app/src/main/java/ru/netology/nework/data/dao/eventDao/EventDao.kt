@@ -10,6 +10,8 @@ import ru.netology.nework.data.entity.eventEntity.EventEntity
 
 @Dao
 interface EventDao {
+    @Query("SELECT * FROM EventEntity WHERE id = :id")
+    fun getEventByIdFlow(id: Int): Flow<EventEntity?>
     @Query("SELECT * FROM EventEntity ORDER BY datetime DESC")
     fun pagingSource(): PagingSource<Int, EventEntity>
 

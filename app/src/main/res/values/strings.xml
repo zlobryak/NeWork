@@ -67,6 +67,7 @@
     <string name="participants">Participants</string>
     <string name="event_cover">Event cover image</string>
     <string name="participants_icon">Participants icon</string>
+    <string name="job_searching">В поисках работы</string>
 
     <!-- Добавлены, но не отсортированы -->
     <string name="publish">Publish</string>

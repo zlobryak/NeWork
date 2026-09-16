@@ -50,4 +50,6 @@ interface EventApiService {
     @DELETE("events/{id}/participants")
     suspend fun disparticipateEvent(@Path("id") id: Int): Response<EventItem>
 
+    //TODO Добавить в фрагмент и вьюмодель участие/удаление из участников
+
 }

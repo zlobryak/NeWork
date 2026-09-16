@@ -46,6 +46,8 @@ class EventRepositoryImpl @Inject constructor(
         pagingData.map(EventEntity::toDto)
     }
 
+    override fun getEventById(id: Int): Flow<EventItem?> = eventDao.getEventByIdFlow(id).map { it?.toDto() }
+
     override suspend fun save(event: EventItem) {
         try {
             val response = eventApiService.createEvent(event)
