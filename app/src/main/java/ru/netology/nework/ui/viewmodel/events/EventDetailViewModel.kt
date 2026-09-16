@@ -8,17 +8,22 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.repository.events.EventRepository
+import ru.netology.nework.error.ApiError
 import javax.inject.Inject
 
 @HiltViewModel
 class EventDetailViewModel @Inject constructor(
     private val eventRepository: EventRepository,
+    private val auth: AppAuth,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val eventId: Int = savedStateHandle["eventId"] ?: error("eventId is required")
+
+    private val currentUserId = auth.authStateFlow.value.id
 
     val eventState: StateFlow<EventItem?> = eventRepository.getEventById(eventId)
         .stateIn(
@@ -31,6 +36,17 @@ class EventDetailViewModel @Inject constructor(
         val event = eventState.value ?: return
         viewModelScope.launch {
             eventRepository.likeEvent(event.id, event.likedByMe)
+        }
+    }
+
+    fun participateEvent() {
+        val event = eventState.value ?: return
+        viewModelScope.launch {
+            try {
+                eventRepository.participateEvent(event.id, event.participatedByMe)
+            } catch (e: ApiError) {
+                // Обработка ошибок
+            }
         }
     }
 }

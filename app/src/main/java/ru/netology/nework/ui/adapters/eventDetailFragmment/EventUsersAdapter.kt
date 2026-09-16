@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 
 class EventUsersAdapter(
-    private val onItemClick: (String) -> Unit,
+    private val onItemClick: (String?) -> Unit,
     private val onMoreButtonClick: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

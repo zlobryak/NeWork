@@ -53,7 +53,7 @@
 
         <!-- Обложка события -->
         <ImageView
-            android:id="@+id/event_cover"
+            android:id="@+id/attachment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/common_spacing"
@@ -66,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/author_avatar"
             tools:srcCompat="@drawable/tool_podcast"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <!-- Тип события (Online/Offline) -->
         <TextView
@@ -81,7 +81,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_cover"
+            app:layout_constraintTop_toBottomOf="@id/attachment"
             tools:text="Online" />
 
         <!-- Дата и время проведения -->
@@ -244,17 +244,16 @@
             app:layout_constraintTop_toBottomOf="@id/divider_participants" />
 
         <!-- Счетчик участников с иконкой -->
-        <TextView
-            android:id="@+id/participants_count"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/participate_button"
+            style="@style/Widget.AppCompat.StandardButtonWithText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/common_spacing"
             android:layout_marginTop="@dimen/common_spacing"
-            android:drawablePadding="4dp"
-            android:fontFamily="@font/roboto"
-            android:gravity="center_vertical"
-            android:textColor="@color/Text_color_post_headers"
-            app:drawableStartCompat="@drawable/ic_people_24"
+            android:checkable="true"
+            android:contentDescription="@string/participate_button"
+            app:icon="@drawable/ic_people_outlined_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/participants_title"
             tools:text="2" />
@@ -269,10 +268,10 @@
             android:orientation="horizontal"
             android:paddingStart="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="@id/participants_count"
+            app:layout_constraintBottom_toBottomOf="@id/participate_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/participants_count"
-            app:layout_constraintTop_toTopOf="@id/participants_count"
+            app:layout_constraintStart_toEndOf="@id/participate_button"
+            app:layout_constraintTop_toTopOf="@id/participate_button"
             tools:itemCount="2"
             tools:listitem="@layout/item_user_avatar" />
 

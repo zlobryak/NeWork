@@ -115,6 +115,36 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun participateEvent(id: Int, participatedByMe: Boolean) {
+        try {
+            val dbEvent = eventDao.getEventById(id)
+            val isParticipatedByMe = dbEvent?.participatedByMe ?: participatedByMe
+
+            val response = if (isParticipatedByMe) {
+                eventApiService.disparticipateEvent(id)
+            } else {
+                eventApiService.participateEvent(id)
+            }
+
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val updatedEvent = response.body()
+                ?: throw ApiError(response.code(), "Пустой ответ от сервера при обновлении участия")
+
+            eventDao.insert(EventEntity.fromDto(updatedEvent, currentUserId))
+
+        } catch (e: ApiError) {
+            Log.e("EventParticipateDebug", "Пробрасываем ApiError во ViewModel", e)
+            throw e
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
     override suspend fun restoreEvent(event: EventItem) {
         if (event.isSynced) {
             eventDao.insert(EventEntity.fromDto(event, currentUserId))

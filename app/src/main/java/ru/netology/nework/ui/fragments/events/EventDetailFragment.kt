@@ -9,19 +9,30 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
+import ru.netology.nework.auth.AppAuth
+import ru.netology.nework.auth.AuthState
 import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.event.isLikedBy
+import ru.netology.nework.data.dto.event.isParticipating
 import ru.netology.nework.databinding.FragmentEventBinding
 import ru.netology.nework.ui.adapters.eventDetailFragmment.EventUserListItem
 import ru.netology.nework.ui.adapters.eventDetailFragmment.EventUsersAdapter
 import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
+import ru.netology.nework.view.loadAttachment
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EventDetailFragment : Fragment() {
+
+    @Inject
+    lateinit var appAuth: AppAuth
 
     // Nullable backing property + геттер
     private var _binding: FragmentEventBinding? = null
@@ -55,7 +66,7 @@ class EventDetailFragment : Fragment() {
         _binding = null
     }
 
-    // ---------- Настройка (вызывается один раз) ----------
+    // ---------- Настройка списков аватарок (вызывается один раз) ----------
 
     private fun setupRecyclerViews() {
         speakersAdapter = EventUsersAdapter(
@@ -80,11 +91,25 @@ class EventDetailFragment : Fragment() {
 
     private fun setupListeners() {
         binding.like.setOnClickListener {
-            viewModel.likeEvent()
+            if (appAuth.authStateFlow.value.id == 0L) {
+                navigateToLogin()
+            } else {
+                viewModel.likeEvent()
+            }
         }
 
-        // TODO: кнопка участвовать/не участвовать
-        // binding.participate.setOnClickListener { viewModel.participateEvent() }
+        binding.participateButton.setOnClickListener {
+            if (appAuth.authStateFlow.value.id == 0L) {
+                navigateToLogin()
+            } else {
+                viewModel.participateEvent()
+            }
+        }
+    }
+
+    private fun navigateToLogin() {
+        findNavController().navigate(R.id.loginFragment)
+
     }
 
     // ---------- Наблюдение за данными ----------
@@ -92,8 +117,13 @@ class EventDetailFragment : Fragment() {
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.eventState.collect { event ->
-                    event?.let { bindEvent(it) }
+                combine(
+                    viewModel.eventState,
+                    appAuth.authStateFlow
+                ) { event, authState ->
+                    event to authState
+                }.collect { (event, authState) ->
+                    event?.let { bindEvent(it, authState) }
                 }
             }
         }
@@ -101,7 +131,7 @@ class EventDetailFragment : Fragment() {
 
     // ---------- Только привязка данных, без слушателей ----------
 
-    private fun bindEvent(event: EventItem) {
+    private fun bindEvent(event: EventItem, authState: AuthState) {
         val speakers = event.getSpeakers().map {
             EventUserListItem.User(it.id, it.avatar)
         }
@@ -117,21 +147,30 @@ class EventDetailFragment : Fragment() {
         participantsAdapter.submitList(participants)
 
         with(binding) {
+            val currentUserId = authState.id
+            val isAuthorized = currentUserId != 0L
+
             authorName.text = event.author
             authorJob.text = event.authorJob ?: getString(R.string.job_searching)
             eventType.text = event.type ?: ""
             eventDatetime.text = event.datetime
             eventDescription.text = event.content
+
             like.text = event.likeOwnerIds.size.toString()
-            like.isChecked = event.likedByMe
-            participantsCount.text = event.participantsIds.size.toString()
+            like.isChecked = event.isLikedBy(currentUserId)
+            like.isEnabled = isAuthorized
+
+            participateButton.text = event.participantsIds.size.toString()
+            participateButton.isChecked = event.isParticipating(currentUserId)
+            participateButton.isEnabled = isAuthorized
 
             // Обложка
-            event.attachment?.let { attachment ->
-                eventCover.visibility = View.VISIBLE
-                // Glide/Coil: load(attachment.url).into(eventCover)
-            } ?: run {
-                eventCover.visibility = View.GONE
+            val attachmentUrl = event.attachment?.url
+            if (!attachmentUrl.isNullOrBlank()) {
+                attachment.loadAttachment(attachmentUrl)
+                attachment.visibility = View.VISIBLE
+            } else {
+                attachment.visibility = View.GONE
             }
 
             // Карта

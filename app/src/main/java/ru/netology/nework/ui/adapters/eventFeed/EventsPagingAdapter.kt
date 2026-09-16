@@ -113,7 +113,7 @@ class EventsPagingAdapter(
                 like.text = "${event.likeOwnerIds.size ?: 0}"
 
                 participantsCount.text = "${event.participantsIds.size ?: 0}"
-
+                //TODO Тут должна быть кнопка Участвовать/неучаствовать с селектором как в фрагменте детального просмотра события.
 
                 menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE
 
