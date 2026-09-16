@@ -15,16 +15,3 @@ fun EventItem.isLikedBy(userId: Long): Boolean =
  */
 fun EventItem.isParticipating(userId: Long): Boolean =
     userId != 0L && participantsIds.contains(userId.toInt())
-
-/**
- * Вспомогательные методы для получения пользователей по их ID.
- * Используют поле users (Map<String, UserItem>) для резолва.
- */
-fun EventItem.getSpeakers(): List<UserItem> =
-    speakerIds.mapNotNull { id -> users?.get(id.toString()) }
-
-fun EventItem.getLikers(): List<UserItem> =
-    likeOwnerIds.mapNotNull { id -> users?.get(id.toString()) }
-
-fun EventItem.getParticipants(): List<UserItem> =
-    participantsIds.mapNotNull { id -> users?.get(id.toString()) }
