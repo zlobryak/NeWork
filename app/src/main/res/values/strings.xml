@@ -83,4 +83,14 @@
     <string name="no_events">There are no events yet. Be the first to create one!</string>
     <string name="add_event_button">Add event button</string>
     <string name="users_list_button">Users list button</string>
+    <string name="choose_the_date">Choose the date</string>
+    <string name="add_place">Add place</string>
+    <string name="add_user">Add User</string>
+    <string name="choose_file">Choose file</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="offline">OFFLINE</string>
+    <string name="online">ONLINE</string>
+    <string name="type">Type</string>
+    <string name="date">Date</string>
 </resources>
