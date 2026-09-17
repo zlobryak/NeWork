@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +43,7 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
 
         _binding = FragmentEventsFeedBinding.bind(view)
 
-        currentUserId= (auth.authStateFlow.value.id.toInt() ?: 0)
+        currentUserId = (auth.authStateFlow.value.id.toInt())
         Log.d("EVENTS_DEBUG", "Текущий ID пользователя: $currentUserId")
 
 
@@ -65,6 +66,11 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
                 override fun onEdit(event: EventItem) {}
                 override fun onShare(event: EventItem) {}
                 override fun onAuthorClick(userId: Int) {}
+                override fun onOpenDetails(event: EventItem) {
+                    val action = EventsFeedFragmentDirections
+                        .actionEventsFeedFragmentToEventDetailFragment(event.id)
+                    findNavController().navigate(action)
+                }
             }
         )
 

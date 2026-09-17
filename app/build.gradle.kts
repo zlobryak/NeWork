@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.ksp
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -23,7 +24,17 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        if (rootProject.file("local.properties").exists()) {
+            properties.load(rootProject.file("local.properties").inputStream())
+        }
+
+        val mapkitApiKey = properties.getProperty("MAPS_API_KEY", "")
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapkitApiKey\"")
     }
+
+
 
     buildFeatures {
         viewBinding = true

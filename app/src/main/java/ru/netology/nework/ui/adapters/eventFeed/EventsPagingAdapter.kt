@@ -25,6 +25,7 @@ class EventsPagingAdapter(
         fun onRemove(event: EventItem) {}
         fun onShare(event: EventItem) {}
         fun onAuthorClick(userId: Int) {}
+        fun onOpenDetails(event: EventItem) {}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -49,6 +50,11 @@ class EventsPagingAdapter(
             val navigateToProfileAction = View.OnClickListener {
                 currentEvent?.let { event ->
                     onInteractionListener.onAuthorClick(event.authorId)
+                }
+            }
+            val navigateToDetails = View.OnClickListener {
+                currentEvent?.let { event ->
+                    onInteractionListener.onOpenDetails(event)
                 }
             }
             binding.author.setOnClickListener(navigateToProfileAction)
@@ -88,6 +94,9 @@ class EventsPagingAdapter(
                     onInteractionListener.onShare(event)
                 }
             }
+
+            binding.content.setOnClickListener(navigateToDetails)
+            binding.attachment.setOnClickListener(navigateToDetails)
         }
 
         fun bind(event: EventItem) {
@@ -110,9 +119,9 @@ class EventsPagingAdapter(
                 content.text = event.content
 
                 like.isChecked = event.likedByMe
-                like.text = "${event.likeOwnerIds.size ?: 0}"
+                like.text = "${event.likeOwnerIds.size}"
 
-                participantsCount.text = "${event.participantsIds.size ?: 0}"
+                participantsCount.text = "${event.participantsIds.size}"
                 //TODO Тут должна быть кнопка Участвовать/неучаствовать с селектором как в фрагменте детального просмотра события.
 
                 menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE

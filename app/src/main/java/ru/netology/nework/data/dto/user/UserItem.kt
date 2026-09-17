@@ -10,6 +10,4 @@ data class UserItem(
     val userId: Int = 0,       // Этого поля нет в списке лайкнувших
     val login: String? = "", // Этого поля нет в списке лайкнувших
     val name: String? = ""
-) : Parcelable {
-
-}
+) : Parcelable

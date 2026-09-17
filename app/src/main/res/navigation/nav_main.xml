@@ -131,6 +131,13 @@
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="ru.netology.nework.ui.fragments.events.EventDetailFragment"
-        android:label="EventDetailFragment" />
+        android:label="EventDetailFragment">
+
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+
+
 
 </navigation>

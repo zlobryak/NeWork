@@ -17,13 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class EventDetailViewModel @Inject constructor(
     private val eventRepository: EventRepository,
-    private val auth: AppAuth,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val eventId: Int = savedStateHandle["eventId"] ?: error("eventId is required")
-
-    private val currentUserId = auth.authStateFlow.value.id
 
     val eventState: StateFlow<EventItem?> = eventRepository.getEventById(eventId)
         .stateIn(
@@ -44,9 +41,10 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 eventRepository.participateEvent(event.id, event.participatedByMe)
-            } catch (e: ApiError) {
-                // Обработка ошибок
+            } catch (_: ApiError) {
+                // TODO Обработка ошибок
             }
         }
     }
+
 }

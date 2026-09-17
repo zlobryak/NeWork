@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
+import ru.netology.nework.view.loadAvatar
 
 class EventUsersAdapter(
     private val onItemClick: (String?) -> Unit,
@@ -76,9 +77,10 @@ class EventUsersAdapter(
         private val imageView: ImageView = itemView.findViewById(R.id.user_avatar)
 
         fun bind(user: EventUserListItem.User) {
-            // Здесь загрузка аватара (Glide/Picasso)
-            // Glide.with(itemView).load(user.avatarUrl).into(imageView)
-            imageView.setImageResource(R.drawable.ic_manufacturing_24px) // заглушка
+            imageView.loadAvatar(
+                url = user.avatarUrl,
+                authorName = user.name?.ifEmpty { user.userId }
+            )
             imageView.setOnClickListener { onItemClick(user.userId) }
         }
     }
