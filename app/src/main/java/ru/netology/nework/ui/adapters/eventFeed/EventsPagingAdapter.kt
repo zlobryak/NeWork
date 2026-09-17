@@ -26,6 +26,7 @@ class EventsPagingAdapter(
         fun onShare(event: EventItem) {}
         fun onAuthorClick(userId: Int) {}
         fun onOpenDetails(event: EventItem) {}
+        fun onParticipate(event: EventItem) {}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -57,6 +58,13 @@ class EventsPagingAdapter(
                     onInteractionListener.onOpenDetails(event)
                 }
             }
+
+            binding.participateButton.setOnClickListener {
+                currentEvent?.let { event ->
+                    onInteractionListener.onParticipate(event)
+                }
+            }
+
             binding.author.setOnClickListener(navigateToProfileAction)
             binding.avatar.setOnClickListener(navigateToProfileAction)
 
@@ -95,17 +103,15 @@ class EventsPagingAdapter(
                 }
             }
 
+
             binding.content.setOnClickListener(navigateToDetails)
             binding.attachment.setOnClickListener(navigateToDetails)
         }
 
         fun bind(event: EventItem) {
             currentEvent = event
-            val isOwnedByMe = if (event.authorId == currentUserId) {
-                true
-            } else {
-                false
-            }
+            val isOwnedByMe = event.authorId == currentUserId
+            val isParticipating = event.participantsIds.contains(currentUserId)
 
             binding.apply {
 
@@ -121,8 +127,9 @@ class EventsPagingAdapter(
                 like.isChecked = event.likedByMe
                 like.text = "${event.likeOwnerIds.size}"
 
-                participantsCount.text = "${event.participantsIds.size}"
-                //TODO Тут должна быть кнопка Участвовать/неучаствовать с селектором как в фрагменте детального просмотра события.
+                binding.participateButton.text = "${event.participantsIds.size}"
+                binding.participateButton.isChecked = isParticipating
+                binding.participateButton.isEnabled = currentUserId != 0  // отключаем для анонимов
 
                 menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE
 

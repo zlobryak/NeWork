@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.repository.events.EventRepository
+import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.AppError
 import ru.netology.nework.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -78,6 +79,17 @@ class EventsFeedViewModel @Inject constructor(
             } catch (e: Exception) {
                 val appError = AppError.from(e)
                 showErrorEvent.value = appError
+            }
+        }
+    }
+
+    fun participateEvent(id: Int, isPartByMe: Boolean) {
+
+        viewModelScope.launch {
+            try {
+                eventRepository.participateEvent(id, isPartByMe)
+            } catch (_: ApiError) {
+                // TODO Обработка ошибок
             }
         }
     }
