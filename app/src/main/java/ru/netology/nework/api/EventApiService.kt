@@ -20,24 +20,14 @@ interface EventApiService {
     @POST("events")
     suspend fun createEvent(@Body event: EventItem): Response<EventItem>
 
-    /**
-     * Формирует URL вида: http://94.228.125.136:8080/api/events/333
-     */
-    @PUT("events/{id}")
-    suspend fun updateEvent(
-        @Path("id") id: Int,
-        @Body event: EventItem
-    ): Response<EventItem>
 
     /**
-     * Формирует URL вида: http://94.228.125.136:8080/api/events333
+     * Формирует URL вида: http://94.228.125.136:8080/api/events/333
      */
     @DELETE("events/{id}")
     suspend fun deleteEvent(@Path("id") id: Int): Response<Unit>
 
-    /**
-     * Формирует URL вида: http://94.228.125.136:8080/api/events/333/likes
-     */
+
     @POST("events/{id}/likes")
     suspend fun likeEvent(@Path("id") id: Int): Response<EventItem>
 
@@ -46,4 +36,20 @@ interface EventApiService {
      */
     @DELETE("events/{id}/likes")
     suspend fun dislikeEvent(@Path("id") id: Int): Response<EventItem>
+
+
+    /**
+     * Формирует URL вида: http://94.228.125.136:8080/api/events/333/participants
+     */
+    @POST("events/{id}/participants")
+    suspend fun participateEvent(@Path("id") id: Int): Response<EventItem>
+
+    /**
+     * Формирует URL вида: http://94.228.125.136:8080/api/events/333/participants
+     */
+    @DELETE("events/{id}/participants")
+    suspend fun disparticipateEvent(@Path("id") id: Int): Response<EventItem>
+
+    //TODO Добавить в фрагмент и вьюмодель участие/удаление из участников
+
 }

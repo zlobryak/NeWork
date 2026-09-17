@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +20,7 @@ import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.DbError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.ui.adapters.eventFeed.EventsLoadStateAdapter
-import ru.netology.nework.ui.viewmodel.EventsFeedViewModel
+import ru.netology.nework.ui.viewmodel.events.EventsFeedViewModel
 import ru.netology.nework.ui.adapters.eventFeed.EventsPagingAdapter
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
 
         _binding = FragmentEventsFeedBinding.bind(view)
 
-        currentUserId= (auth.authStateFlow.value.id.toInt() ?: 0)
+        currentUserId = (auth.authStateFlow.value.id.toInt())
         Log.d("EVENTS_DEBUG", "Текущий ID пользователя: $currentUserId")
 
 
@@ -65,7 +66,24 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
                 override fun onEdit(event: EventItem) {}
                 override fun onShare(event: EventItem) {}
                 override fun onAuthorClick(userId: Int) {}
+                override fun onOpenDetails(event: EventItem) {
+                    val action = EventsFeedFragmentDirections
+                        .actionEventsFeedFragmentToEventDetailFragment(event.id)
+                    findNavController().navigate(action)
+                }
+                override fun onParticipate(event: EventItem) {
+                    if (currentUserId == 0) {
+                        navigateToLogin()
+                    } else {
+                        viewModel.participateEvent(event.id, event.participantsIds.contains(currentUserId))
+                    }
+                }
+
+                private fun navigateToLogin() {
+                    findNavController().navigate(R.id.loginFragment)
+                }
             }
+
         )
 
         // Используем binding для доступа к View
@@ -93,7 +111,6 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
             binding.progressBar.visibility = if (isInitialLoading) View.VISIBLE else View.GONE
         }
 
-        // Не забудь настроить SwipeRefreshLayout, если он есть в макете
         binding.swiperefresh.setOnRefreshListener {
             adapter.refresh()
         }
@@ -105,7 +122,7 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
                 is NetworkError -> "Проверьте подключение к интернету"
                 is ApiError -> "Ошибка сервера: ${error.status}"
                 is DbError -> "Ошибка базы данных"
-                else -> "Неизвестная ошибка: ${error?.message}" // 7. Добавлена ветка else для исчерпывающего when
+                else -> "Неизвестная ошибка: ${error?.message}"
             }
 
             Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
@@ -114,6 +131,6 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // 8. Очищаем binding для предотвращения утечек памяти
+        _binding = null //Очищаем binding для предотвращения утечек памяти
     }
 }

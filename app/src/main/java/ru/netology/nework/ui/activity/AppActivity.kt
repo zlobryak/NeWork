@@ -22,6 +22,8 @@ import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.yandex.mapkit.MapKitFactory
+import ru.netology.nework.BuildConfig
 
 @AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
@@ -52,6 +54,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 // В проекте не используется
 //        checkGoogleApiAvailability()
 //        requestNotificationsPermission()
+
+
+        MapKitFactory.setApiKey(BuildConfig.MAPS_API_KEY)
+
+
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -125,6 +132,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
+
 
 //    private fun requestNotificationsPermission() {
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

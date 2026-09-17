@@ -61,6 +61,15 @@
     <string name="select_avatar">Select avatar</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
 
+    <!-- Фрагмент детального просмотра события-->
+    <string name="speakers">Speakers</string>
+    <string name="likers">Likers</string>
+    <string name="participants">Participants</string>
+    <string name="event_cover">Event cover image</string>
+    <string name="participants_icon">Participants icon</string>
+    <string name="job_searching">В поисках работы</string>
+    <string name="participate_button">Participate</string>
+
     <!-- Добавлены, но не отсортированы -->
     <string name="publish">Publish</string>
     <string name="save">Save</string>
@@ -73,4 +82,5 @@
     <string name="delete_button">Delete button</string>
     <string name="no_events">There are no events yet. Be the first to create one!</string>
     <string name="add_event_button">Add event button</string>
+    <string name="users_list_button">Users list button</string>
 </resources>

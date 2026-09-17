@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/common_spacing">
+
+        <!-- Header: Аватар, имя и должность автора -->
+        <ImageView
+            android:id="@+id/author_avatar"
+            android:layout_width="@dimen/avatar_size_detail"
+            android:layout_height="@dimen/avatar_size_detail"
+            android:layout_margin="@dimen/common_spacing"
+            android:contentDescription="@string/user_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/avatar" />
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/author_avatar"
+            app:layout_constraintTop_toTopOf="@id/author_avatar"
+            tools:text="Adison Levin" />
+
+        <TextView
+            android:id="@+id/author_job"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/author_name"
+            app:layout_constraintTop_toBottomOf="@id/author_name"
+            tools:text="iOS Developer" />
+
+        <!-- Обложка события -->
+        <ImageView
+            android:id="@+id/attachment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/event_cover"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/author_avatar"
+            tools:srcCompat="@drawable/tool_podcast"
+            tools:visibility="visible" />
+
+        <!-- Тип события (Online/Offline) -->
+        <TextView
+            android:id="@+id/event_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attachment"
+            tools:text="Online" />
+
+        <!-- Дата и время проведения -->
+        <TextView
+            android:id="@+id/event_datetime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/Text_color_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_type"
+            tools:text="28.08.22 19:00" />
+
+        <!-- Описание события -->
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:autoLink="web"
+            android:fontFamily="@font/roboto"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/Post_card_content_text"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_datetime"
+            tools:text="Приглашаем вас на увлекательную лекцию о том, как правильно дрессировать котиков! Опытный кинолог расскажет вам о различных техниках и методах обучения, поделится забавными случаями из практики и ответит на ваши вопросы." />
+
+        <!-- Разделитель -->
+        <View
+            android:id="@+id/divider_speakers"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:background="@color/divider_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_description" />
+
+        <!-- Секция Speakers -->
+        <TextView
+            android:id="@+id/speakers_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:text="@string/speakers"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_speakers" />
+
+        <androidx.recyclerview.widget.RecyclerView
+
+            android:id="@+id/speakers_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/common_spacing"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/speakers_title"
+            app:layout_constraintTop_toBottomOf="@id/speakers_title"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_user_avatar" />
+
+        <!-- Разделитель -->
+        <View
+            android:id="@+id/divider_likers"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:background="@color/divider_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/speakers_recycler" />
+
+        <!-- Секция Likers -->
+        <TextView
+            android:id="@+id/likers_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:text="@string/likers"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_likers" />
+
+        <!-- Кнопка лайка -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/like"
+            style="@style/Widget.AppCompat.LikeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:checkable="true"
+            android:contentDescription="@string/like_icon"
+            app:icon="@drawable/ic_liked_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/likers_title"
+            tools:text="10" />
+
+        <!-- Список лайкнувших -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/likers_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="6dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@id/like"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/like"
+            app:layout_constraintTop_toTopOf="@id/like"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_user_avatar" />
+
+        <!-- Разделитель -->
+        <View
+            android:id="@+id/divider_participants"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:background="@color/divider_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/likers_recycler" />
+
+        <!-- Секция Participants -->
+        <TextView
+            android:id="@+id/participants_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:fontFamily="@font/roboto"
+            android:text="@string/participants"
+            android:textColor="@color/Text_color_post_headers"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_participants" />
+
+        <!-- Счетчик участников с иконкой -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/participate_button"
+            style="@style/Widget.AppCompat.StandardButtonWithText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:checkable="true"
+            android:contentDescription="@string/participate_button"
+            app:icon="@drawable/ic_people_outlined_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/participants_title"
+            tools:text="2" />
+
+        <!-- Список участников -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/participants_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@id/participate_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/participate_button"
+            app:layout_constraintTop_toTopOf="@id/participate_button"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_user_avatar" />
+
+        <!-- Разделитель -->
+        <View
+            android:id="@+id/divider_map"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:background="@color/divider_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/participants_recycler" />
+
+        <!-- Карта (отображается только для offline событий с координатами) -->
+        <com.yandex.mapkit.mapview.MapView
+            android:id="@+id/map_view"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_map"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

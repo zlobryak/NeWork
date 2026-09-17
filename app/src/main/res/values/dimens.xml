@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_size">48dp</dimen>
+    <dimen name="avatar_size_detail">56dp</dimen>
     <dimen name="common_spacing">8dp</dimen>
     <dimen name="counter_margin">8dp</dimen>
     <dimen name="edit_text_size">12sp</dimen>

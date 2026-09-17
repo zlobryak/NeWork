@@ -46,6 +46,8 @@ class EventRepositoryImpl @Inject constructor(
         pagingData.map(EventEntity::toDto)
     }
 
+    override fun getEventById(id: Int): Flow<EventItem?> = eventDao.getEventByIdFlow(id).map { it?.toDto() }
+
     override suspend fun save(event: EventItem) {
         try {
             val response = eventApiService.createEvent(event)
@@ -105,6 +107,36 @@ class EventRepositoryImpl @Inject constructor(
 
         } catch (e: ApiError) {
             Log.e("EventLikeDebug", "Пробрасываем ApiError во ViewModel", e)
+            throw e
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override suspend fun participateEvent(id: Int, participatedByMe: Boolean) {
+        try {
+            val dbEvent = eventDao.getEventById(id)
+            val isParticipatedByMe = dbEvent?.participatedByMe ?: participatedByMe
+
+            val response = if (isParticipatedByMe) {
+                eventApiService.disparticipateEvent(id)
+            } else {
+                eventApiService.participateEvent(id)
+            }
+
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            val updatedEvent = response.body()
+                ?: throw ApiError(response.code(), "Пустой ответ от сервера при обновлении участия")
+
+            eventDao.insert(EventEntity.fromDto(updatedEvent, currentUserId))
+
+        } catch (e: ApiError) {
+            Log.e("EventParticipateDebug", "Пробрасываем ApiError во ViewModel", e)
             throw e
         } catch (_: IOException) {
             throw NetworkError
