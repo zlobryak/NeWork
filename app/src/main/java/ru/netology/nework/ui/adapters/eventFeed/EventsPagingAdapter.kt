@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.event.IsOnline
 import ru.netology.nework.databinding.EventCardBinding
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
@@ -103,7 +104,6 @@ class EventsPagingAdapter(
                 }
             }
 
-
             binding.content.setOnClickListener(navigateToDetails)
             binding.attachment.setOnClickListener(navigateToDetails)
         }
@@ -119,7 +119,12 @@ class EventsPagingAdapter(
                 avatar.loadAvatar(event.authorAvatar, event.author)
                 published.text = DateUtils.formatIsoDate(event.published)
 
-                eventType.text = event.type
+                eventType.text = when (event.type) {
+                    IsOnline.ONLINE -> binding.root.context.getString(R.string.event_type_online)
+                    IsOnline.OFFLINE -> binding.root.context.getString(R.string.event_type_offline)
+                    else -> {//Обработать ошибку
+                     }
+                }.toString()
                 datetime.text = DateUtils.formatIsoDate(event.datetime)
 
                 content.text = event.content
@@ -127,9 +132,9 @@ class EventsPagingAdapter(
                 like.isChecked = event.likedByMe
                 like.text = "${event.likeOwnerIds.size}"
 
-                binding.participateButton.text = "${event.participantsIds.size}"
-                binding.participateButton.isChecked = isParticipating
-                binding.participateButton.isEnabled = currentUserId != 0  // отключаем для анонимов
+                participateButton.text = "${event.participantsIds.size}"
+                participateButton.isChecked = isParticipating
+                participateButton.isEnabled = currentUserId != 0  // отключаем для анонимов
 
                 menuButton.visibility = if (isOwnedByMe) View.VISIBLE else View.INVISIBLE
 

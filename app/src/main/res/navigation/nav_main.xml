@@ -127,17 +127,22 @@
     <fragment
         android:id="@+id/newEventFragment"
         android:name="ru.netology.nework.ui.fragments.events.NewEventFragment"
-        android:label="NewEventFragment" />
+        android:label="NewEventFragment">
+
+        <argument
+            android:name="eventItemArg"
+            android:defaultValue="@null"
+            app:argType="ru.netology.nework.data.dto.event.EventItem"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="ru.netology.nework.ui.fragments.events.EventDetailFragment"
-        android:label="EventDetailFragment">
+        android:label="EventDetailFragment"
+        tools:layout="@layout/fragment_new_event">
 
         <argument
             android:name="eventId"
             app:argType="integer" />
     </fragment>
-
-
-
 </navigation>

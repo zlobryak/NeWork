@@ -15,6 +15,7 @@ import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
+import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
@@ -48,7 +49,7 @@ class EventRepositoryImpl @Inject constructor(
 
     override fun getEventById(id: Int): Flow<EventItem?> = eventDao.getEventByIdFlow(id).map { it?.toDto() }
 
-    override suspend fun save(event: EventItem) {
+    override suspend fun save(event: EventItem, mediaUpload: MediaUpload?) {
         try {
             val response = eventApiService.createEvent(event)
             if (!response.isSuccessful) {

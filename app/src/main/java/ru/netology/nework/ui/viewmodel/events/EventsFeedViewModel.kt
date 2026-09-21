@@ -7,10 +7,14 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.repository.events.EventRepository
 import ru.netology.nework.error.ApiError
@@ -25,7 +29,8 @@ data class EventsFeedUiState(
 
 @HiltViewModel
 class EventsFeedViewModel @Inject constructor(
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val appAuth: AppAuth
 ) : ViewModel() {
 
     // Поток данных для RecyclerView (Paging 3)
@@ -38,10 +43,12 @@ class EventsFeedViewModel @Inject constructor(
 
     val showErrorEvent = SingleLiveEvent<AppError>()
 
+    val isAuthorized: StateFlow<Boolean> = appAuth.authStateFlow.map { authState ->
+        authState.token != null || authState.id != 0L
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
-    /**
-     * Принудительное обновление списка
-     */
+
+
     fun refresh() {
         _uiState.update { it.copy(isRefreshing = true) }
 
@@ -53,9 +60,6 @@ class EventsFeedViewModel @Inject constructor(
         _uiState.update { it.copy(isRefreshing = false, isInitialLoading = false) }
     }
 
-    /**
-     * Обработка лайка/дизлайка события
-     */
     fun onEventLiked(eventId: Int, currentlyLiked: Boolean) {
         viewModelScope.launch {
             try {
@@ -69,9 +73,6 @@ class EventsFeedViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Обработка удаления события
-     */
     fun onEventDeleted(eventId: Int) {
         viewModelScope.launch {
             try {

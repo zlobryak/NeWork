@@ -23,6 +23,6 @@
     <color name="background_color">#F5F5F5</color>
     <color name="Text_color_secondary">#757575</color>
     <color name="like_color">#E91E63</color>
-    <color name="bottom_menu_color">##F3EDF7</color>
+    <color name="bottom_menu_color">#F3EDF7</color>
     <color name="add_date_button_color">#E8DEF8</color>
 </resources>

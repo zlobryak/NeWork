@@ -123,6 +123,8 @@ class EventOptionsBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+        const val TAG = "EventOptionsBottomSheetFragment"
+
         fun newInstance(): EventOptionsBottomSheetFragment {
             return EventOptionsBottomSheetFragment()
         }

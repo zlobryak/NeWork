@@ -175,7 +175,7 @@ class EventDetailFragment : Fragment() {
         with(binding) {
             authorName.text = event.author
             authorJob.text = event.authorJob ?: getString(R.string.job_searching)
-            eventType.text = event.type ?: ""
+            eventType.text = event.type.toString()
             eventDatetime.text = DateUtils.formatIsoDate(event.datetime)
             eventDescription.text = event.content
 

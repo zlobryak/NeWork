@@ -93,4 +93,7 @@
     <string name="online">ONLINE</string>
     <string name="type">Type</string>
     <string name="date">Date</string>
+    <string name="event_type_online">ONLINE</string>
+    <string name="event_type_offline">OFFLIEN</string>
+    <string name="share_event">Share event</string>
 </resources>

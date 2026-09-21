@@ -24,7 +24,7 @@ data class EventItem(
     val participatedByMe: Boolean,
     val published: String,
     val speakerIds: List<Int>,
-    val type: String? = null,
+    val type: IsOnline? = IsOnline.ONLINE,
     val users: Map<String, UserItem>? = null,
 
     val isSynced: Boolean = true, //Локальные поля для удаления/восстановления
@@ -43,4 +43,10 @@ data class EventItem(
     fun getLikers(): List<UserItem> = likeOwnerIds.mapNotNull { id ->
         users?.get(id.toString())
     }
+}
+
+enum class IsOnline {
+    ONLINE,
+    OFFLINE
+
 }

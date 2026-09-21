@@ -151,18 +151,13 @@ class PostViewModel @Inject constructor(
     }
 
     fun likePost(post: PostItem) {
-        Log.d("LikeDebug", "1. Вызван likePost для id: ${post.id}, isSynced: ${post.isSynced}")
         val currentPost = post.copy()
 
         viewModelScope.launch {
             try {
                 if (post.isSynced) {
-                    Log.d("LikeDebug", "2. Вызываем repository.likePost")
                     repository.likePost(post.id, post.likedByMe)
-                    Log.d("LikeDebug", "3. repository.likePost успешно завершен")
                 } else {
-
-                    Log.w("LikeDebug", "Пост не синхронизирован, прерываем")
                     _errorEvent.value = "Post is not synchronised, try later"
                 }
             } catch (e: Throwable) {
