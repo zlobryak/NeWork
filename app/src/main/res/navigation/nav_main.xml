@@ -40,7 +40,7 @@
         <!-- Переход к созданию/редактированию события -->
         <action
             android:id="@+id/action_eventsFragment_to_newEventFragment"
-            app:destination="@id/newEventFragment"
+            app:destination="@id/EventNewFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
@@ -125,9 +125,11 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/newEventFragment"
-        android:name="ru.netology.nework.ui.fragments.events.NewEventFragment"
-        android:label="NewEventFragment">
+        android:id="@+id/EventNewFragment"
+        android:name="ru.netology.nework.ui.fragments.events.EventNewFragment"
+        android:label="Create New Event"
+        tools:layout="@layout/fragment_new_event">
+
 
         <argument
             android:name="eventItemArg"
@@ -138,7 +140,7 @@
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="ru.netology.nework.ui.fragments.events.EventDetailFragment"
-        android:label="EventDetailFragment"
+        android:label="Event Details"
         tools:layout="@layout/fragment_new_event">
 
         <argument

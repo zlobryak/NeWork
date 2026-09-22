@@ -1,11 +1,13 @@
 package ru.netology.nework.ui.fragments.events
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
@@ -57,9 +59,46 @@ class EventDetailFragment : Fragment() {
 
     private var currentCoords: Coords? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        MapKitFactory.initialize(requireContext())
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                Log.d("MapDebug", "Точное разрешение на геолокацию получено")
+                // Если координаты уже известны, перерисовываем карту с разрешениями
+                currentCoords?.let { setupMap(binding.mapView, it) }
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                Log.d("MapDebug", "Грубое разрешение на геолокацию получено")
+                currentCoords?.let { setupMap(binding.mapView, it) }
+            }
+            else -> {
+                Log.e("MapDebug", "Разрешение на геолокацию отклонено. Карта может работать некорректно.")
+            }
+        }
+    }
+
+    private fun checkLocationPermissionsAndInitMap() {
+        val fineLocationGranted = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        val coarseLocationGranted = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        if (fineLocationGranted || coarseLocationGranted) {
+            Log.d("MapDebug", "Разрешения уже есть, карта будет работать корректно")
+        } else {
+            Log.d("MapDebug", "Запрашиваем разрешения на геолокацию")
+            locationPermissionRequest.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
     override fun onCreateView(

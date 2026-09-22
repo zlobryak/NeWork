@@ -57,6 +57,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
 
         MapKitFactory.setApiKey(BuildConfig.MAPS_API_KEY)
+        MapKitFactory.initialize(this)
 
 
 

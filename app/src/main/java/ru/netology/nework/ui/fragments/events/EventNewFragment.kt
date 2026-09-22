@@ -1,6 +1,7 @@
 package ru.netology.nework.ui.fragments.events
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class EventNewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("NEW_EVENT_DEBUG", "NewEventFragment создан, view: $view")
         setupClickListeners()
     }
 

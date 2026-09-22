@@ -62,13 +62,13 @@ class EventsFeedFragment : Fragment(R.layout.fragment_events_feed) {
         }
 
         override fun onOpenDetails(event: EventItem) {
-            // ВАЖНО: передаем именно event.id (Int), а не весь объект event
+            // передаем именно event.id (Int), а не весь объект event
             val action = EventsFeedFragmentDirections.actionEventsFeedFragmentToEventDetailFragment(event.id)
             findNavController().navigate(action)
         }
 
         override fun onEdit(event: EventItem) {
-            // Передаем событие для редактирования (убедитесь, что в nav_main.xml добавлен argument eventItemArg)
+            // Передаем событие для редактирования
             val action = EventsFeedFragmentDirections.actionEventsFragmentToNewEventFragment(event)
             findNavController().navigate(action)
         }
