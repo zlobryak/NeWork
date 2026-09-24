@@ -8,10 +8,16 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.api.EventApiService
 import ru.netology.nework.data.db.AppDb
+import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
@@ -48,14 +54,40 @@ class EventRepositoryImpl @Inject constructor(
 
     override fun getEventById(id: Int): Flow<EventItem?> = eventDao.getEventByIdFlow(id).map { it?.toDto() }
 
-    override suspend fun save(event: EventItem) {
+    // Так же, как при создании поста: сначала загружаем изображение (если есть),
+    // подставляем URL вложение в событие и только затем отправляем на сервер
+    override suspend fun save(event: EventItem, upload: MediaUpload?) {
         try {
-            val response = eventApiService.createEvent(event)
+            val eventWithAttachment = upload?.let {
+                upload(it)
+            }?.let {
+                event.copy(attachment = Attachment(AttachmentType.IMAGE, it.url))
+            }
+            val response = eventApiService.createEvent(eventWithAttachment ?: event)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             eventDao.insert(EventEntity.fromDto(body, currentUserId))
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override suspend fun upload(upload: MediaUpload): Media {
+        try {
+            val media = MultipartBody.Part.createFormData(
+                "file", upload.file.name, upload.file.asRequestBody()
+            )
+
+            val response = eventApiService.upload(media)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            return response.body() ?: throw ApiError(response.code(), response.message())
         } catch (_: IOException) {
             throw NetworkError
         } catch (_: Exception) {

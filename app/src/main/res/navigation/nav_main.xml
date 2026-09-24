@@ -127,7 +127,8 @@
     <fragment
         android:id="@+id/newEventFragment"
         android:name="ru.netology.nework.ui.fragments.events.NewEventFragment"
-        android:label="NewEventFragment" />
+        android:label="NewEventFragment"
+        tools:layout="@layout/fragment_new_event" />
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="ru.netology.nework.ui.fragments.events.EventDetailFragment"

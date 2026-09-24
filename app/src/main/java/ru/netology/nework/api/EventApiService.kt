@@ -1,8 +1,10 @@
 package ru.netology.nework.api
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.post.Media
 
 interface EventApiService {
     /**
@@ -19,6 +21,14 @@ interface EventApiService {
      */
     @POST("events")
     suspend fun createEvent(@Body event: EventItem): Response<EventItem>
+
+    /**
+     * Формирует URL вида: http://94.228.125.136:8080/api/media
+     * Тот же эндпоинт загрузки изображений, что и для постов
+     */
+    @Multipart
+    @POST("media")
+    suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
 
     /**
