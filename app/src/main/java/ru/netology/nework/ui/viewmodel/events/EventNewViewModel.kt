@@ -110,7 +110,6 @@ class EventNewViewModel @Inject constructor(
     }
 
     // --- Логика сохранения ---
-
     fun save() {
         edited.value?.let { eventItem ->
             viewModelScope.launch {

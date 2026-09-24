@@ -22,8 +22,6 @@ import javax.inject.Inject
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.yandex.mapkit.MapKitFactory
-import ru.netology.nework.BuildConfig
 
 @AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
@@ -54,12 +52,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 // В проекте не используется
 //        checkGoogleApiAvailability()
 //        requestNotificationsPermission()
-
-
-        MapKitFactory.setApiKey(BuildConfig.MAPS_API_KEY)
-        MapKitFactory.initialize(this)
-
-
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -111,12 +103,13 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         // Находим наше нижнее меню
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-// Связываем их
+
         NavigationUI.setupWithNavController(bottomNav, navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.registrationFragment ||
                 destination.id == R.id.loginFragment ||
                 destination.id == R.id.newPostFragment ||
+                destination.id == R.id.eventNewFragment ||
                 destination.id == R.id.userFragment
             ) {
                 // Если мы на экране регистрации, авторизации или на фрагменте пользователей - скрываем нижнее меню

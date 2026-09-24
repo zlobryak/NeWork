@@ -67,11 +67,19 @@ class EventRepositoryImpl @Inject constructor(
     override suspend fun removeById(id: Int) {
         var success = false
         try {
-            eventDao.markAsDeleting(id, true)
+            val markedRows = eventDao.markAsDeleting(id, true)
+            Log.d("EventRepo_Debug", "markAsDeleting затронул строк: $markedRows")
             val response = eventApiService.deleteEvent(id)
             if (response.isSuccessful) {
                 success = true
-                eventDao.removeById(id)
+                val deletedRows = eventDao.removeById(id)
+
+                Log.d("EventRepo_Debug", "removeById затронул строк: $deletedRows")
+                if (deletedRows == 0) {
+                    Log.e("EventRepo_Debug", "КРИТИЧЕСКАЯ ОШИБКА: DELETE не нашел записей с id=$id. " +
+                            "Проверьте: 1) Тип данных id в EventEntity (должен быть Int). " +
+                            "2) Имя таблицы в @Entity(tableName = ...).")
+                }
             } else {
                 throw ApiError(response.code(), response.message())
             }
@@ -81,6 +89,7 @@ class EventRepositoryImpl @Inject constructor(
             throw UnknownError
         } finally {
             if (!success) {
+                // Если что-то пошло не так, возвращаем пост в ленту
                 eventDao.markAsDeleting(id, false)
             }
         }
