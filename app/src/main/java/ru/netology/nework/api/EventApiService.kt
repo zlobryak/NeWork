@@ -1,8 +1,10 @@
 package ru.netology.nework.api
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.post.Media
 
 interface EventApiService {
     /**
@@ -48,4 +50,9 @@ interface EventApiService {
      */
     @DELETE("events/{id}/participants")
     suspend fun disparticipateEvent(@Path("id") id: Int): Response<EventItem>
+
+    // Скопировано из ApiService
+    @Multipart
+    @POST("media")
+    suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 }
