@@ -12,7 +12,7 @@ import ru.netology.nework.data.entity.eventEntity.EventEntity
 interface EventDao {
     @Query("SELECT * FROM EventEntity WHERE id = :id")
     fun getEventByIdFlow(id: Int): Flow<EventEntity?>
-    @Query("SELECT * FROM EventEntity ORDER BY datetime DESC")
+    @Query("SELECT * FROM EventEntity WHERE isDeleting = 0 ORDER BY datetime DESC")
     fun pagingSource(): PagingSource<Int, EventEntity>
 
     @Query("SELECT * FROM EventEntity ORDER BY datetime DESC")
@@ -31,13 +31,13 @@ interface EventDao {
     suspend fun insert(events: List<EventEntity>)
 
     @Query("DELETE FROM EventEntity WHERE id = :id")
-    suspend fun removeById(id: Int)
+    suspend fun removeById(id: Int): Int
+
+    @Query("UPDATE EventEntity SET isDeleting = :deleting WHERE id = :id")
+    suspend fun markAsDeleting(id: Int, deleting: Boolean): Int
 
     @Query("DELETE FROM EventEntity")
     suspend fun removeAll()
-
-    @Query("UPDATE EventEntity SET isDeleting = :deleting WHERE id = :id")
-    suspend fun markAsDeleting(id: Int, deleting: Boolean)
 
     @Query("SELECT * FROM EventEntity WHERE id = :id")
     suspend fun getEventById(id: Int): EventEntity?

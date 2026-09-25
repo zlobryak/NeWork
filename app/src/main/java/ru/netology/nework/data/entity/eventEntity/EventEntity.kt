@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.data.dto.event.EventItem
+import ru.netology.nework.data.dto.event.IsOnline
 import ru.netology.nework.data.dto.user.UserItem
 import ru.netology.nework.data.entity.AttachmentEmbeddable
 import ru.netology.nework.data.entity.CoordsEmbeddable
@@ -19,9 +20,7 @@ data class EventEntity(
     val published: String,
     val datetime: String,
     val content: String?,
-
-    // Для списков ID убедитесь, что в Converters есть методы List<Int> <-> String
-    val type: String? = null,
+    val type: IsOnline? = null,
     val likeOwnerIds: List<Int>,
     val likedByMe: Boolean,
     val participantsIds: List<Int>,

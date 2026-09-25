@@ -8,6 +8,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.api.EventApiService
 import ru.netology.nework.data.db.AppDb
@@ -15,6 +17,10 @@ import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.dao.eventDao.EventDao
 import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
+import ru.netology.nework.data.dto.Attachment
+import ru.netology.nework.data.dto.post.Media
+import ru.netology.nework.data.dto.post.MediaUpload
+import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
@@ -46,11 +52,18 @@ class EventRepositoryImpl @Inject constructor(
         pagingData.map(EventEntity::toDto)
     }
 
-    override fun getEventById(id: Int): Flow<EventItem?> = eventDao.getEventByIdFlow(id).map { it?.toDto() }
+    override fun getEventById(id: Int): Flow<EventItem?> =
+        eventDao.getEventByIdFlow(id).map { it?.toDto() }
 
-    override suspend fun save(event: EventItem) {
+    override suspend fun save(event: EventItem, mediaUpload: MediaUpload?) {
         try {
-            val response = eventApiService.createEvent(event)
+            val postWithAttachment = mediaUpload?.let {
+                upload(it)
+            }?.let {
+                // TODO: add support for other types
+                event.copy(attachment = Attachment(AttachmentType.IMAGE, it.url))
+            }
+            val response = eventApiService.createEvent(postWithAttachment ?:event)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -62,15 +75,45 @@ class EventRepositoryImpl @Inject constructor(
             throw UnknownError
         }
     }
+    override suspend fun upload(upload: MediaUpload): Media {
+        try {
+            val media = MultipartBody.Part.createFormData(
+                "file", upload.file.name, upload.file.asRequestBody()
+            )
+
+            val response = eventApiService.upload(media)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+
+            return response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (_: IOException) {
+            throw NetworkError
+        } catch (_: Exception) {
+            throw UnknownError
+        }
+    }
+
 
     override suspend fun removeById(id: Int) {
         var success = false
         try {
-            eventDao.markAsDeleting(id, true)
+            val markedRows = eventDao.markAsDeleting(id, true)
+            Log.d("EventRepo_Debug", "markAsDeleting затронул строк: $markedRows")
             val response = eventApiService.deleteEvent(id)
             if (response.isSuccessful) {
                 success = true
-                eventDao.removeById(id)
+                val deletedRows = eventDao.removeById(id)
+
+                Log.d("EventRepo_Debug", "removeById затронул строк: $deletedRows")
+                if (deletedRows == 0) {
+                    Log.e(
+                        "EventRepo_Debug",
+                        "КРИТИЧЕСКАЯ ОШИБКА: DELETE не нашел записей с id=$id. " +
+                                "Проверьте: 1) Тип данных id в EventEntity (должен быть Int). " +
+                                "2) Имя таблицы в @Entity(tableName = ...)."
+                    )
+                }
             } else {
                 throw ApiError(response.code(), response.message())
             }
@@ -80,6 +123,7 @@ class EventRepositoryImpl @Inject constructor(
             throw UnknownError
         } finally {
             if (!success) {
+                // Если что-то пошло не так, возвращаем пост в ленту
                 eventDao.markAsDeleting(id, false)
             }
         }
