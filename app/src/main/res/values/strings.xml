@@ -88,7 +88,7 @@
     <string name="add_user">Add User</string>
     <string name="choose_file">Choose file</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="offline">OFFLINE</string>
     <string name="online">ONLINE</string>
     <string name="type">Type</string>
@@ -96,4 +96,5 @@
     <string name="event_type_online">ONLINE</string>
     <string name="event_type_offline">OFFLIEN</string>
     <string name="share_event">Share event</string>
+    <string name="tap_map_to_pick_location">Нажмите на карту, чтобы выбрать место</string>
 </resources>

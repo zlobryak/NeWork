@@ -70,8 +70,8 @@
         android:id="@+id/buttonPanel"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:gravity="center_vertical"
         android:background="@color/bottom_menu_color"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,17 +118,28 @@
         android:id="@+id/choseDateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/common_spacing"
         android:layout_margin="@dimen/common_spacing"
         android:contentDescription="@string/choose_the_date"
+        android:padding="@dimen/common_spacing"
         android:src="@drawable/ic_add_24dp"
         app:backgroundTint="@color/add_date_button_color"
         app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_anchor="@id/buttonPanel"
         app:layout_anchorGravity="end|top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/Widget.AppTheme.SquareIconButton" />
 
+    <FrameLayout
+        android:id="@+id/mapPickerContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@id/buttonPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

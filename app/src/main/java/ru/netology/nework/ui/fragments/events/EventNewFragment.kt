@@ -18,6 +18,7 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
+import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.databinding.FragmentNewEventBinding
 import ru.netology.nework.ui.viewmodel.events.EventNewViewModel
 import ru.netology.nework.utils.AndroidUtils
@@ -74,6 +75,7 @@ class NewEventFragment : Fragment() {
         setupMenu(isEditMode)
         setupBackPressed(isEditMode, binding)
         setupDateOptions(binding)
+        setupPlacePicker()
 
         if (!isEditMode) {
             binding.editContent.requestFocus()
@@ -161,6 +163,45 @@ class NewEventFragment : Fragment() {
         }
     }
 
+    // Кнопка «добавить координаты»: показывает полноэкранный фрагмент с Яндекс картой,
+    // по выбору точки записывает координаты в ViewModel (changePlace -> coords события)
+    private fun setupPlacePicker() {
+        fragmentBinding?.addPlace?.setOnClickListener {
+            // Защита от двойного нажатия
+            if (childFragmentManager.findFragmentByTag(MapPickerFragment.TAG) != null) {
+                return@setOnClickListener
+            }
+
+            val currentCoords = viewModel.edited.value?.coords
+            val picker = MapPickerFragment.newInstance(currentCoords)
+
+            picker.setOnPlaceSelectedListener(object : MapPickerFragment.MapPickerListener {
+                override fun onPlaceSelected(coords: Coords) {
+                    viewModel.changePlace(coords)
+                    hideMapPicker() // Скрываем карту после успешного выбора
+                }
+
+                override fun onCanceled() {
+                    hideMapPicker() // Скрываем карту при отмене
+                }
+            })
+
+            // Добавляем фрагмент в контейнер.
+            childFragmentManager.beginTransaction()
+                .replace(R.id.mapPickerContainer, picker, MapPickerFragment.TAG)
+                .commit()
+        }
+    }
+
+    private fun hideMapPicker() {
+        val fragment = childFragmentManager.findFragmentByTag(MapPickerFragment.TAG)
+        if (fragment != null) {
+            childFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+    }
+
     private fun setupMenu(isEditMode: Boolean) {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -190,7 +231,6 @@ class NewEventFragment : Fragment() {
                         }
                         true
                     }
-
                     else -> false
                 }
         }, viewLifecycleOwner)
