@@ -23,6 +23,7 @@ import ru.netology.nework.ui.viewmodel.events.EventNewViewModel
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
 import ru.netology.nework.view.loadAttachment
+import java.util.Date
 import kotlin.getValue
 
 @AndroidEntryPoint
@@ -72,6 +73,7 @@ class NewEventFragment : Fragment() {
         setupImagePicker(binding)
         setupMenu(isEditMode)
         setupBackPressed(isEditMode, binding)
+        setupDateOptions(binding)
 
         if (!isEditMode) {
             binding.editContent.requestFocus()
@@ -142,6 +144,20 @@ class NewEventFragment : Fragment() {
 
         binding.removePhoto.setOnClickListener {
             viewModel.removePhoto()
+        }
+    }
+
+    // FAB выбора даты и типа события: открывает нижний лист с опциями,
+    // по подтверждении записывает дату/время и тип (ONLINE/OFFLINE) в ViewModel
+    private fun setupDateOptions(binding: FragmentNewEventBinding) {
+        binding.choseDateButton.setOnClickListener {
+            val sheet = EventOptionsBottomSheetFragment.newInstance()
+            sheet.setListener(object : EventOptionsBottomSheetFragment.EventOptionsListener {
+                override fun onEventOptionsConfirmed(date: Date, isOnline: Boolean) {
+                    viewModel.changeEventOptions(date, isOnline)
+                }
+            })
+            sheet.show(childFragmentManager, EventOptionsBottomSheetFragment.TAG)
         }
     }
 
