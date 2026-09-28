@@ -16,5 +16,5 @@ interface PostRepository {
     suspend fun likePost(id: Int, likedByMe: Boolean)
     suspend fun upload(upload: MediaUpload): Media
     suspend fun restorePost(post: PostItem)
-    fun getEventById(eventId: Int)
+    fun getPostById(postId: Int): Flow<PostItem?>
 }

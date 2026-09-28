@@ -197,9 +197,8 @@ class PostRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getEventById(eventId: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun getPostById(postId: Int): Flow<PostItem?> =
+        postDao.getPostByIdFlow(postId).map { it?.toDto() }
 
     override suspend fun upload(upload: MediaUpload): Media {
         try {

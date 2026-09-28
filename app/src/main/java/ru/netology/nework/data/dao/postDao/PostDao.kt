@@ -51,4 +51,7 @@ interface PostDao {
     // Метод для очистки постов конкретного пользователя в RemoteMediator
     @Query("DELETE FROM PostEntity WHERE authorId = :authorId")
     suspend fun clearPostsByAuthorId(authorId: Int)
+
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
+    fun getPostByIdFlow(id: Int): Flow<PostEntity?>
 }

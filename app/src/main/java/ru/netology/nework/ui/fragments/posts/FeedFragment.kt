@@ -25,7 +25,7 @@ import ru.netology.nework.ui.adapters.postFeed.PagingLoadStateAdapter
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
+import ru.netology.nework.ui.fragments.posts.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.posts.PostViewModel
 import javax.inject.Inject
 
@@ -91,8 +91,8 @@ class FeedFragment : Fragment() {
             }
 
             override fun onOpenDetails(postId: Int) {
-                val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
-                    postIdArg = postId
+                val action = FeedFragmentDirections.actionFeedFragmentToPostDetailFragment(
+                    postId = postId
                 )
                 findNavController().navigate(action)
             }

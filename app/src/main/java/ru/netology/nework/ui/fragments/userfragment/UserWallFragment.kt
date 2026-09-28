@@ -20,12 +20,11 @@ import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.ui.adapters.userFragment.UserWallPostPagingAdapter
 import ru.netology.nework.ui.adapters.postFeed.PostLoadStateAdapter
-import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
+import ru.netology.nework.ui.fragments.posts.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UserWallFragment : Fragment() {
-
     // requireParentFragment() заставляет Hilt вернуть
     // экземпляр UserViewModel, созданный для UserFragment
     private val viewModel: UserViewModel by viewModels({ requireParentFragment() })
@@ -92,7 +91,9 @@ class UserWallFragment : Fragment() {
             { adapter.retry() }
         )
 
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateFooter(
+            footer = PostLoadStateAdapter { adapter.retry() }
+        )
 
 // Собираем Flow с данными.
 // Как только UserViewModel загрузит данные, они автоматически попадут сюда.

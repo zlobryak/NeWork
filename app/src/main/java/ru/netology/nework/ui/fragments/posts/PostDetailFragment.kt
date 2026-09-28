@@ -34,6 +34,7 @@ import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentPostBinding
 import ru.netology.nework.ui.adapters.users.UserListItem
 import ru.netology.nework.ui.adapters.users.UsersAdapter
+import ru.netology.nework.ui.viewmodel.posts.PostDetailViewModel
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import javax.inject.Inject
@@ -179,16 +180,16 @@ class PostDetailFragment : Fragment() {
                 combine(
                     viewModel.postState,
                     appAuth.authStateFlow
-                ) { event, authState ->
-                    event to authState
-                }.collect { (event, authState) ->
-                    event?.let { bindEvent(it, authState) }
+                ) { post, authState ->
+                    post to authState
+                }.collect { (post, authState) ->
+                    post?.let { bindPost(it, authState) }
                 }
             }
         }
     }
 
-    private fun bindEvent(post: PostItem, authState: AuthState) {
+    private fun bindPost(post: PostItem, authState: AuthState) {
         val likers = post.getLikers().map {
             UserListItem.User(it.id, it.avatar, it.name ?: "")
         }

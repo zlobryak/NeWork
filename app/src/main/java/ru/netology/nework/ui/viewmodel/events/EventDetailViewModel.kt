@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.repository.events.EventRepository
 import ru.netology.nework.error.ApiError
@@ -46,5 +45,4 @@ class EventDetailViewModel @Inject constructor(
             }
         }
     }
-
 }
