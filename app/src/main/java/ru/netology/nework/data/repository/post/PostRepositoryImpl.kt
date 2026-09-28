@@ -197,6 +197,10 @@ class PostRepositoryImpl @Inject constructor(
 
     }
 
+    override fun getEventById(eventId: Int) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun upload(upload: MediaUpload): Media {
         try {
             val media = MultipartBody.Part.createFormData(

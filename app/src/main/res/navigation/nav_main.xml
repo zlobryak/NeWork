@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/feedFragment"
-        android:name="ru.netology.nework.ui.fragments.FeedFragment"
+        android:name="ru.netology.nework.ui.fragments.posts.FeedFragment"
         android:label="AppName"
         tools:layout="@layout/fragment_feed">
         <action
@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_feedFragment_to_eventsFeedFragment"
             app:destination="@id/eventsFeedFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
     </fragment>
 
     <fragment
@@ -73,7 +76,7 @@
 
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="ru.netology.nework.ui.fragments.NewPostFragment"
+        android:name="ru.netology.nework.ui.fragments.posts.NewPostFragment"
         android:label="New post"
         tools:layout="@layout/fragment_new_post">
 
@@ -147,4 +150,15 @@
             android:name="eventId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="ru.netology.nework.ui.fragments.posts.PostDetailFragment"
+        android:label="PostDetailFragment"
+        tools:layout="@layout/fragment_post">
+
+        <argument
+            android:name="postId"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>

@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters.eventDetailFragmment
+package ru.netology.nework.ui.adapters.users
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.view.loadAvatar
 
-class EventUsersAdapter(
+class UsersAdapter(
     private val onItemClick: (String?) -> Unit,
     private val onMoreButtonClick: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val items = mutableListOf<EventUserListItem>()
+    private val items = mutableListOf<UserListItem>()
 
     companion object {
         private const val TYPE_USER = 1
@@ -23,8 +23,8 @@ class EventUsersAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is EventUserListItem.User -> TYPE_USER
-            is EventUserListItem.AddButton -> TYPE_BUTTON
+            is UserListItem.User -> TYPE_USER
+            is UserListItem.AddButton -> TYPE_BUTTON
         }
     }
 
@@ -47,7 +47,7 @@ class EventUsersAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is UserViewHolder -> {
-                val user = items[position] as EventUserListItem.User
+                val user = items[position] as UserListItem.User
                 holder.bind(user)
             }
             is AddButtonViewHolder -> {
@@ -58,7 +58,7 @@ class EventUsersAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun submitList(users: List<EventUserListItem.User>) {
+    fun submitList(users: List<UserListItem.User>) {
         items.clear()
 
         // Добавляем максимум 5 пользователей
@@ -67,7 +67,7 @@ class EventUsersAdapter(
 
         // Если пользователей больше 5, добавляем кнопку "+"
         if (users.size > MAX_USERS) {
-            items.add(EventUserListItem.AddButton)
+            items.add(UserListItem.AddButton)
         }
 
         notifyDataSetChanged()
@@ -76,7 +76,7 @@ class EventUsersAdapter(
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.user_avatar)
 
-        fun bind(user: EventUserListItem.User) {
+        fun bind(user: UserListItem.User) {
             imageView.loadAvatar(
                 url = user.avatarUrl,
                 authorName = user.name?.ifEmpty { user.userId }

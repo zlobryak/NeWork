@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.viewmodel.postFeedModel
+package ru.netology.nework.ui.viewmodel.posts
 
 import android.net.Uri
 import android.util.Log
@@ -31,9 +31,9 @@ private val empty = PostItem(
     attachment = null,
     authorJob = null,
     coords = null,
-    likeOwnerIds = null,
+    likeOwnerIds = emptyList(),
     link = null,
-    mentionIds = null,
+    mentionIds = emptyList(),
     mentionedMe = false,
     published = "",
     users = null,

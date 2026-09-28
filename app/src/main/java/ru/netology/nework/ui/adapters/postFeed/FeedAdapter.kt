@@ -24,6 +24,7 @@ class FeedAdapter(
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
         fun onAuthorClick(userId: Int) {}
+        fun onOpenDetails(postId: Int) {}
     }
 
     // Упрощаем создание ViewHolder, убираем лишний кастинг
@@ -89,6 +90,16 @@ class FeedAdapter(
                     onInteractionListener.onShare(post)
                 }
             }
+
+            val navigateToDetails = View.OnClickListener {
+                currentPost?.let { post ->
+                    onInteractionListener.onOpenDetails(post.id)
+                }
+            }
+
+            binding.content.setOnClickListener(navigateToDetails)
+            binding.attachment.setOnClickListener(navigateToDetails)
+            binding.root.setOnClickListener(navigateToDetails)
         }
 
         // Метод bind обновляет данные, не создавая объектов
@@ -113,6 +124,7 @@ class FeedAdapter(
                 } else {
                     attachment.visibility = View.GONE
                 }
+
             }
         }
     }

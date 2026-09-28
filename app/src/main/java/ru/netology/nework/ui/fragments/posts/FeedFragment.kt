@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.fragments
+package ru.netology.nework.ui.fragments.posts
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +26,7 @@ import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
-import ru.netology.nework.ui.viewmodel.postFeedModel.PostViewModel
+import ru.netology.nework.ui.viewmodel.posts.PostViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -88,6 +88,13 @@ class FeedFragment : Fragment() {
                 )
                 findNavController().navigate(action)
 
+            }
+
+            override fun onOpenDetails(postId: Int) {
+                val action = FeedFragmentDirections.actionFeedFragmentToUserFragment(
+                    postIdArg = postId
+                )
+                findNavController().navigate(action)
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

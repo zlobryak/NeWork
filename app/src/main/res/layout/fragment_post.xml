@@ -136,10 +136,11 @@
             android:layout_marginTop="@dimen/common_spacing"
             android:checkable="true"
             android:contentDescription="@string/like_icon"
+            android:minHeight="48dp"
             app:icon="@drawable/ic_liked_24"
+            app:layout_constraintEnd_toStartOf="@id/likers_recycler"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/likers_title"
-            app:layout_constraintEnd_toStartOf="@id/likers_recycler"
             tools:text="10" />
 
         <!-- Разделитель -->
@@ -195,10 +196,11 @@
             android:layout_marginTop="@dimen/common_spacing"
             android:checkable="true"
             android:contentDescription="@string/like_icon"
+            android:minHeight="48dp"
             app:icon="@drawable/ic_people_24dp"
+            app:layout_constraintEnd_toStartOf="@id/mentioned_recycler"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mentioned_title"
-            app:layout_constraintEnd_toStartOf="@id/mentioned_recycler"
             tools:text="10" />
 
         <!-- Список упомянутых -->

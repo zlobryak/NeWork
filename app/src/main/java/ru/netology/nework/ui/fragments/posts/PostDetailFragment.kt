@@ -1,6 +1,7 @@
-package ru.netology.nework.ui.fragments.events
+package ru.netology.nework.ui.fragments.posts
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -29,31 +30,28 @@ import ru.netology.nework.R
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.auth.AuthState
 import ru.netology.nework.data.dto.Coords
-import ru.netology.nework.data.dto.event.EventItem
-import ru.netology.nework.data.dto.event.isLikedBy
-import ru.netology.nework.data.dto.event.isParticipating
-import ru.netology.nework.databinding.FragmentEventBinding
+import ru.netology.nework.data.dto.post.PostItem
+import ru.netology.nework.databinding.FragmentPostBinding
 import ru.netology.nework.ui.adapters.users.UserListItem
 import ru.netology.nework.ui.adapters.users.UsersAdapter
-import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment
 import javax.inject.Inject
+import kotlin.getValue
 
 @AndroidEntryPoint
-class EventDetailFragment : Fragment() {
+class PostDetailFragment : Fragment() {
 
     @Inject
     lateinit var appAuth: AppAuth
 
-    private var _binding: FragmentEventBinding? = null
+    private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: EventDetailViewModel by viewModels()
+    private val viewModel: PostDetailViewModel by viewModels()
 
-    private lateinit var speakersAdapter: UsersAdapter
+    private lateinit var mentionedAdapter: UsersAdapter
     private lateinit var likersAdapter: UsersAdapter
-    private lateinit var participantsAdapter: UsersAdapter
 
     private var placemark: PlacemarkMapObject? = null
 
@@ -82,11 +80,11 @@ class EventDetailFragment : Fragment() {
     private fun checkLocationPermissionsAndInitMap() {
         val fineLocationGranted = ContextCompat.checkSelfPermission(
             requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
 
         val coarseLocationGranted = ContextCompat.checkSelfPermission(
             requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
 
         if (fineLocationGranted || coarseLocationGranted) {
             Log.d("MapDebug", "Разрешения уже есть, карта будет работать корректно")
@@ -106,7 +104,7 @@ class EventDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEventBinding.inflate(inflater, container, false)
+        _binding = FragmentPostBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -138,7 +136,7 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        speakersAdapter = UsersAdapter(
+        mentionedAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
             onMoreButtonClick = { openUsersListFragment(UserListType.SPEAKERS) }
         )
@@ -146,18 +144,13 @@ class EventDetailFragment : Fragment() {
             onItemClick = { userId -> /* открыть профиль */ },
             onMoreButtonClick = { openUsersListFragment(UserListType.LIKERS) }
         )
-        participantsAdapter = UsersAdapter(
-            onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.PARTICIPANTS) }
-        )
 
-        binding.speakersRecycler.adapter = speakersAdapter
         binding.likersRecycler.adapter = likersAdapter
-        binding.participantsRecycler.adapter = participantsAdapter
+        binding.mentionedRecycler.adapter = mentionedAdapter
     }
 
     private fun setupListeners() {
-        binding.like.setOnClickListener {
+        binding.likeButton.setOnClickListener {
             if (appAuth.authStateFlow.value.id == 0L) {
                 navigateToLogin()
             } else {
@@ -165,11 +158,13 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        binding.participateButton.setOnClickListener {
+        binding.mentionedButton
+
+        binding.mentionedButton.setOnClickListener {
             if (appAuth.authStateFlow.value.id == 0L) {
                 navigateToLogin()
             } else {
-                viewModel.participateEvent()
+                viewModel.mentionedEvent()
             }
         }
     }
@@ -182,7 +177,7 @@ class EventDetailFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
-                    viewModel.eventState,
+                    viewModel.postState,
                     appAuth.authStateFlow
                 ) { event, authState ->
                     event to authState
@@ -193,41 +188,36 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    private fun bindEvent(event: EventItem, authState: AuthState) {
-        val speakers = event.getSpeakers().map {
+    private fun bindEvent(post: PostItem, authState: AuthState) {
+        val likers = post.getLikers().map {
             UserListItem.User(it.id, it.avatar, it.name ?: "")
         }
-        val likers = event.getLikers().map {
-            UserListItem.User(it.id, it.avatar, it.name ?: "")
-        }
-        val participants = event.getParticipants().map {
+        val mentioned = post.getMentioned().map {
             UserListItem.User(it.id, it.avatar, it.name ?: "")
         }
 
-        speakersAdapter.submitList(speakers)
         likersAdapter.submitList(likers)
-        participantsAdapter.submitList(participants)
+        mentionedAdapter.submitList(mentioned)
 
         val currentUserId = authState.id
         val isAuthorized = currentUserId != 0L
 
         with(binding) {
-            authorName.text = event.author
-            authorJob.text = event.authorJob ?: getString(R.string.job_searching)
-            eventType.text = event.type.toString()
-            eventDatetime.text = DateUtils.formatIsoDate(event.datetime)
-            eventDescription.text = event.content
+            authorName.text = post.authorName
+            authorJob.text = post.authorJob ?: getString(R.string.job_searching)
 
-            like.text = event.likeOwnerIds.size.toString()
-            like.isChecked = event.isLikedBy(currentUserId)
-            like.isEnabled = isAuthorized
+            likeButton.text = post.likeOwnerIds.size.toString()
+            likeButton.isChecked = post.likedByMe
+            likeButton.isEnabled = isAuthorized
 
-            participateButton.text = event.participantsIds.size.toString()
-            participateButton.isChecked = event.isParticipating(currentUserId)
-            participateButton.isEnabled = isAuthorized
+            publicationDate.text = DateUtils.formatIsoDate(post.published)
+
+            mentionedButton.text = post.mentionIds.size.toString()
+            mentionedButton.isChecked = post.mentionedMe
+            mentionedButton.isEnabled = isAuthorized
 
             // Обложка
-            event.attachment?.let {
+            post.attachment?.let {
                 attachment.visibility = View.VISIBLE
                 attachment.loadAttachment(it.url)
             } ?: run {
@@ -235,7 +225,7 @@ class EventDetailFragment : Fragment() {
             }
 
             // КАРТА
-            event.coords?.let { coords ->
+            post.coords?.let { coords ->
                 mapView.visibility = View.VISIBLE
 
                 // Устанавливаем маркер только если координаты изменились
