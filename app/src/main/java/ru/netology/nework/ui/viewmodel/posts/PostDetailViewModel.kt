@@ -18,9 +18,9 @@ class PostDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val eventId: Int = savedStateHandle["eventId"] ?: error("eventId is required")
+    private val postId: Int = savedStateHandle["postId"] ?: error("eventId is required")
 
-    val postState: StateFlow<PostItem?> = postRepository.getPostById(eventId)
+    val postState: StateFlow<PostItem?> = postRepository.getPostById(postId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

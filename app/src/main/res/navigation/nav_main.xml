@@ -126,6 +126,9 @@
         <argument
             android:name="userIdArg"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_userFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventNewFragment"

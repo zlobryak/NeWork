@@ -70,22 +70,19 @@ class UserWallFragment : Fragment() {
                 }
 
                 override fun onShare(post: PostItem) {
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, post.content)
-                        type = "text/plain"
-                    }
-
-                    val shareIntent =
-                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                    startActivity(shareIntent)
+                    sharePost(post)
                 }
-                //TODO Добавить сюда открытие поста в отдельном фрагменте, когда оно будет реализовано
+
+                override fun onOpenDetails(postId: Int) {
+                    val action =
+                        UserFragmentDirections.actionUserFragmentToPostDetailFragment(postId = postId)
+                    findNavController().navigate(action)
+                }
 
                 //Тут не должно быть навигации в фрагмент пользователя со стеной.
             })
 
-//  Добавляем  индикатор загрузки внизу списка при подгрузке новых страниц
+        //  Добавляем индикатор загрузки внизу списка при подгрузке новых страниц
         adapter.withLoadStateFooter(
             footer = PostLoadStateAdapter
             { adapter.retry() }
@@ -107,9 +104,11 @@ class UserWallFragment : Fragment() {
     }
 
     private fun sharePost(post: PostItem) {
+
+        val contentToShare = post.content ?: getString(R.string.error_empty_content)
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, post.content)
+            putExtra(Intent.EXTRA_TEXT, contentToShare)
             type = "text/plain"
         }
         startActivity(Intent.createChooser(intent, getString(R.string.chooser_share_post)))

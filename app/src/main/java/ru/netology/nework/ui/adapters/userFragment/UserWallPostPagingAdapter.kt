@@ -36,6 +36,7 @@ class UserWallPostPagingAdapter(
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
         fun onAuthorClick(userId: Int) {}
+        fun onOpenDetails(postId: Int)
     }
 
     inner class PostViewHolder(
