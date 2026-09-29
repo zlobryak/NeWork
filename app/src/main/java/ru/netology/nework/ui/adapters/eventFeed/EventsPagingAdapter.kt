@@ -106,6 +106,7 @@ class EventsPagingAdapter(
 
             binding.content.setOnClickListener(navigateToDetails)
             binding.attachment.setOnClickListener(navigateToDetails)
+            binding.root.setOnClickListener(navigateToDetails)
         }
 
         fun bind(event: EventItem) {

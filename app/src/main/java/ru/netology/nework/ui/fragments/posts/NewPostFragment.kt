@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.fragments
+package ru.netology.nework.ui.fragments.posts
 
 import android.app.Activity
 import android.content.Context
@@ -20,7 +20,7 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
-import ru.netology.nework.ui.viewmodel.postFeedModel.PostViewModel
+import ru.netology.nework.ui.viewmodel.posts.PostViewModel
 import androidx.navigation.fragment.navArgs
 import androidx.core.net.toUri
 import ru.netology.nework.view.loadAttachment

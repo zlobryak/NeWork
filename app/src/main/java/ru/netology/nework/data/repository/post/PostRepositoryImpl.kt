@@ -197,6 +197,9 @@ class PostRepositoryImpl @Inject constructor(
 
     }
 
+    override fun getPostById(postId: Int): Flow<PostItem?> =
+        postDao.getPostByIdFlow(postId).map { it?.toDto() }
+
     override suspend fun upload(upload: MediaUpload): Media {
         try {
             val media = MultipartBody.Part.createFormData(

@@ -72,5 +72,3 @@ interface ApiService {
     suspend fun getUser(@Path("id") userId:  Int): Response<UserItem>
 
 }
-
-//TODO Задать вопрос куратору: Нужна ли полная реализация всего доступного API или достаточно используемого по заданию

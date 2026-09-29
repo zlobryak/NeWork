@@ -22,10 +22,10 @@ data class PostEntity(
     val content: String?,
     @Embedded
     val coords: CoordsEmbeddable?,
-    val likeOwnerIds: List<Int>?,
+    val likeOwnerIds: List<Int> = emptyList(),
     val likedByMe: Boolean,
     val link: String?,
-    val mentionIds: List<Int>?,
+    val mentionIds: List<Int> = emptyList(),
     val mentionedMe: Boolean,
     val published: String,
     val users: Map<String, UserItem>? = null,

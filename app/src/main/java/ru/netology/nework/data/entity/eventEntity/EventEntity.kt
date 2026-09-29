@@ -112,5 +112,3 @@ data class EventEntity(
 fun List<EventEntity>.toDto(): List<EventItem> = map(EventEntity::toDto)
 fun List<EventItem>.toEntity(currentUserId: Int?): List<EventEntity> =
     map { EventEntity.fromDto(it, currentUserId) }
-
-//TODO Добавить обработку массива users для отображаения аватров

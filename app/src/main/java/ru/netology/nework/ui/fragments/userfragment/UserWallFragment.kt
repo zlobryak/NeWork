@@ -20,12 +20,11 @@ import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.ui.adapters.userFragment.UserWallPostPagingAdapter
 import ru.netology.nework.ui.adapters.postFeed.PostLoadStateAdapter
-import ru.netology.nework.ui.fragments.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
+import ru.netology.nework.ui.fragments.posts.FeedFragmentDirections.Companion.actionFeedFragmentToNewPostFragment
 import ru.netology.nework.ui.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UserWallFragment : Fragment() {
-
     // requireParentFragment() заставляет Hilt вернуть
     // экземпляр UserViewModel, созданный для UserFragment
     private val viewModel: UserViewModel by viewModels({ requireParentFragment() })
@@ -71,28 +70,27 @@ class UserWallFragment : Fragment() {
                 }
 
                 override fun onShare(post: PostItem) {
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, post.content)
-                        type = "text/plain"
-                    }
-
-                    val shareIntent =
-                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                    startActivity(shareIntent)
+                    sharePost(post)
                 }
-                //TODO Добавить сюда открытие поста в отдельном фрагменте, когда оно будет реализовано
+
+                override fun onOpenDetails(postId: Int) {
+                    val action =
+                        UserFragmentDirections.actionUserFragmentToPostDetailFragment(postId = postId)
+                    findNavController().navigate(action)
+                }
 
                 //Тут не должно быть навигации в фрагмент пользователя со стеной.
             })
 
-//  Добавляем  индикатор загрузки внизу списка при подгрузке новых страниц
+        //  Добавляем индикатор загрузки внизу списка при подгрузке новых страниц
         adapter.withLoadStateFooter(
             footer = PostLoadStateAdapter
             { adapter.retry() }
         )
 
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateFooter(
+            footer = PostLoadStateAdapter { adapter.retry() }
+        )
 
 // Собираем Flow с данными.
 // Как только UserViewModel загрузит данные, они автоматически попадут сюда.
@@ -106,9 +104,11 @@ class UserWallFragment : Fragment() {
     }
 
     private fun sharePost(post: PostItem) {
+
+        val contentToShare = post.content ?: getString(R.string.error_empty_content)
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, post.content)
+            putExtra(Intent.EXTRA_TEXT, contentToShare)
             type = "text/plain"
         }
         startActivity(Intent.createChooser(intent, getString(R.string.chooser_share_post)))
