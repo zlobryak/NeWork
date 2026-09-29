@@ -1,6 +1,7 @@
 package ru.netology.nework.data.dto.post
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
@@ -11,6 +12,7 @@ import ru.netology.nework.data.entity.postEntity.PostEntity
 data class PostItem(
     val id: Int,
     val attachment: Attachment?,
+    @SerializedName("author") //Добавил эту аннтоцию для проверки. В gson это поле называется не так как в классе
     val authorName: String?,
     val authorAvatar: String?,
     val authorId: Int,
