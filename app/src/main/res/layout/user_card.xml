@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_card"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="64dp"
     android:layout_marginHorizontal="@dimen/common_spacing"
     android:layout_marginVertical="4dp"
+    android:backgroundTint="@color/card_background_tint"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="12dp"
-    android:backgroundTint="@color/card_background_tint"
     app:cardElevation="2dp"
     app:strokeColor="#E0E0E0"
     app:strokeWidth="1dp">
@@ -23,8 +23,8 @@
         <!-- Аватар пользователя -->
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
+            android:layout_width="@dimen/user_card_avatar_width"
+            android:layout_height="@dimen/user_card_avatar_height"
             android:background="@drawable/avatar_border"
             android:contentDescription="@string/user_avatar"
             android:padding="2dp"

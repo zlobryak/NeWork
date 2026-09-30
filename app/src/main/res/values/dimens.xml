@@ -13,4 +13,6 @@
     <dimen name="icon_button_min_size">24dp</dimen>
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
+    <dimen name="user_card_avatar_width">40dp</dimen>
+    <dimen name="user_card_avatar_height">40dp</dimen>
 </resources>
