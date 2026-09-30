@@ -13,7 +13,6 @@ import retrofit2.http.Query
 import ru.netology.nework.data.dto.post.AuthResponse
 import ru.netology.nework.data.dto.post.Media
 import ru.netology.nework.data.dto.post.PostItem
-import ru.netology.nework.data.dto.user.UserItem
 
 interface ApiService {
     @GET("posts")
@@ -67,8 +66,4 @@ interface ApiService {
         @Query("name") name: String,
         @Part avatar: MultipartBody.Part // Всегда не null
     ): Response<AuthResponse>
-
-    @GET("users/{id}")
-    suspend fun getUser(@Path("id") userId:  Int): Response<UserItem>
-
 }

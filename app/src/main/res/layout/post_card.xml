@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/common_spacing"
     android:layout_marginVertical="@dimen/common_spacing"
+    android:backgroundTint="@color/card_background_tint"
     app:cardCornerRadius="12dp"
     app:cardElevation="12dp"
     app:strokeColor="#CAC4D0"
@@ -177,8 +178,7 @@
             app:icon="@drawable/ic_share_24"
             app:layout_constraintBottom_toBottomOf="@id/like"
             app:layout_constraintStart_toEndOf="@id/like"
-            app:layout_constraintTop_toTopOf="@id/like"
-            />
+            app:layout_constraintTop_toTopOf="@id/like" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

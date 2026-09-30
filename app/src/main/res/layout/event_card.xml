@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/common_spacing"
     android:layout_marginVertical="@dimen/common_spacing"
+    android:backgroundTint="@color/card_background_tint"
     app:cardCornerRadius="12dp"
     app:cardElevation="12dp"
     app:strokeColor="#CAC4D0"
