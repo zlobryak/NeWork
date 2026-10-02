@@ -35,7 +35,7 @@ class UserWallPostPagingAdapter(
         fun onEdit(post: PostItem) {}
         fun onRemove(post: PostItem) {}
         fun onShare(post: PostItem) {}
-        fun onAuthorClick(userId: Int) {}
+        fun onAuthorClick(userId: Int) {} //TODO Мы уже на экране пользователя, открывать ее не надо.
         fun onOpenDetails(postId: Int)
     }
 
@@ -99,6 +99,8 @@ class UserWallPostPagingAdapter(
                 share.setOnClickListener {
                     onInteractionListener.onShare(post)
                 }
+
+                root.setOnClickListener { onInteractionListener.onOpenDetails(post.id) }
 
                 val attachmentUrl = post.attachment?.url
                 if (!attachmentUrl.isNullOrBlank()) {
