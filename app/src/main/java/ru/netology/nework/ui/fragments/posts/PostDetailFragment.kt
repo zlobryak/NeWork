@@ -32,8 +32,8 @@ import ru.netology.nework.auth.AuthState
 import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentPostBinding
-import ru.netology.nework.ui.adapters.users.UserListItem
-import ru.netology.nework.ui.adapters.users.UsersAdapter
+import ru.netology.nework.ui.adapters.usersFeed.UserListItem
+import ru.netology.nework.ui.adapters.usersFeed.UsersAdapter
 import ru.netology.nework.ui.viewmodel.posts.PostDetailViewModel
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment

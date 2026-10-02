@@ -9,6 +9,7 @@ import ru.netology.nework.data.dao.eventDao.EventRemoteKeyDao
 import ru.netology.nework.data.dao.postDao.PostDao
 import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.userDao.UserDao
 import ru.netology.nework.data.db.AppDb
 
 @InstallIn(SingletonComponent::class)
@@ -24,8 +25,11 @@ object DaoModule {
     fun provideUserWallRemoteKeyDao(db: AppDb): UserWallRemoteKeyDao = db.userWallRemoteKeyDao()
 
     @Provides
-    fun provideUEventDao(db: AppDb): EventDao = db.eventDao()
+    fun provideEventDao(db: AppDb): EventDao = db.eventDao()
 
     @Provides
-    fun provideEventRemotKeyDao(db: AppDb): EventRemoteKeyDao = db.eventRemoteKeyDao()
+    fun provideEventRemoteKeyDao(db: AppDb): EventRemoteKeyDao = db.eventRemoteKeyDao()
+
+    @Provides
+    fun provideUserDao(db: AppDb): UserDao = db.userDao()
 }

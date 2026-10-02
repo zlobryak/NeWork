@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserItem(
-    val id: String?,
+    val id: Int?,
     val avatar: String? = "",
     val userId: Int = 0,       // Этого поля нет в списке лайкнувших
     val login: String? = "", // Этого поля нет в списке лайкнувших

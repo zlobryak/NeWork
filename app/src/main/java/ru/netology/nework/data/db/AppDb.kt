@@ -10,9 +10,11 @@ import ru.netology.nework.data.entity.postEntity.PostEntity
 import ru.netology.nework.data.entity.postEntity.PostRemoteKeyEntity
 import ru.netology.nework.data.dao.postDao.PostRemoteKeyDao
 import ru.netology.nework.data.dao.postDao.UserWallRemoteKeyDao
+import ru.netology.nework.data.dao.userDao.UserDao
 import ru.netology.nework.data.entity.eventEntity.EventEntity
 import ru.netology.nework.data.entity.eventEntity.EventRemoteKeyEntity
 import ru.netology.nework.data.entity.postEntity.UserWallPostRemoteKeyEntity
+import ru.netology.nework.data.entity.userEntity.UserEntity
 
 @Database(
     entities = [
@@ -21,8 +23,9 @@ import ru.netology.nework.data.entity.postEntity.UserWallPostRemoteKeyEntity
         UserWallPostRemoteKeyEntity::class,
         EventEntity::class,
         EventRemoteKeyEntity::class,
+        UserEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -32,4 +35,5 @@ abstract class AppDb : RoomDatabase() {
     abstract fun userWallRemoteKeyDao(): UserWallRemoteKeyDao //Пагинация только для фрагмента со стеной пользователя
     abstract fun eventDao(): EventDao
     abstract fun eventRemoteKeyDao(): EventRemoteKeyDao
+    abstract fun userDao(): UserDao
 }
