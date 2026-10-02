@@ -12,8 +12,11 @@ interface UserApiService {
     suspend fun getUser(@Path("id") userId: Int): Response<UserItem>
 
     /**
-     * Формирует URL вида: http://94.228.125.136:8080/api/users
+     * Полный список всех пользователей одним запросом.
+     * Сервер не поддерживает разбиение на пачки (count/from игнорируются),
+     * поэтому получаем сразу весь массив и сохраняем его в БД:
+     * GET http://94.228.125.136:8080/api/users
      */
     @GET("users")
-    suspend fun getUsers(): Response<Users>
+    suspend fun getAllUsers(): Response<Users>
 }
