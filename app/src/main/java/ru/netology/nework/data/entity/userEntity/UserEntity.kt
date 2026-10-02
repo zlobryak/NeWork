@@ -12,7 +12,7 @@ import ru.netology.nework.data.dto.user.UserItem
 @Entity(tableName = "UserEntity")
 data class UserEntity(
     @PrimaryKey(autoGenerate = false)
-    val id: Int?,
+    val id: Int,
     val avatar: String?,
     val login: String?,
     val name: String?,

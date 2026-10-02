@@ -99,4 +99,5 @@
     <string name="tap_map_to_pick_location">Нажмите на карту, чтобы выбрать место</string>
     <string name="mentioned">Mentioned</string>
     <string name="error_empty_content">No content to share</string>
+    <string name="no_users">No users found</string>
 </resources>
