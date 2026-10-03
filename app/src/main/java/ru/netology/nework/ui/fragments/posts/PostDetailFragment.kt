@@ -290,7 +290,7 @@ class PostDetailFragment : Fragment() {
 
 
     private fun openUsersListFragment(type: UserListType) {
-        // TODO Навигация
+        // TODO Добавляем навигацию для детального просмотра сипсков пользователей
     }
 
     enum class UserListType { SPEAKERS, LIKERS, PARTICIPANTS }
