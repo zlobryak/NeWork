@@ -293,5 +293,5 @@ class PostDetailFragment : Fragment() {
         // TODO Добавляем навигацию для детального просмотра сипсков пользователей
     }
 
-    enum class UserListType { SPEAKERS, LIKERS, PARTICIPANTS }
+    enum class UserListType { SPEAKERS, LIKERS }
 }
