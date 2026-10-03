@@ -33,6 +33,7 @@ import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.post.PostItem
 import ru.netology.nework.databinding.FragmentPostBinding
 import ru.netology.nework.ui.adapters.usersFeed.UserListItem
+import ru.netology.nework.ui.adapters.usersFeed.UserListItem.AddButton.toUserItem
 import ru.netology.nework.ui.adapters.usersFeed.UsersAdapter
 import ru.netology.nework.ui.viewmodel.posts.PostDetailViewModel
 import ru.netology.nework.utils.DateUtils
@@ -139,11 +140,11 @@ class PostDetailFragment : Fragment() {
     private fun setupRecyclerViews() {
         mentionedAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.SPEAKERS) }
+            onMoreButtonClick = { users -> openUsersListFragment(users) }
         )
         likersAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.LIKERS) }
+            onMoreButtonClick = { users -> openUsersListFragment(users) }
         )
 
         binding.likersRecycler.adapter = likersAdapter
@@ -288,10 +289,16 @@ class PostDetailFragment : Fragment() {
         }
     }
 
-
-    private fun openUsersListFragment(type: UserListType) {
-        // TODO Добавляем навигацию для детального просмотра сипсков пользователей
+    /**
+     * Открывает полноэкранный список пользователей, соответствующий тому полю поста,
+     * ряд аватарок которого был обрезан до 5 + кнопка "+" (лайкнувшие или упомянутые).
+     * Полный список передаётся во фрагмент аргументом usersListArg.
+     */
+    private fun openUsersListFragment(users: List<UserListItem.User>) {
+        val action = PostDetailFragmentDirections
+            .actionPostDetailFragmentToUsersListFragment(
+                usersListArg = users.map { it.toUserItem() }.toTypedArray()
+            )
+        findNavController().navigate(action)
     }
-
-    enum class UserListType { SPEAKERS, LIKERS }
 }

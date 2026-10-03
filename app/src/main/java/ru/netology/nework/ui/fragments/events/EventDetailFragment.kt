@@ -34,6 +34,7 @@ import ru.netology.nework.data.dto.event.isLikedBy
 import ru.netology.nework.data.dto.event.isParticipating
 import ru.netology.nework.databinding.FragmentEventBinding
 import ru.netology.nework.ui.adapters.usersFeed.UserListItem
+import ru.netology.nework.ui.adapters.usersFeed.UserListItem.AddButton.toUserItem
 import ru.netology.nework.ui.adapters.usersFeed.UsersAdapter
 import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
 import ru.netology.nework.utils.DateUtils
@@ -140,15 +141,15 @@ class EventDetailFragment : Fragment() {
     private fun setupRecyclerViews() {
         speakersAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.SPEAKERS) }
+            onMoreButtonClick = { users -> openUsersListFragment(users) }
         )
         likersAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.LIKERS) }
+            onMoreButtonClick = { users -> openUsersListFragment(users) }
         )
         participantsAdapter = UsersAdapter(
             onItemClick = { userId -> /* открыть профиль */ },
-            onMoreButtonClick = { openUsersListFragment(UserListType.PARTICIPANTS) }
+            onMoreButtonClick = { users -> openUsersListFragment(users) }
         )
 
         binding.speakersRecycler.adapter = speakersAdapter
@@ -298,9 +299,17 @@ class EventDetailFragment : Fragment() {
     }
 
 
-    private fun openUsersListFragment(type: UserListType) {
-        // TODO Навигация
+    /**
+     * Открывает полноэкранный список пользователей, соответствующий тому полю события,
+     * ряд аватарок которого был обрезан до 5 + кнопка "+"
+     * (спикеры, лайкнувшие или участники).
+     * Полный список передаётся во фрагмент аргументом usersListArg.
+     */
+    private fun openUsersListFragment(users: List<UserListItem.User>) {
+        val action = EventDetailFragmentDirections
+            .actionEventDetailFragmentToUsersListFragment(
+                usersListArg = users.map { it.toUserItem() }.toTypedArray()
+            )
+        findNavController().navigate(action)
     }
-
-    enum class UserListType { SPEAKERS, LIKERS, PARTICIPANTS }
 }

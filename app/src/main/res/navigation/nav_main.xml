@@ -70,13 +70,19 @@
 
     <fragment
         android:id="@+id/usersFeedFragment"
-        android:name="ru.netology.nework.ui.fragments.UsersFeedFragment"
+        android:name="ru.netology.nework.ui.fragments.users.UsersFeedFragment"
         android:label="Users"
         tools:layout="@layout/fragment_users_feed">
 
         <action
             android:id="@+id/action_usersFeedFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_usersFeedFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_usersFeedFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment
@@ -157,6 +163,9 @@
         <argument
             android:name="eventId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_usersListFragment"
+            app:destination="@id/usersListFragment" />
     </fragment>
     <fragment
         android:id="@+id/postDetailFragment"
@@ -167,6 +176,20 @@
         <argument
             android:name="postId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_postDetailFragment_to_usersListFragment"
+            app:destination="@id/usersListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usersListFragment"
+        android:name="ru.netology.nework.ui.fragments.users.UsersListFragment"
+        android:label="@string/users_list"
+        tools:layout="@layout/fragment_users_list">
+
+        <argument
+            android:name="usersListArg"
+            app:argType="ru.netology.nework.data.dto.user.UserItem[]" />
     </fragment>
 
 </navigation>

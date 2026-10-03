@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.fragments
+package ru.netology.nework.ui.fragments.users
 
 import android.os.Bundle
 import android.view.View
@@ -18,7 +18,7 @@ import ru.netology.nework.ui.adapters.usersFeed.UsersPagingAdapter
 import ru.netology.nework.ui.viewmodel.users.UsersViewModel
 
 /**
- * Третий цветовой экран главного экрана — список пользователей (вкладка "Люди").
+ * Третий фрагмент главного экрана — список пользователей (вкладка "User").
  *
  * API отдаёт всех пользователей только одним запросом GET /users (без пачек),
  * поэтому полный список предварительно сохраняется в Room, а список листается
