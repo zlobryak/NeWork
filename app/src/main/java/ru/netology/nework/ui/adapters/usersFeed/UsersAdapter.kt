@@ -1,5 +1,6 @@
 package ru.netology.nework.ui.adapters.usersFeed
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,14 @@ import ru.netology.nework.view.loadAvatar
 
 class UsersAdapter(
     private val onItemClick: (Int?) -> Unit,
-    private val onMoreButtonClick: () -> Unit
+    // При нажатии на кнопку "+" передаём полный список пользователей,
+    // который не поместился в MAX_USERS аватарок — он уходит во
+    // UsersListFragment аргументом для отображения целиком.
+    private val onMoreButtonClick: (List<UserListItem.User>) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = mutableListOf<UserListItem>()
+    private var allUsers = listOf<UserListItem.User>()
 
     companion object {
         private const val TYPE_USER = 1
@@ -58,8 +63,10 @@ class UsersAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(users: List<UserListItem.User>) {
         items.clear()
+        allUsers = users
 
         // Добавляем максимум 5 пользователей
         val usersToShow = users.take(MAX_USERS)
@@ -87,7 +94,7 @@ class UsersAdapter(
 
     inner class AddButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind() {
-            itemView.setOnClickListener { onMoreButtonClick() }
+            itemView.setOnClickListener { onMoreButtonClick(allUsers) }
         }
     }
 }
