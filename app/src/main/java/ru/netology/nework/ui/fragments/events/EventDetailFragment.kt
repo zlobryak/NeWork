@@ -33,8 +33,8 @@ import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.dto.event.isLikedBy
 import ru.netology.nework.data.dto.event.isParticipating
 import ru.netology.nework.databinding.FragmentEventBinding
-import ru.netology.nework.ui.adapters.users.UserListItem
-import ru.netology.nework.ui.adapters.users.UsersAdapter
+import ru.netology.nework.ui.adapters.usersFeed.UserListItem
+import ru.netology.nework.ui.adapters.usersFeed.UsersAdapter
 import ru.netology.nework.ui.viewmodel.events.EventDetailViewModel
 import ru.netology.nework.utils.DateUtils
 import ru.netology.nework.view.loadAttachment

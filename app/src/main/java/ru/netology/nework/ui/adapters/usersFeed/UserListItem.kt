@@ -1,8 +1,8 @@
-package ru.netology.nework.ui.adapters.users
+package ru.netology.nework.ui.adapters.usersFeed
 
 sealed class UserListItem {
     data class User(
-        val userId: String?,
+        val userId: Int?,
         val avatarUrl: String?,
         val name: String? = "",
     ) : UserListItem()

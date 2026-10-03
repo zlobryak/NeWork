@@ -110,5 +110,3 @@ class UserFragment : Fragment() {
         _binding = null
     }
 }
-
-//TODO FAB виден в фрагменте

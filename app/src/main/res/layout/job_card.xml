@@ -6,6 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/common_spacing"
     android:layout_marginVertical="@dimen/common_spacing"
+    android:backgroundTint="@color/card_background_tint"
+
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:strokeColor="#E0E0E0"
@@ -83,11 +85,11 @@
                 android:contentDescription="@string/delete_button"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
-                app:icon="@drawable/ic_delete_18dp"
                 android:visibility="gone"
+                app:icon="@drawable/ic_delete_18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Должность -->

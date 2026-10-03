@@ -16,6 +16,7 @@ import ru.netology.nework.api.JobsApiService
 import ru.netology.nework.api.WallApiService
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.api.EventApiService
+import ru.netology.nework.api.UserApiService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -91,4 +92,10 @@ class ApiModule {
     fun provideEventApiService(
         retrofit: Retrofit
     ): EventApiService = retrofit.create<EventApiService>()
+
+    @Singleton
+    @Provides
+    fun provideUserApiService(
+        retrofit: Retrofit
+    ): UserApiService = retrofit.create<UserApiService>()
 }

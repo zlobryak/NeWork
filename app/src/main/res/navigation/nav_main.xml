@@ -72,7 +72,12 @@
         android:id="@+id/usersFeedFragment"
         android:name="ru.netology.nework.ui.fragments.UsersFeedFragment"
         android:label="Users"
-        tools:layout="@layout/fragment_user_jobs" />
+        tools:layout="@layout/fragment_users_feed">
+
+        <action
+            android:id="@+id/action_usersFeedFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/newPostFragment"

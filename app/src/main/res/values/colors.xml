@@ -25,4 +25,5 @@
     <color name="like_color">#E91E63</color>
     <color name="bottom_menu_color">#F3EDF7</color>
     <color name="add_date_button_color">#E8DEF8</color>
+    <color name="card_background_tint">#FEF7FF</color>
 </resources>

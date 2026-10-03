@@ -1,4 +1,4 @@
-package ru.netology.nework.ui.adapters.users
+package ru.netology.nework.ui.adapters.usersFeed
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import ru.netology.nework.R
 import ru.netology.nework.view.loadAvatar
 
 class UsersAdapter(
-    private val onItemClick: (String?) -> Unit,
+    private val onItemClick: (Int?) -> Unit,
     private val onMoreButtonClick: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -79,7 +79,7 @@ class UsersAdapter(
         fun bind(user: UserListItem.User) {
             imageView.loadAvatar(
                 url = user.avatarUrl,
-                authorName = user.name?.ifEmpty { user.userId }
+                authorName = user.name?.ifEmpty { user.userId.toString() }
             )
             imageView.setOnClickListener { onItemClick(user.userId) }
         }
