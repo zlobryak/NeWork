@@ -44,6 +44,9 @@ class NewEventFragment : Fragment() {
     private var fragmentBinding: FragmentNewEventBinding? = null
     private lateinit var sharedPreferences: SharedPreferences
 
+    private var isFillDone = false
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sharedPreferences = context.getSharedPreferences("EventDraftPrefs", Context.MODE_PRIVATE)
@@ -62,7 +65,7 @@ class NewEventFragment : Fragment() {
         val isEditMode = eventToEdit != null
 
         if (isEditMode) {
-             viewModel.edit(eventToEdit)
+            viewModel.edit(eventToEdit)
         } else {
             val initialText = arguments?.textArg ?: sharedPreferences.getString(DRAFT_KEY_EVENT, "")
             if (!initialText.isNullOrEmpty()) {
@@ -70,7 +73,7 @@ class NewEventFragment : Fragment() {
             }
         }
 
-        observeViewModel(binding, isEditMode)
+        observeViewModel(binding)
         setupImagePicker(binding)
         setupMenu(isEditMode)
         setupBackPressed(isEditMode, binding)
@@ -84,11 +87,17 @@ class NewEventFragment : Fragment() {
         return binding.root
     }
 
-    private fun observeViewModel(binding: FragmentNewEventBinding, isEditMode: Boolean) {
+    private fun observeViewModel(binding: FragmentNewEventBinding) {
         viewModel.edited.observe(viewLifecycleOwner) { event ->
-            // Обновляем текст, если он изменился извне (например, загрузка черновика)
-            // Важно: не делай это при каждом вводе пользователя, чтобы не сбивать курсор.
-            // Обычно текст биндится через TextWatcher, который вызывает viewModel.changeContent()
+            val text = event.content ?: ""
+            if (binding.editContent.text.toString() != text) {
+                binding.editContent.setText(text)
+                // Курсор в конец текста только при первоначальном заполнении (редактирование/черновик)
+                if (!isFillDone) {
+                    binding.editContent.setSelection(binding.editContent.text?.length ?: 0)
+                    isFillDone = true
+                }
+            }
         }
 
         viewModel.photo.observe(viewLifecycleOwner) { photoModel ->
@@ -231,6 +240,7 @@ class NewEventFragment : Fragment() {
                         }
                         true
                     }
+
                     else -> false
                 }
         }, viewLifecycleOwner)

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nework.R
 import ru.netology.nework.data.dto.job.JobItem
 import ru.netology.nework.databinding.JobCardBinding
 import ru.netology.nework.ui.adapters.userFragment.UserJobListAdapter.JobViewHolder
@@ -45,7 +46,8 @@ class UserJobListAdapter(
             binding.apply {
                 name.text = job.name
                 start.text = DateUtils.formatIsoDate(job.start)
-                finish.text = DateUtils.formatIsoDate(job.finish)
+                finish.text = job.finish?.let { DateUtils.formatIsoDate(it) }
+                    ?: root.context.getString(R.string.job_till_now)
                 position.text = job.position
 
                 deleteButton.visibility =
