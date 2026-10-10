@@ -1,6 +1,5 @@
 package ru.netology.nework.ui.fragments.events
 
-import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -81,14 +80,21 @@ class MapPickerFragment : DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.AppTheme)
+    }
+
+    override fun onStart() {
+        super.onStart()
         // Делаем диалог полноэкранным
-        dialog.window?.setLayout(
+        dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT,
         )
-        return dialog
+
+        MapKitFactory.getInstance().onStart()
+        _binding?.mapPickerView?.onStart()
     }
 
     override fun onCreateView(
@@ -180,18 +186,6 @@ class MapPickerFragment : DialogFragment() {
         }
 
         _binding?.hint?.visibility = View.GONE
-    }
-
-    override fun onStart() {
-        super.onStart()
-        MapKitFactory.getInstance().onStart()
-        _binding?.mapPickerView?.onStart()
-    }
-
-    override fun onStop() {
-        _binding?.mapPickerView?.onStop()
-        MapKitFactory.getInstance().onStop()
-        super.onStop()
     }
 
     override fun onDestroyView() {

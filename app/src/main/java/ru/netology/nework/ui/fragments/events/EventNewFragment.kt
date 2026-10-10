@@ -43,6 +43,7 @@ class NewEventFragment : Fragment() {
         private const val DRAFT_KEY_LAT = "new_event_draft_lat"
         private const val DRAFT_KEY_LON = "new_event_draft_lon"
         private const val DRAFT_KEY_PHOTO = "new_event_draft_photo"
+
         private const val MAP_PICKER_DIALOG_TAG = "MapPickerDialog"
     }
 
@@ -54,7 +55,6 @@ class NewEventFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var isFillDone = false
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,6 +76,7 @@ class NewEventFragment : Fragment() {
         if (isEditMode) {
             viewModel.edit(eventToEdit)
         } else {
+            // Восстанавливаем весь сохраненный контекст из черновика
             restoreDraftIfNeeded()
         }
 
@@ -93,8 +94,7 @@ class NewEventFragment : Fragment() {
         return binding.root
     }
 
-    // Загружает черновик (текст, дата, тип, место, фото) в ViewModel,
-    // если она еще пуста (например, после поворота экрана)
+    // Загружает черновик (текст, дата, тип, место, фото) в ViewModel
     private fun restoreDraftIfNeeded() {
         val content = arguments?.textArg
             ?: sharedPreferences.getString(DRAFT_KEY_EVENT, "")
@@ -136,16 +136,14 @@ class NewEventFragment : Fragment() {
                 }
             }
 
+            // Отображаем выбранное место, чтобы координаты были видны на экране создания
             event.coords?.let { coords ->
                 binding.placeLabel.visibility = View.VISIBLE
-                binding.placeLabel.text =
-                    getString(R.string.selected_place, coords.lat, coords.long)
+                binding.placeLabel.text = getString(R.string.selected_place, coords.lat, coords.long)
             } ?: run {
                 binding.placeLabel.visibility = View.GONE
             }
         }
-
-        //TODO Продолжить редактирование с этого момента
 
         viewModel.photo.observe(viewLifecycleOwner) { photoModel ->
             if (photoModel.uri == null) {
@@ -264,14 +262,13 @@ class NewEventFragment : Fragment() {
                         fragmentBinding?.let { binding ->
                             // Сначала обновляем ViewModel актуальными данными из UI
                             viewModel.changeContent(binding.editContent.text.toString())
-                            // TODO другие поля тоже нужно записать в ViewModel через их собственные слушатели
 
                             // Вызываем сохранение
                             viewModel.save()
                             AndroidUtils.hideKeyboard(requireView())
 
                             if (!isEditMode) {
-                                sharedPreferences.edit { remove(DRAFT_KEY_EVENT) }
+                                clearDraft()
                             }
                         }
                         true
@@ -285,7 +282,6 @@ class NewEventFragment : Fragment() {
     private fun setupBackPressed(isEditMode: Boolean) {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-
                 if (!isEditMode) {
                     saveDraft()
                 }
@@ -297,12 +293,6 @@ class NewEventFragment : Fragment() {
             onBackPressedCallback
         )
     }
-
-    override fun onDestroyView() {
-        fragmentBinding = null
-        super.onDestroyView()
-    }
-
 
     // Сохраняем весь добавленный контекст (текст, дата, тип, место, фото),
     // чтобы он не потерялся при закрытии/пересоздании экрана
@@ -361,5 +351,10 @@ class NewEventFragment : Fragment() {
         if (args.eventItemArg == null) {
             saveDraft()
         }
+    }
+
+    override fun onDestroyView() {
+        fragmentBinding = null
+        super.onDestroyView()
     }
 }
