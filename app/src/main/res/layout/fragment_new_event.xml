@@ -29,10 +29,24 @@
                 android:padding="@dimen/common_spacing"
                 tools:text="Шляпа — это головной убор, который носили в Древней Греции. В наше время шляпы носят для защиты от солнца или просто для красоты." />
 
+            <!-- Краткое отображение выбранного места события (координаты) -->
+            <TextView
+                android:id="@+id/placeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:paddingHorizontal="@dimen/common_spacing"
+                android:paddingBottom="@dimen/common_spacing"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_location_pin_24dp"
+                tools:text="Место: 55.752, 37.615" />
+
             <FrameLayout
                 android:id="@+id/photoContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/photo"
@@ -129,17 +143,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/Widget.AppTheme.SquareIconButton" />
-
-    <FrameLayout
-        android:id="@+id/mapPickerContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:elevation="10dp"
-        android:focusable="true"
-        app:layout_constraintBottom_toTopOf="@id/buttonPanel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

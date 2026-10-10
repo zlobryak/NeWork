@@ -102,4 +102,5 @@
     <string name="job_till_now">НВ</string>
     <string name="no_users">No users found</string>
     <string name="users_list">Users</string>
+    <string name="selected_place">Место: %1$.5f, %2$.5f</string>
 </resources>

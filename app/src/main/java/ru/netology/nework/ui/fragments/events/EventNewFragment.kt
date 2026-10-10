@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.data.dto.Coords
+import ru.netology.nework.data.dto.event.IsOnline
 import ru.netology.nework.databinding.FragmentNewEventBinding
 import ru.netology.nework.ui.viewmodel.events.EventNewViewModel
 import ru.netology.nework.utils.AndroidUtils
@@ -35,6 +36,14 @@ class NewEventFragment : Fragment() {
 
         // Используем отдельный ключ, чтобы черновики постов и событий не конфликтовали
         private const val DRAFT_KEY_EVENT = "new_event_draft"
+
+        // Ключи для хранения всего добавленного контекста черновика события
+        private const val DRAFT_KEY_DATETIME = "new_event_draft_datetime"
+        private const val DRAFT_KEY_IS_ONLINE = "new_event_draft_is_online"
+        private const val DRAFT_KEY_LAT = "new_event_draft_lat"
+        private const val DRAFT_KEY_LON = "new_event_draft_lon"
+        private const val DRAFT_KEY_PHOTO = "new_event_draft_photo"
+        private const val MAP_PICKER_DIALOG_TAG = "MapPickerDialog"
     }
 
     // Для редактирования
@@ -67,24 +76,52 @@ class NewEventFragment : Fragment() {
         if (isEditMode) {
             viewModel.edit(eventToEdit)
         } else {
-            val initialText = arguments?.textArg ?: sharedPreferences.getString(DRAFT_KEY_EVENT, "")
-            if (!initialText.isNullOrEmpty()) {
-                viewModel.changeContent(initialText)
-            }
+            restoreDraftIfNeeded()
         }
 
         observeViewModel(binding)
         setupImagePicker(binding)
         setupMenu(isEditMode)
-        setupBackPressed(isEditMode, binding)
+        setupBackPressed(isEditMode)
         setupDateOptions(binding)
         setupPlacePicker()
 
-        if (!isEditMode) {
+        if (!isEditMode && !isFillDone) {
             binding.editContent.requestFocus()
         }
 
         return binding.root
+    }
+
+    // Загружает черновик (текст, дата, тип, место, фото) в ViewModel,
+    // если она еще пуста (например, после поворота экрана)
+    private fun restoreDraftIfNeeded() {
+        val content = arguments?.textArg
+            ?: sharedPreferences.getString(DRAFT_KEY_EVENT, "")
+
+        val hasCoords = sharedPreferences.contains(DRAFT_KEY_LAT) &&
+                sharedPreferences.contains(DRAFT_KEY_LON)
+        val coords = if (hasCoords) {
+            Coords(
+                sharedPreferences.getFloat(DRAFT_KEY_LAT, 0f).toDouble(),
+                sharedPreferences.getFloat(DRAFT_KEY_LON, 0f).toDouble(),
+            )
+        } else null
+
+        viewModel.restoreDraft(
+            content = content,
+            dateTime = sharedPreferences.getString(DRAFT_KEY_DATETIME, null),
+            type = when {
+                sharedPreferences.contains(DRAFT_KEY_IS_ONLINE) ->
+                    if (sharedPreferences.getBoolean(DRAFT_KEY_IS_ONLINE, true))
+                        IsOnline.ONLINE
+                    else
+                        IsOnline.OFFLINE
+                else -> null
+            },
+            coords = coords,
+            photoUrl = sharedPreferences.getString(DRAFT_KEY_PHOTO, null),
+        )
     }
 
     private fun observeViewModel(binding: FragmentNewEventBinding) {
@@ -98,7 +135,17 @@ class NewEventFragment : Fragment() {
                     isFillDone = true
                 }
             }
+
+            event.coords?.let { coords ->
+                binding.placeLabel.visibility = View.VISIBLE
+                binding.placeLabel.text =
+                    getString(R.string.selected_place, coords.lat, coords.long)
+            } ?: run {
+                binding.placeLabel.visibility = View.GONE
+            }
         }
+
+        //TODO Продолжить редактирование с этого момента
 
         viewModel.photo.observe(viewLifecycleOwner) { photoModel ->
             if (photoModel.uri == null) {
@@ -172,42 +219,32 @@ class NewEventFragment : Fragment() {
         }
     }
 
-    // Кнопка «добавить координаты»: показывает полноэкранный фрагмент с Яндекс картой,
-    // по выбору точки записывает координаты в ViewModel (changePlace -> coords события)
+    // Кнопка «добавить координаты»: показывает Яндекс карту в виде dialog-фрагмента.
+    // Такой фрагмент переживает конфигурационные изменения (пересоздание этого экрана),
+    // поэтому карта не исчезает, а введенный текст не стирается.
     private fun setupPlacePicker() {
         fragmentBinding?.addPlace?.setOnClickListener {
-            // Защита от двойного нажатия
-            if (childFragmentManager.findFragmentByTag(MapPickerFragment.TAG) != null) {
+            // Защита от двойного открытия
+            if (parentFragmentManager.findFragmentByTag(MAP_PICKER_DIALOG_TAG) != null) {
                 return@setOnClickListener
             }
 
             val currentCoords = viewModel.edited.value?.coords
-            val picker = MapPickerFragment.newInstance(currentCoords)
-
-            picker.setOnPlaceSelectedListener(object : MapPickerFragment.MapPickerListener {
-                override fun onPlaceSelected(coords: Coords) {
-                    viewModel.changePlace(coords)
-                    hideMapPicker() // Скрываем карту после успешного выбора
-                }
-
-                override fun onCanceled() {
-                    hideMapPicker() // Скрываем карту при отмене
-                }
-            })
-
-            // Добавляем фрагмент в контейнер.
-            childFragmentManager.beginTransaction()
-                .replace(R.id.mapPickerContainer, picker, MapPickerFragment.TAG)
-                .commit()
+            MapPickerFragment.newInstance(currentCoords)
+                .show(parentFragmentManager, MAP_PICKER_DIALOG_TAG)
         }
-    }
 
-    private fun hideMapPicker() {
-        val fragment = childFragmentManager.findFragmentByTag(MapPickerFragment.TAG)
-        if (fragment != null) {
-            childFragmentManager.beginTransaction()
-                .remove(fragment)
-                .commit()
+        // Подписываемся на результат выбора места один раз
+        parentFragmentManager.setFragmentResultListener(
+            MapPickerFragment.REQUEST_KEY_PLACE,
+            viewLifecycleOwner,
+        ) { _, bundle ->
+            if (bundle.getBoolean(MapPickerFragment.ARG_CANCELED)) {
+                return@setFragmentResultListener
+            }
+            val lat = bundle.getDouble(MapPickerFragment.ARG_LAT)
+            val lon = bundle.getDouble(MapPickerFragment.ARG_LON)
+            viewModel.changePlace(Coords(lat, lon))
         }
     }
 
@@ -227,8 +264,7 @@ class NewEventFragment : Fragment() {
                         fragmentBinding?.let { binding ->
                             // Сначала обновляем ViewModel актуальными данными из UI
                             viewModel.changeContent(binding.editContent.text.toString())
-                            // Если есть другие поля (дата, место), убедись, что они уже записаны в ViewModel
-                            // через их собственные слушатели (например, DatePicker callback)
+                            // TODO другие поля тоже нужно записать в ViewModel через их собственные слушатели
 
                             // Вызываем сохранение
                             viewModel.save()
@@ -246,13 +282,12 @@ class NewEventFragment : Fragment() {
         }, viewLifecycleOwner)
     }
 
-    private fun setupBackPressed(isEditMode: Boolean, binding: FragmentNewEventBinding) {
+    private fun setupBackPressed(isEditMode: Boolean) {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val draftText = binding.editContent.text?.toString()?.trim()
 
-                if (!isEditMode && !draftText.isNullOrEmpty()) {
-                    sharedPreferences.edit { putString(DRAFT_KEY_EVENT, draftText) }
+                if (!isEditMode) {
+                    saveDraft()
                 }
                 findNavController().navigateUp()
             }
@@ -266,5 +301,65 @@ class NewEventFragment : Fragment() {
     override fun onDestroyView() {
         fragmentBinding = null
         super.onDestroyView()
+    }
+
+
+    // Сохраняем весь добавленный контекст (текст, дата, тип, место, фото),
+    // чтобы он не потерялся при закрытии/пересоздании экрана
+    private fun saveDraft() {
+        val event = viewModel.edited.value ?: return
+        val text = event.content.orEmpty().trim()
+        val photoUri = viewModel.photo.value?.uri?.toString()
+
+        val isEmpty = text.isEmpty() &&
+                event.coords == null &&
+                event.datetime.isEmpty() &&
+                photoUri.isNullOrEmpty()
+
+        if (isEmpty) {
+            clearDraft()
+            return
+        }
+
+        sharedPreferences.edit {
+            putString(DRAFT_KEY_EVENT, text)
+            if (event.datetime.isNotEmpty()) {
+                putString(DRAFT_KEY_DATETIME, event.datetime)
+            } else {
+                remove(DRAFT_KEY_DATETIME)
+            }
+            putBoolean(DRAFT_KEY_IS_ONLINE, event.type != IsOnline.OFFLINE)
+            event.coords?.let {
+                putFloat(DRAFT_KEY_LAT, it.lat.toFloat())
+                putFloat(DRAFT_KEY_LON, it.long.toFloat())
+            } ?: run {
+                remove(DRAFT_KEY_LAT)
+                remove(DRAFT_KEY_LON)
+            }
+            if (!photoUri.isNullOrEmpty()) {
+                putString(DRAFT_KEY_PHOTO, photoUri)
+            } else {
+                remove(DRAFT_KEY_PHOTO)
+            }
+        }
+    }
+
+    private fun clearDraft() {
+        sharedPreferences.edit {
+            remove(DRAFT_KEY_EVENT)
+            remove(DRAFT_KEY_DATETIME)
+            remove(DRAFT_KEY_IS_ONLINE)
+            remove(DRAFT_KEY_LAT)
+            remove(DRAFT_KEY_LON)
+            remove(DRAFT_KEY_PHOTO)
+        }
+    }
+
+    // Черновик нужен только в режиме создания
+    override fun onPause() {
+        super.onPause()
+        if (args.eventItemArg == null) {
+            saveDraft()
+        }
     }
 }

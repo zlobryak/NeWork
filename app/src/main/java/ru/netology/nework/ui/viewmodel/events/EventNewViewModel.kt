@@ -7,9 +7,11 @@ import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
+import ru.netology.nework.data.dto.Attachment
 import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.event.EventItem
 import ru.netology.nework.data.dto.event.IsOnline
+import ru.netology.nework.data.entity.AttachmentType
 import ru.netology.nework.data.dto.post.MediaUpload
 import ru.netology.nework.data.repository.events.EventRepository
 import ru.netology.nework.utils.SingleLiveEvent
@@ -96,10 +98,6 @@ class EventNewViewModel @Inject constructor(
         _edited.value = edited.value?.copy(type = type)
     }
 
-    fun changeIsOnline(type: IsOnline) {
-        _edited.value = edited.value?.copy(type = type)
-    }
-
     fun changePlace(coords: Coords?) {
         _edited.value = edited.value?.copy(coords = coords)
     }
@@ -111,36 +109,84 @@ class EventNewViewModel @Inject constructor(
 
     // --- Логика сохранения ---
     fun save() {
-        edited.value?.let { eventItem ->
-            viewModelScope.launch {
-                try {
-                    // Проверяем, является ли URI локальным файлом
-                    val localFile = _photo.value?.uri?.takeIf { uri ->
-                        uri.scheme == "content" || uri.scheme == "file"
-                    }?.toFile()
+        val eventItem = edited.value ?: return
+        // Пустое событие не сохраняем (нет ни текста, ни вложенных файлов)
+        if (eventItem.id == 0 && eventItem.content.isNullOrBlank() && _photo.value?.uri == null) {
+            _errorEvent.value = "Добавьте текст или фото"
+            return
+        }
+        viewModelScope.launch {
+            try {
+                // Проверяем, является ли URI локальным файлом
+                val localFile = _photo.value?.uri?.takeIf { uri ->
+                    uri.scheme == "content" || uri.scheme == "file"
+                }?.toFile()
 
-                    val mediaUpload = localFile?.let { MediaUpload(it) }
+                val mediaUpload = localFile?.let { MediaUpload(it) }
 
-                    // Вызываем метод репозитория для сохранения события
-                    repository.save(eventItem, mediaUpload)
-
-                    _eventCreated.value = Unit
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    _errorEvent.value = "Ошибка при создании события: ${e.message}"
+                // Если выбрано локальное фото, но в событии еще нет ссылки на вложение,
+                // проставляем заглушку — репозиторий заменит её URL загруженного файла
+                val eventWithAttachment = if (mediaUpload != null && eventItem.attachment == null) {
+                    eventItem.copy(
+                        attachment = Attachment(type = AttachmentType.IMAGE, url = "")
+                    )
+                } else {
+                    eventItem
                 }
+
+                // Вызываем метод репозитория для сохранения события
+                repository.save(eventWithAttachment, mediaUpload)
+
+                // Сбрасываем состояние только после успешного сохранения.
+                // При ошибке весь введенный контекст остается в ViewModel.
+                _edited.value = emptyEvent
+                _photo.value = noPhoto
+                _eventCreated.value = Unit
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _errorEvent.value = "Ошибка при сохранении события: ${e.message}"
             }
         }
-        // Сбрасываем состояние после сохранения
-        _edited.value = emptyEvent
-        _photo.value = noPhoto
     }
 
-    // Для редактирования
+
+    // Для редактирования. Повторный вызов игнорируется, чтобы не затирать
+// уже введенные пользователем данные при пересоздании фрагмента
+    private var editingInitialized = false
+
     fun edit(event: EventItem) {
+        if (editingInitialized) return
+        editingInitialized = true
         _edited.value = event
         if (event.attachment != null) {
             changePhoto(event.attachment.url.toUri())
+        }
+    }
+
+    // Восстановление состояния из черновика (SharedPreferences) после
+    // пересоздания фрагмента (например, при повороте экрана).
+    // Применяется только к пустому состоянию, чтобы ничего не затереть.
+    fun restoreDraft(
+        content: String?,
+        dateTime: String?,
+        type: IsOnline?,
+        coords: Coords?,
+        photoUrl: String?,
+    ) {
+        val current = _edited.value ?: return
+        if (current.id != 0 || !current.content.isNullOrEmpty() || current.coords != null ||
+            current.datetime.isNotEmpty() || _photo.value?.uri != null
+        ) {
+            return
+        }
+        _edited.value = current.copy(
+            content = content.orEmpty(),
+            datetime = dateTime.orEmpty(),
+            type = type ?: IsOnline.ONLINE,
+            coords = coords,
+        )
+        if (!photoUrl.isNullOrEmpty()) {
+            _photo.value = PhotoModel(photoUrl.toUri())
         }
     }
 }
