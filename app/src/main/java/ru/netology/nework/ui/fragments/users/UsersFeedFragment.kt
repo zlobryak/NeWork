@@ -103,3 +103,5 @@ class UsersFeedFragment : Fragment(R.layout.fragment_users_feed) {
         _binding = null
     }
 }
+
+//TODO Фрагмент должен еще и возвращать список выбранных пользователей
