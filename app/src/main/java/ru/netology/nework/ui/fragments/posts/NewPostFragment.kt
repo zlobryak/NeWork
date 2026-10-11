@@ -152,10 +152,8 @@ class NewPostFragment : Fragment() {
         fragmentBinding?.addUser?.setOnClickListener {
             val initial = viewModel.edited.value?.mentionIds?.toIntArray() ?: intArrayOf()
             findNavController().navigate(
-                NewPostFragmentDirections.actionNewPostFragmentToUsersListFragment().apply {
-                    selectionMode = true
-                    initialSelected = initial
-                }
+                R.id.usersListFragment,
+                UsersListFragment.newSelectionInstance(initial),
             )
         }
 

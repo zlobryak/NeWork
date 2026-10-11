@@ -255,10 +255,8 @@ class NewEventFragment : Fragment() {
         fragmentBinding?.addUser?.setOnClickListener {
             val initial = viewModel.edited.value?.speakerIds?.toIntArray() ?: intArrayOf()
             findNavController().navigate(
-                NewEventFragmentDirections.actionEventNewFragmentToUsersListFragment().apply {
-                    selectionMode = true
-                    initialSelected = initial
-                }
+                R.id.usersListFragment,
+                UsersListFragment.newSelectionInstance(initial),
             )
         }
 
