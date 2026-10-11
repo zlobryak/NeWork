@@ -12,6 +12,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
@@ -20,8 +21,8 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
+import ru.netology.nework.ui.fragments.users.UsersListFragment
 import ru.netology.nework.ui.viewmodel.posts.PostViewModel
-import androidx.navigation.fragment.navArgs
 import androidx.core.net.toUri
 import ru.netology.nework.view.loadAttachment
 
@@ -69,6 +70,7 @@ class NewPostFragment : Fragment() {
 
         // Настраиваем взаимодействие с UI
         setupImagePicker(binding)
+        setupUserMentionPicker()
         setupMenu(isEditMode)
         setupBackPressed(isEditMode, binding)
 
@@ -143,6 +145,32 @@ class NewPostFragment : Fragment() {
         }
     }
 
+    // Кнопка «упомянуть пользователя»: открывает общий список пользователей
+    // в режиме выбора (UsersListFragment) и принимает выбранных через
+    // setFragmentResultListener, сохраняя id упомянутых в edited.mentionIds
+    private fun setupUserMentionPicker() {
+        fragmentBinding?.addUser?.setOnClickListener {
+            val initial = viewModel.edited.value?.mentionIds?.toIntArray() ?: intArrayOf()
+            findNavController().navigate(
+                R.id.usersListFragment,
+                UsersListFragment.newSelectionInstance(initial),
+            )
+        }
+
+        // Подписываемся на результат выбора один раз
+        parentFragmentManager.setFragmentResultListener(
+            UsersListFragment.REQUEST_KEY_SELECTED_USERS,
+            viewLifecycleOwner,
+        ) { _, bundle ->
+            if (bundle.getBoolean(UsersListFragment.ARG_CANCELED)) {
+                return@setFragmentResultListener
+            }
+            val ids = bundle.getIntArray(UsersListFragment.ARG_SELECTED_IDS)?.toSet()
+                ?: emptySet()
+            viewModel.changeMentions(ids)
+        }
+    }
+
     private fun setupMenu(isEditMode: Boolean) {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -190,7 +218,3 @@ class NewPostFragment : Fragment() {
         super.onDestroyView()
     }
 }
-
-//TODO НА этот экран не должен попадать неавторизованный пользователь
-//TODO Сохранять черновик
-//TODO Добавить выбор координат как такой же как в событии

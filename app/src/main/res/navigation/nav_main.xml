@@ -102,6 +102,22 @@
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
+
+        <!-- Кнопка «упомянуть пользователя» открывает общий список
+             пользователей в режиме выбора -->
+        <action
+            android:id="@+id/action_newPostFragment_to_usersListFragment"
+            app:destination="@id/usersListFragment">
+            <argument
+                android:name="selectionMode"
+                android:defaultValue="false"
+                app:argType="boolean" />
+            <argument
+                android:name="initialSelected"
+                android:defaultValue="@null"
+                app:argType="integer[]"
+                app:nullable="true" />
+        </action>
     </fragment>
 
 
@@ -153,6 +169,22 @@
             android:defaultValue="@null"
             app:argType="ru.netology.nework.data.dto.event.EventItem"
             app:nullable="true" />
+
+        <!-- Кнопка «пригласить спикера» открывает общий список
+             пользователей в режиме выбора -->
+        <action
+            android:id="@+id/action_eventNewFragment_to_usersListFragment"
+            app:destination="@id/usersListFragment" >
+            <argument
+                android:name="selectionMode"
+                android:defaultValue="false"
+                app:argType="boolean" />
+            <argument
+                android:name="initialSelected"
+                android:defaultValue="@null"
+                app:argType="integer[]"
+                app:nullable="true" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/eventDetailFragment"
@@ -189,7 +221,22 @@
 
         <argument
             android:name="usersListArg"
-            app:argType="ru.netology.nework.data.dto.user.UserItem[]" />
+            android:defaultValue="@null"
+            app:argType="ru.netology.nework.data.dto.user.UserItem[]"
+            app:nullable="true" />
+
+        <!-- Флаги режима выбора (упомянуть пользователя / пригласить спикера).
+             Передаются через UsersListFragment.newSelectionInstance,
+             в Safe Args нужны, чтобы navigate с Bundle проходил валидацию -->
+        <argument
+            android:name="selectionMode"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="initialSelected"
+            android:defaultValue="@null"
+            app:argType="integer[]"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
