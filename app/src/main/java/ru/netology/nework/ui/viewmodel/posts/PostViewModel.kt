@@ -150,6 +150,14 @@ class PostViewModel @Inject constructor(
         _photo.value = PhotoModel(uri)
     }
 
+    /**
+     * Обновление списка упомянутых пользователей после возврата
+     * из общего списка пользователей (режим выбора по кнопке «addUser»).
+     */
+    fun changeMentions(mentionIds: Set<Int>) {
+        _edited.value = edited.value?.copy(mentionIds = mentionIds.toList())
+    }
+
     fun likePost(post: PostItem) {
         val currentPost = post.copy()
 

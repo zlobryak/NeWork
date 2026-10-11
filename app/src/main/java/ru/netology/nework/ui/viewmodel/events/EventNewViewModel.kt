@@ -102,6 +102,14 @@ class EventNewViewModel @Inject constructor(
         _edited.value = edited.value?.copy(coords = coords)
     }
 
+    /**
+     * Обновление списка спикеров после возврата из общего списка
+     * пользователей (режим выбора по кнопке «пригласить спикера»).
+     */
+    fun changeSpeakers(speakerIds: Set<Int>) {
+        _edited.value = edited.value?.copy(speakerIds = speakerIds.toList())
+    }
+
     fun changeEventOptions(dateTime: Date, isOnline: Boolean) {
         changeDateTime(dateTime)
         changeType(if (isOnline) IsOnline.ONLINE else IsOnline.OFFLINE)

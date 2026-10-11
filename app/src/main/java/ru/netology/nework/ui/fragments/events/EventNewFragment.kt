@@ -21,6 +21,7 @@ import ru.netology.nework.R
 import ru.netology.nework.data.dto.Coords
 import ru.netology.nework.data.dto.event.IsOnline
 import ru.netology.nework.databinding.FragmentNewEventBinding
+import ru.netology.nework.ui.fragments.users.UsersListFragment
 import ru.netology.nework.ui.viewmodel.events.EventNewViewModel
 import ru.netology.nework.utils.AndroidUtils
 import ru.netology.nework.utils.StringArg
@@ -86,6 +87,7 @@ class NewEventFragment : Fragment() {
         setupBackPressed(isEditMode)
         setupDateOptions(binding)
         setupPlacePicker()
+        setupSpeakerPicker()
 
         if (!isEditMode && !isFillDone) {
             binding.editContent.requestFocus()
@@ -243,6 +245,34 @@ class NewEventFragment : Fragment() {
             val lat = bundle.getDouble(MapPickerFragment.ARG_LAT)
             val lon = bundle.getDouble(MapPickerFragment.ARG_LON)
             viewModel.changePlace(Coords(lat, lon))
+        }
+    }
+
+    // Кнопка «пригласить спикера»: открывает общий список пользователей
+    // в режиме выбора (UsersListFragment) и принимает выбранных через
+    // setFragmentResultListener, сохраняя id спикеров в edited.speakerIds
+    private fun setupSpeakerPicker() {
+        fragmentBinding?.addUser?.setOnClickListener {
+            val initial = viewModel.edited.value?.speakerIds?.toIntArray() ?: intArrayOf()
+            findNavController().navigate(
+                NewEventFragmentDirections.actionEventNewFragmentToUsersListFragment().apply {
+                    selectionMode = true
+                    initialSelected = initial
+                }
+            )
+        }
+
+        // Подписываемся на результат выбора один раз
+        parentFragmentManager.setFragmentResultListener(
+            UsersListFragment.REQUEST_KEY_SELECTED_USERS,
+            viewLifecycleOwner,
+        ) { _, bundle ->
+            if (bundle.getBoolean(UsersListFragment.ARG_CANCELED)) {
+                return@setFragmentResultListener
+            }
+            val ids = bundle.getIntArray(UsersListFragment.ARG_SELECTED_IDS)?.toSet()
+                ?: emptySet()
+            viewModel.changeSpeakers(ids)
         }
     }
 

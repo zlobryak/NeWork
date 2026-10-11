@@ -100,7 +100,7 @@ class UsersListFragment : Fragment() {
             loadSelectableUsers()
         } else {
             setupRecyclerView(selected = null)
-            submitUsers(args.usersListArg.toList())
+            submitUsers(args.usersListArg?.toList() ?: emptyList())
         }
     }
 
@@ -130,7 +130,7 @@ class UsersListFragment : Fragment() {
         val initial = arguments?.getIntArray(ARG_INITIAL_SELECTED)?.toList()
             ?.toCollection(linkedSetOf()) ?: linkedSetOf()
 
-        // При пересоздании view выбор уже живёт в ViewModel —
+        // При пересоздании view (поворот) выбор уже живёт в ViewModel —
         // аргументы применяем только при первом запуске
         if (viewModel.selectedIds.value.isNullOrEmpty()) {
             viewModel.setSelected(initial)
@@ -194,7 +194,8 @@ class UsersListFragment : Fragment() {
 
 /**
  * Состояние режима выбора. ViewModel живёт до уровня фрагмента,
- * поэтому отмеченные пользователи переживают пересоздание view.
+ * поэтому отмеченные пользователи переживают пересоздание view
+ * (например, при повороте экрана).
  */
 @HiltViewModel
 class UsersSelectionViewModel @Inject constructor(
